@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#eef7fa" />
+  <title>Lucra Marble — Slab Inventory</title>
+  <link rel="icon" href="public/lucra-logo-square.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="Lucra Marble inventory home">
+      <img src="public/lucra-logo.png" alt="Lucra Marble" />
+    </a>
+    <div class="header-actions">
+      <span class="sync sales-only" id="syncStatus"><i></i> Loading inventory</span>
+      <button class="sync-button sales-only" id="syncButton" type="button">↻ Sync from Drive</button>
+      <button class="mode-switch" id="modeSwitch" type="button" aria-label="Switch display mode">
+        <span class="mode-icon">◫</span><span id="modeLabel">Presentation Mode</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">DENIZLI SLAB INVENTORY</p>
+        <h1>Available natural stone,<br><em>ready to discover.</em></h1>
+      </div>
+      <p class="hero-copy">Explore Lucra Marble's current slab collection. Search by material, browse individual bundles, and view every slab in detail.</p>
+    </section>
+
+    <section class="catalog" aria-labelledby="catalogTitle">
+      <div class="catalog-head">
+        <div>
+          <p class="eyebrow">LIVE COLLECTION</p>
+          <h2 id="catalogTitle">Slab inventory</h2>
+        </div>
+        <p class="result-count" id="resultCount"></p>
+      </div>
+
+      <div class="controls">
+        <label class="search">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="Search material or bundle ID" autocomplete="off" />
+        </label>
+        <div class="filters" role="group" aria-label="Inventory filters">
+          <button class="filter active" data-filter="all" type="button">All bundles</button>
+          <button class="filter" data-filter="available" type="button">Available</button>
+          <button class="filter" data-filter="reserved" type="button">Reserved</button>
+        </div>
+      </div>
+      <div class="advanced-filters" aria-label="More inventory filters">
+        <label>Sort <select id="sortSelect"><option value="name">Name</option><option value="slabs">Most slabs</option><option value="area">Largest area</option></select></label>
+      </div>
+      <p class="sync-feedback sales-only" id="syncFeedback" role="status" aria-live="polite"></p>
+
+      <section class="sales-dashboard sales-only" id="salesDashboard" aria-labelledby="salesDashboardTitle">
+        <div class="sales-dashboard-head">
+          <div>
+            <p class="eyebrow">SALES WORKSPACE</p>
+            <h3 id="salesDashboardTitle">Inventory dashboard</h3>
+          </div>
+          <p class="sales-dashboard-hint">Click a product row to open its full image gallery and packing-list details.</p>
+        </div>
+        <div class="sales-kpis" id="salesKpis"></div>
+        <div class="sales-list" role="table" aria-label="Sales inventory list">
+          <div class="sales-list-head" role="row">
+            <span role="columnheader">Product</span>
+            <span role="columnheader">Status</span>
+            <span role="columnheader">Stock</span>
+            <span role="columnheader">Sizes</span>
+            <span role="columnheader">Packing list</span>
+            <span role="columnheader">Media</span>
+            <span role="columnheader">Source</span>
+          </div>
+          <div id="salesRows"></div>
+        </div>
+      </section>
+
+      <div class="grid" id="productGrid"></div>
+      <div class="empty" id="emptyState" hidden>
+        <p>No matching bundles</p><span>Try another material name or clear the filter.</span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <img src="public/lucra-logo.png" alt="Lucra Marble" />
+    <p>Natural stone selected for remarkable spaces.</p>
+    <span>Inventory preview · September 2026</span>
+  </footer>
+
+  <dialog id="productDialog">
+    <div class="dialog-shell">
+      <button class="dialog-close" id="dialogClose" type="button" aria-label="Close">×</button>
+      <div class="gallery">
+        <img id="dialogImage" src="" alt="" />
+        <button class="gallery-nav prev" id="prevImage" type="button" aria-label="Previous image">←</button>
+        <button class="gallery-nav next" id="nextImage" type="button" aria-label="Next image">→</button>
+        <div class="gallery-count" id="galleryCount"></div>
+      </div>
+        <div class="dialog-info">
+        <div class="dialog-title-row"><div><p class="eyebrow">BUNDLE <span id="dialogCode"></span></p><h2 id="dialogName"></h2></div><span id="dialogStatus"></span></div>
+        <div class="slab-picker" id="slabPickerWrap">
+          <div class="slab-picker-head"><span>Jump to slab</span><small>Select a slab number or additional view</small></div>
+          <div class="slab-numbers" id="slabNumbers" aria-label="Select slab number"></div>
+        </div>
+        <dl class="specs">
+          <div><dt>Total slabs</dt><dd id="dialogPcs"></dd></div>
+          <div><dt>Total area</dt><dd id="dialogSqm"></dd></div>
+          <div><dt>Dimensions</dt><dd id="dialogSize"></dd></div>
+          <div><dt>Location</dt><dd>Denizli, Türkiye</dd></div>
+        </dl>
+        <div class="bundle-lines sales-only" id="bundleLines"></div>
+        <div class="dialog-actions">
+          <button id="copyLink" class="primary" type="button">Copy bundle link</button>
+          <a id="openDrive" class="secondary sales-only" target="_blank" rel="noreferrer">Open in Drive</a>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="data/inventory.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
