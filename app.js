@@ -297,7 +297,8 @@ function applyGalleryTransform(){galleryImage.style.transform=galleryImage.class
 function toggleGalleryZoom(){if(!currentProduct?.images.length)return;const zoomed=galleryImage.classList.toggle('zoomed');if(!zoomed){galleryPanX=0;galleryPanY=0}galleryZoomButton.textContent=zoomed?'− Reset zoom':'＋ Zoom';applyGalleryTransform()}
 galleryImage.addEventListener('dblclick',toggleGalleryZoom);
 galleryZoomButton.addEventListener('click',toggleGalleryZoom);
-galleryImage.addEventListener('pointerdown',event=>{if(!galleryImage.classList.contains('zoomed'))return;galleryPanning=true;galleryPanStart={x:event.clientX,y:event.clientY,panX:galleryPanX,panY:galleryPanY};galleryImage.classList.add('panning');galleryImage.setPointerCapture?.(event.pointerId)});
+galleryImage.addEventListener('dragstart',event=>event.preventDefault());
+galleryImage.addEventListener('pointerdown',event=>{if(!galleryImage.classList.contains('zoomed'))return;event.preventDefault();galleryPanning=true;galleryPanStart={x:event.clientX,y:event.clientY,panX:galleryPanX,panY:galleryPanY};galleryImage.classList.add('panning');galleryImage.setPointerCapture?.(event.pointerId)});
 galleryImage.addEventListener('pointermove',event=>{if(!galleryPanning||!galleryPanStart)return;galleryPanX=galleryPanStart.panX+event.clientX-galleryPanStart.x;galleryPanY=galleryPanStart.panY+event.clientY-galleryPanStart.y;applyGalleryTransform()});
 function stopGalleryPan(){galleryPanning=false;galleryPanStart=null;galleryImage.classList.remove('panning')}
 galleryImage.addEventListener('pointerup',stopGalleryPan);galleryImage.addEventListener('pointercancel',stopGalleryPan);galleryImage.addEventListener('pointerleave',event=>{if(galleryPanning&&!galleryImage.hasPointerCapture?.(event.pointerId))stopGalleryPan()});
