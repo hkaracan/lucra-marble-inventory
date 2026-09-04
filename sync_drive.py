@@ -545,7 +545,11 @@ def collect_media(items: list[dict[str, str]]) -> tuple[list, list, list, dict |
             slab_images.append({"number": number, "label": str(number), "fileId": item["id"], "name": item["name"]})
     # Extra-only nested folders are presented as a single numbered sequence so
     # the jump controls stay compact. Numeric slab filenames sort naturally;
-    # named views follow them.
+    # named views follow them. A nested folder containing only numeric image
+    # filenames is a slab gallery in practice (for example, Tundra Grey
+    # Brushed), even when its parent name does not match the usual numbered
+    # folder pattern. Reclassify the numeric files as slab media while
+    # retaining named views such as Bookmatch photos as supplementary media.
     compact_extras = [image for image in extra_images if image.pop("compact", False)]
     compact_extras.sort(
         key=lambda image: (
@@ -555,8 +559,29 @@ def collect_media(items: list[dict[str, str]]) -> tuple[list, list, list, dict |
         if re.match(r"^\s*(\d+)", image["name"])
         else (1, image["name"].lower())
     )
-    for index, image in enumerate(compact_extras, start=1):
-        image["label"] = str(index)
+    numeric_compact_extras = [
+        image
+        for image in compact_extras
+        if re.match(r"^\s*\d+\s*\.(?:jpe?g|png|webp|heic|heif)$", image["name"], re.IGNORECASE)
+    ]
+    if not slab_images and numeric_compact_extras:
+        compact_extra_ids = {image["fileId"] for image in numeric_compact_extras}
+        for image in numeric_compact_extras:
+            number = int(re.match(r"^\s*(\d+)", image["name"]).group(1))
+            slab_images.append(
+                {
+                    "number": number,
+                    "label": str(number),
+                    "fileId": image["fileId"],
+                    "name": image["name"],
+                }
+            )
+        extra_images[:] = [image for image in extra_images if image.get("fileId") not in compact_extra_ids]
+        compact_extras = [image for image in compact_extras if image["fileId"] not in compact_extra_ids]
+    if compact_extras:
+        next_extra_number = max((image["number"] for image in slab_images), default=0) + 1
+        for index, image in enumerate(compact_extras, start=next_extra_number):
+            image["label"] = str(index)
     extra_images.sort(
         key=lambda image: (
             0 if str(image.get("label", "")).isdigit() else 1,

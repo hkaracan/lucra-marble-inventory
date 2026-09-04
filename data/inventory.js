@@ -1,7 +1,7 @@
 // Generated from inventory.json by sync_drive.py.
 window.LUCRA_INVENTORY = {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-04T10:35:40Z",
+  "syncedAt": "2026-09-04T13:09:47Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
@@ -14544,198 +14544,237 @@ window.LUCRA_INVENTORY = {
           "sqm": 13.5
         }
       ],
-      "images": [],
-      "extraImages": [
+      "images": [
         {
+          "number": 1,
           "label": "1",
           "fileId": "12V1RL2brYPlJ2UXuhelvB5GVlFhhBQSt",
           "name": "1.jpg"
         },
         {
+          "number": 2,
           "label": "2",
           "fileId": "17oth7eZrHf3OMHBU-kCX7bOURlyX_hjx",
           "name": "2.jpg"
         },
         {
+          "number": 3,
           "label": "3",
           "fileId": "18LUGEHPPQFmBKvxtlcT_ztb_ya8OzeNU",
           "name": "3.jpg"
         },
         {
+          "number": 4,
           "label": "4",
           "fileId": "1G_G4OkTA5staOdkSK81BiaT5U-g6tchy",
           "name": "4.jpg"
         },
         {
+          "number": 5,
           "label": "5",
           "fileId": "1zJ9lc-BLKQ4g-vMf4EjHwwDBPgtyOH0z",
           "name": "5.jpg"
         },
         {
+          "number": 6,
           "label": "6",
           "fileId": "1YRaMOTLdUJ4WI7QdjH6xLO0_--Y8bo64",
           "name": "6.jpg"
         },
         {
+          "number": 7,
           "label": "7",
           "fileId": "1vVOuhScvtIEJ_cBLrIk6PeFJHtJahX6K",
           "name": "7.jpg"
         },
         {
+          "number": 8,
           "label": "8",
           "fileId": "14f695zF0CG08FQthcKHMadv86Zdguy0A",
           "name": "8.jpg"
         },
         {
+          "number": 9,
           "label": "9",
           "fileId": "1Jr_m4ZsDxZovrJGQAbpGnjo9Vi5vIkzr",
           "name": "9.jpg"
         },
         {
+          "number": 10,
           "label": "10",
           "fileId": "1f-9D_WNLZ35NkeLwUccaBkgLWkW1rMhr",
           "name": "10.jpg"
         },
         {
+          "number": 11,
           "label": "11",
           "fileId": "1I-3zf9g4nswewFrJ6avf1VUSTOoKqdqz",
           "name": "11.jpg"
         },
         {
+          "number": 12,
           "label": "12",
           "fileId": "1xgmF_HNl6TJIlSBmoJQUoC_hN_RYss7T",
           "name": "12.jpg"
         },
         {
+          "number": 13,
           "label": "13",
           "fileId": "169dGFtQ0zOV2fdH1EYurE91fgMU0rVrr",
           "name": "13.jpg"
         },
         {
+          "number": 14,
           "label": "14",
           "fileId": "1KAeQqNhx1ud5uahG01jaeWlOBs-FWuzW",
           "name": "14.jpg"
         },
         {
+          "number": 15,
           "label": "15",
           "fileId": "1UDkAPW5oNxR4n68L-Y90-eS8TZHsdbqj",
           "name": "15.jpg"
         },
         {
+          "number": 16,
           "label": "16",
           "fileId": "1flqKxJCGnEXbekOm0kgODJEKDcDNXpnw",
           "name": "16.jpg"
         },
         {
+          "number": 17,
           "label": "17",
           "fileId": "1uZwEjB5aqY98ayCKjGYk1ZviqWpXEdRZ",
           "name": "17.jpg"
         },
         {
+          "number": 18,
           "label": "18",
           "fileId": "1WucPCve30cgQb-hJTuzJV42_otI4LXCG",
           "name": "18.jpg"
         },
         {
+          "number": 19,
           "label": "19",
           "fileId": "1kHBF3Al3dlksqaRIumBLsZhERsi-jvh9",
           "name": "19.jpg"
         },
         {
+          "number": 20,
           "label": "20",
           "fileId": "1GmIE5UYT-qP6eTC2V8Hu1XQkXr1nznBf",
           "name": "20.jpg"
         },
         {
+          "number": 21,
           "label": "21",
           "fileId": "1wRCjykp2jOwFesYnA0WEiAz7PXGB76cT",
           "name": "21.jpg"
         },
         {
+          "number": 22,
           "label": "22",
           "fileId": "1ioblOrZg6bdlpMNzjLyceNp8hSQBle5f",
           "name": "22.jpg"
         },
         {
+          "number": 23,
           "label": "23",
           "fileId": "1z9UJtzxk6q-zwiIpiE98gpcX4FGKpkgS",
           "name": "23.jpg"
         },
         {
+          "number": 24,
           "label": "24",
           "fileId": "1AMQt4Y-QaZoTOhREI9skV3B21QzXrC_f",
           "name": "24.jpg"
         },
         {
+          "number": 25,
           "label": "25",
           "fileId": "13KkbTJryMdad6hJvhuWEvyQa-mYN919l",
           "name": "25.jpg"
         },
         {
+          "number": 26,
           "label": "26",
           "fileId": "1U8GOGvnYl2VHO3TaJoiL67TJoaTCAx_H",
           "name": "26.jpg"
         },
         {
+          "number": 27,
           "label": "27",
           "fileId": "1vTzxMs6ylKRWKzxBaoou_S8JW2iRgutC",
           "name": "27.jpg"
         },
         {
+          "number": 28,
           "label": "28",
           "fileId": "1A9vzJhotURtNPhfP1TQICpIx4OYRQp7e",
           "name": "28.jpg"
         },
         {
+          "number": 29,
           "label": "29",
           "fileId": "1-KafUVkeSndPzGKa1CeI6LlSa7FR_nQN",
           "name": "29.jpg"
         },
         {
+          "number": 30,
           "label": "30",
           "fileId": "17BUuyEI6yDddJ21VjALnR5wLgiXrm4bd",
           "name": "30.jpg"
         },
         {
+          "number": 31,
           "label": "31",
           "fileId": "1jIOfV9JcYTA5y52RJkPwJLq0NP0qomJj",
           "name": "31.jpg"
         },
         {
+          "number": 32,
           "label": "32",
           "fileId": "1T6CIz778MKg0p48r5PJgL6z9fheVIH8i",
           "name": "32.jpg"
         },
         {
+          "number": 33,
           "label": "33",
           "fileId": "1TBR12vainAn6hs_841DF7NHeZtkqnT0T",
           "name": "33.jpg"
         },
         {
+          "number": 34,
           "label": "34",
           "fileId": "1N6fTrOZwYWHwn6GKkid6qgXMlpeThOnw",
           "name": "34.jpg"
         },
         {
+          "number": 35,
           "label": "35",
           "fileId": "1Ci4Ve7qbj-jZpxxShVyom_1eloXnlZWG",
           "name": "35.jpg"
         },
         {
+          "number": 36,
           "label": "36",
           "fileId": "1VxtOe_xN5rTuePW1kHqYFPIraLub5sk_",
           "name": "36.jpg"
         },
         {
+          "number": 37,
           "label": "37",
           "fileId": "1aTQMPkzGkK-yBk045_dVNCLc5iAdhAfA",
           "name": "37.jpg"
         },
         {
+          "number": 38,
           "label": "38",
           "fileId": "1TFuGSe9qSDSNqldoYsaPnQESJvlELb78",
           "name": "38.jpg"
-        },
+        }
+      ],
+      "extraImages": [
         {
           "label": "39",
           "fileId": "1OxemwHtWiRlkql69Cq_OJ-YBl-afWyiy",
@@ -17517,8 +17556,8 @@ window.LUCRA_INVENTORY = {
   "report": {
     "bundles": 53,
     "added": 0,
-    "updated": 53,
-    "unchanged": 0,
+    "updated": 1,
+    "unchanged": 52,
     "missingPackingLists": 2,
     "unreadablePackingLists": 0,
     "missingImages": 0,
@@ -17529,59 +17568,7 @@ window.LUCRA_INVENTORY = {
     "warningCount": 0,
     "addedFolders": [],
     "updatedFolders": [
-      "Alaskan Blue K2970",
-      "Alexander Black K4987",
-      "Arabescato Imperiale K6235",
-      "Bianco Dolomite L1011",
-      "Breccia Montagna K3332",
-      "Bruno Perla K6029",
-      "Cafe Amore K6058",
-      "Ceppo Beige K5567",
-      "Ceppo Beige K6086",
-      "Ceppo Grey K3630",
-      "Crema Luna K6131",
-      "Diamond Grey M2878",
-      "Flinders White K3167",
-      "Flinders White K3491",
-      "Giallo Siena Dolomite K1442",
-      "Golden Roots K5080",
-      "Green Olive K3618",
-      "Ice Bloom K4132",
-      "Invisible Blue K3280",
-      "Karmania Traonyx K5809",
-      "Lilac Extra K3619",
-      "Marmara Equator K3514",
-      "MoonLight Grey K5147",
-      "Naturella K5171",
-      "NebuLa Wave L009",
-      "Nimbus White Veincut K6169",
-      "Nordic Ice K3490",
-      "Polar White K6089",
-      "Porto Rosa L006",
-      "Red Jasper L1010",
-      "Red Travertine K5094",
-      "Rosso Levanto K6222",
-      "Rosso Levanto L1013",
-      "Rosso Levanto L1014",
-      "Silver Travertine Ham (Raw) K5301",
-      "Sunset Dlomite K3561",
-      "Sunset Dolomite K1443",
-      "Terranova Ceppo K6044",
-      "Travertine L009",
-      "Tundra Grey K1312",
-      "Tundra Grey K3966",
-      "Tundra Grey K6155",
-      "Tundra Grey Brushed",
-      "Tundra Light K191",
-      "Reserved - Tundra Light K6138",
-      "Tundra Light K6139",
-      "Tundra Ocean K6164",
-      "Van Gogh K3229",
-      "Vanilla K6130",
-      "Vanilla Ice K5372",
-      "Reserved Velluto Onyx K3947",
-      "Velluto Onyx Cross Cut K3653",
-      "Verde Levanto K5420"
+      "Tundra Grey Brushed"
     ],
     "missingPackingListFolders": [
       "Rosso Levanto K6222",

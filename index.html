@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260904-9" />
+  <link rel="stylesheet" href="styles.css?v=20260904-10" />
 </head>
 <body>
   <header class="site-header">
@@ -95,7 +95,7 @@
           </div>
           <div id="auditPanel" hidden>
             <div class="audit-toolbar">
-              <label><span data-i18n="auditFilter">Show</span><select id="auditFilter"><option value="all" data-i18n="auditAll">All products</option><option value="attention" data-i18n="auditAttention">Needs attention</option><option value="no-packing" data-i18n="auditNoPacking">No packing list</option><option value="size" data-i18n="auditSize">Missing area / size</option><option value="images" data-i18n="auditImages">Missing images</option><option value="warnings" data-i18n="auditWarnings">Sync warnings</option></select></label>
+              <label><span data-i18n="auditFilter">Show</span><select id="auditFilter"><option value="all" data-i18n="auditAll">All products</option><option value="attention" data-i18n="auditAttention">Needs attention</option><option value="no-packing" data-i18n="auditNoPacking">No packing list</option><option value="size" data-i18n="auditSize">Missing area / size</option><option value="images" data-i18n="auditImages">Missing images</option><option value="image-check" data-i18n="auditImageCheck">Image count mismatch</option><option value="warnings" data-i18n="auditWarnings">Sync warnings</option></select></label>
               <span class="audit-count" id="auditCount"></span>
               <button id="exportAudit" class="secondary" type="button" data-i18n="exportAudit">Export audit CSV</button>
             </div>
@@ -226,6 +226,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260904-9"></script>
+  <script src="app.js?v=20260904-10"></script>
 </body>
 </html>

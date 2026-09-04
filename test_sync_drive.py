@@ -130,9 +130,10 @@ class MockedSyncTest(unittest.TestCase):
             ]
 
         with patch.object(sync_drive, "folder_items", fake_folder_items):
-            _, extras, *_ = sync_drive.collect_media([{"id": "nested", "name": "Tundra Grey K900"}])
+            slabs, extras, *_ = sync_drive.collect_media([{"id": "nested", "name": "Tundra Grey K900"}])
 
-        self.assertEqual([image["label"] for image in extras], ["1", "2", "3"])
+        self.assertEqual([image["number"] for image in slabs], [1, 2])
+        self.assertEqual([image["label"] for image in extras], ["3"])
 
     def test_nested_bundle_folder_can_supply_packing_list_and_images(self):
         def fake_folder_items(folder_id, timeout=35, attempts=3):
@@ -151,8 +152,9 @@ class MockedSyncTest(unittest.TestCase):
 
         self.assertEqual(packing_name, "Packing List K900 Tundra Grey.xlsx")
         self.assertEqual(packing["totalPcs"], 4)
-        self.assertEqual([image["label"] for image in extras], ["1", "2"])
-        self.assertEqual(slabs, [])
+        self.assertEqual(extras, [])
+        self.assertEqual([image["label"] for image in slabs], ["1", "2"])
+        self.assertEqual([image["number"] for image in slabs], [1, 2])
         self.assertEqual(skipped, [])
 
     def test_l1014_survives_slow_nested_photo_folder_and_reserved_name_is_clean(self):
