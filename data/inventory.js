@@ -1,7 +1,7 @@
 // Generated from inventory.json by sync_drive.py.
 window.LUCRA_INVENTORY = {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-04T07:41:45Z",
+  "syncedAt": "2026-09-04T08:05:44Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
@@ -17460,5 +17460,23 @@ window.LUCRA_INVENTORY = {
     }
   ],
   "errors": [],
-  "warnings": []
+  "warnings": [],
+  "report": {
+    "bundles": 53,
+    "added": 0,
+    "updated": 0,
+    "unchanged": 53,
+    "missingPackingLists": 2,
+    "missingImages": 0,
+    "skippedPhotoFolders": 0,
+    "folderErrors": 0,
+    "warningCount": 0,
+    "addedFolders": [],
+    "updatedFolders": [],
+    "missingPackingListFolders": [
+      "Rosso Levanto K6222",
+      "Vanilla Ice K5372"
+    ],
+    "missingImageFolders": []
+  }
 };
