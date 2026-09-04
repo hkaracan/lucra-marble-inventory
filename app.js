@@ -165,7 +165,7 @@ dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
 document.querySelector('#copyLink').addEventListener('click',async(e)=>{const url=`${location.href.split('#')[0]}#bundle-${encodeURIComponent(productKey(currentProduct))}`;await navigator.clipboard.writeText(url);e.currentTarget.textContent='Link copied';setTimeout(()=>e.currentTarget.textContent='Copy bundle link',1400)});
 
 function normalizeLiveProduct(p,i){
-  const mediaUrl=fileId=>location.protocol==='file:'?`https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w1400`:`/api/media?id=${encodeURIComponent(fileId)}`;
+  const mediaUrl=fileId=>location.protocol==='file:'||isGithubPages?`https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w1400`:`/api/media?id=${encodeURIComponent(fileId)}`;
   const slabImages=(p.images||[]).map(image=>({src:mediaUrl(image.fileId),label:String(image.label??image.number),type:'slab'}));
   const extras=(p.extraImages||[]).map(image=>({src:mediaUrl(image.fileId),label:image.label||'Detail',type:'extra'}));
   return {...p,size:p.dimensions?.length?(p.dimensions.length===1?p.dimensions[0]:`${p.dimensions[0]} + ${p.dimensions.length-1} sizes`):'See packing list',images:[...slabImages,...extras],stone:stones[i%stones.length],media:[slabImages.length?`${slabImages.length} slabs`:null,extras.length?`${extras.length} extra views`:null,p.videos?.length?`${p.videos.length} video`:null].filter(Boolean).join(' · ')};
@@ -203,7 +203,7 @@ async function loadInventory(){
       data=window.LUCRA_INVENTORY;
       if(!data)throw new Error('No local inventory snapshot');
     }else{
-      const response=await fetch(`/data/inventory.json?ts=${Date.now()}`);
+      const response=await fetch(`data/inventory.json?ts=${Date.now()}`);
       if(!response.ok)throw new Error('No synced inventory');
       data=await response.json();
     }
