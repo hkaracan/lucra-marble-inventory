@@ -341,7 +341,6 @@ const dialog=document.querySelector('#productDialog');
 const galleryImage=document.querySelector('#dialogImage'), galleryHint=document.querySelector('#galleryHint'), galleryZoomButton=document.querySelector('#galleryZoom'), galleryExpandButton=document.querySelector('#galleryExpand');
 let galleryPanX=0, galleryPanY=0, galleryPanning=false, galleryPanStart=null;
 function openProduct(id){
-  try{
   currentProduct=products.find(p=>productKey(p)===id); imageIndex=0;
   if(!currentProduct)return;
   document.querySelector('#dialogCode').textContent=currentProduct.code;
@@ -360,10 +359,6 @@ function openProduct(id){
   salesNote.value=followup.note;
   noteSaved.textContent='';
   updateGallery(); dialog.showModal();
-  }catch(error){
-    document.documentElement.dataset.lucraError=error instanceof Error?error.message:String(error);
-    throw error;
-  }
 }
 function updateGallery(){
   const img=galleryImage;
@@ -458,14 +453,11 @@ async function loadInventory(){
     setSyncFeedback({...data,count:products.length},location.protocol==='file:'?'Local snapshot':isGithubPages?'Last published sync':'Last sync');
   }catch(error){syncStatus.innerHTML='<i></i> Preview data';syncStatus.title='';syncFeedback.textContent='';}
   render();
-  document.documentElement.dataset.lucraLoadDone='1';
 }
 
 function openHashProduct(){
-  document.documentElement.dataset.lucraHashSeen=location.hash;
   const match=location.hash.match(/^#bundle-(.+)$/);if(!match)return;
   const id=decodeURIComponent(match[1]), product=products.find(p=>productKey(p)===id)||(id!=='—'?products.find(p=>p.code===id):null);
-  document.documentElement.dataset.lucraHashProduct=product?product.code:'not-found';
   if(product)openProduct(productKey(product));
 }
 window.addEventListener('hashchange',openHashProduct);
@@ -485,4 +477,4 @@ document.querySelector('#syncButton').addEventListener('click',async(event)=>{
   try{const response=await fetch('/api/sync',{method:'POST'});const result=await response.json();if(!result.ok)throw new Error(result.error||'The Drive sync failed');await loadInventory();setSyncFeedback(result);button.textContent=`Synced ${result.count} bundles`;setTimeout(()=>button.textContent='↻ Sync from Drive',1800)}catch(error){const message=error instanceof Error?error.message:String(error);button.textContent='Sync failed';syncStatus.innerHTML='<i></i> Sync failed';syncStatus.title=message;syncFeedback.textContent=`Sync failed: ${message}. The previous catalogue remains available.`;setTimeout(()=>button.textContent='↻ Try again',1800)}finally{button.disabled=false}
 });
 applyLanguage();
-loadInventory().then(()=>{document.documentElement.dataset.lucraPromiseDone='1';openHashProduct()}).catch(error=>{document.documentElement.dataset.lucraLoadError=error instanceof Error?error.stack||error.message:String(error)});
+loadInventory().then(openHashProduct);
