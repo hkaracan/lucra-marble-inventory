@@ -14,8 +14,8 @@ const stones = [
   'radial-gradient(circle at 20% 30%,#d8c0a4,transparent 18%),linear-gradient(135deg,#a27d63,#e0c8af 32%,#8d6a54 35%,#ccb096 66%,#785644 70%)'
 ];
 const translations={
-  en:{heroEyebrow:'DENIZLI SLAB INVENTORY',heroTitle:'Available natural stone,',heroTitleEm:'ready to discover.',heroCopy:"Explore Lucra Marble's current slab collection. Search by material, browse individual bundles, and view every slab in detail.",liveCollection:'LIVE COLLECTION',slabInventory:'Slab inventory',searchPlaceholder:'Search material or bundle ID',allBundles:'All bundles',available:'Available',reserved:'Reserved',presentationMode:'Presentation Mode',salesMode:'Sales Mode',sort:'Sort',name:'Name',mostSlabs:'Most slabs',largestArea:'Largest area',minArea:'Min m²',maxArea:'Max m²',minSlabs:'Min slabs',maxSlabs:'Max slabs',size:'Size',sizePlaceholder:'e.g. 190 × 290',packing:'Packing',allData:'All data',connected:'Connected',fileFound:'File found',missing:'Missing',photos:'Photos',allPhotos:'All photos',withImages:'With images',missingImages:'Missing images',clearFilters:'Clear filters',moreFilters:'More filters',hideFilters:'Hide filters',salesWorkspace:'SALES WORKSPACE',inventoryDashboard:'Inventory dashboard',salesHint:'Click a product row to open its full image gallery and packing-list details.',showMissingPacking:'Show bundles without packing lists',dataQuality:'DATA QUALITY',inventoryHealth:'Inventory health',showDetails:'Show details',hideDetails:'Hide details',shortlist:'Shortlist',newList:'New list',rename:'Rename',delete:'Delete',compareSelected:'Compare selected',copySummary:'Copy summary',whatsappCustomer:'WhatsApp customer',exportCsv:'Export CSV',clear:'Clear',productSelect:'Product / select',status:'Status',stock:'Stock',sizes:'Sizes',packingList:'Packing list',media:'Media',followUp:'Follow-up',source:'Source',bundle:'BUNDLE',bundleSingular:'bundle',bundles:'bundles',jumpToSlab:'Jump to slab',slabPickerHint:'Select a slab number or additional view',totalSlabs:'Total slabs',totalArea:'Total area',dimensions:'Dimensions',location:'Location',followUpStatus:'Status',new:'New',sent:'Sent to customer',waiting:'Waiting for reply',quoted:'Quoted',closed:'Closed',salesNote:'Sales note',salesNotePlaceholder:'Add a private note for your team',saveNote:'Save note',saved:'Saved',customerCta:'Interested in this bundle? Share the page with your team or contact Lucra Marble for current pricing and availability.',copyLink:'Copy bundle link',printSheet:'Print sheet',openDrive:'Open Google Drive folder',salesAccess:'SALES ACCESS',openSalesDashboard:'Open sales dashboard',salesAccessHint:'Enter the demo password to view packing-list and source details.',password:'Password',cancel:'Cancel',unlockDashboard:'Unlock dashboard',compareBundles:'Compare selected bundles',copyComparison:'Copy comparison',close:'Close',noMatchingBundles:'No matching bundles',tryAnother:'Try another material name or clear the filter.',slabs:'slabs',countUnavailable:'Count unavailable',sizesNotListed:'Sizes not listed',noPackingList:'No packing list',noImageAvailable:'No images found',galleryReady:'Gallery ready',views:'views',photoFoldersSkipped:'photo folder(s) skipped',readError:'Read error',noExcel:'No Excel file in bundle folder',noReadableRows:'No readable packing rows',packingData:'Packing data',shownBundles:'Shown bundles',knownArea:'Known area',customerOptions:'Selected stone options',contactForPricing:'Please contact us for pricing, availability confirmation, and delivery information.',inventoryHealthHint:'These checks are based on the latest published catalogue.',noIssues:'No catalogue issues found',missingPackingDetail:'bundles without recognized packing lists',missingImageDetail:'bundles without images',skippedPhotoDetail:'bundles with skipped photo folders',syncErrorDetail:'bundles with sync errors',skippedFolders:'Skipped photo folders',syncIssues:'Sync issues',added:'Added',updated:'Updated',unchanged:'Unchanged',lastSync:'Last published sync',details:'Details',viewRows:'View affected rows',noNote:'No note',listName:'List name',seePackingList:'See packing list',galleryAvailable:'Gallery available'},
-  tr:{heroEyebrow:'DENİZLİ PLAKA ENVANTERİ',heroTitle:'Seçili doğal taşlar,',heroTitleEm:'keşfetmeye hazır.',heroCopy:'Lucra Marble güncel plaka koleksiyonunu keşfedin. Malzeme veya paket koduna göre arayın, tek tek demetleri inceleyin ve her plakayı ayrıntılı görüntüleyin.',liveCollection:'GÜNCEL KOLEKSİYON',slabInventory:'Plaka envanteri',searchPlaceholder:'Malzeme veya paket kodu ara',allBundles:'Tüm demetler',available:'Mevcut',reserved:'Rezerve',presentationMode:'Sunum Modu',salesMode:'Satış Modu',sort:'Sırala',name:'İsim',mostSlabs:'En çok plaka',largestArea:'En büyük alan',minArea:'Min m²',maxArea:'Maks m²',minSlabs:'Min plaka',maxSlabs:'Maks plaka',size:'Ölçü',sizePlaceholder:'örn. 190 × 290',packing:'Paket listesi',allData:'Tüm veriler',connected:'Bağlı',fileFound:'Dosya bulundu',missing:'Eksik',photos:'Fotoğraflar',allPhotos:'Tüm fotoğraflar',withImages:'Fotoğraflı',missingImages:'Fotoğraf eksik',clearFilters:'Filtreleri temizle',moreFilters:'Diğer filtreler',hideFilters:'Filtreleri gizle',salesWorkspace:'SATIŞ ÇALIŞMA ALANI',inventoryDashboard:'Envanter paneli',salesHint:'Tam fotoğraf galerisi ve paket listesi ayrıntılarını açmak için bir ürün satırına tıklayın.',showMissingPacking:'Paket listesi olmayan demetleri göster',dataQuality:'VERİ KALİTESİ',inventoryHealth:'Envanter durumu',showDetails:'Ayrıntıları göster',hideDetails:'Ayrıntıları gizle',shortlist:'Seçim listesi',newList:'Yeni liste',rename:'Yeniden adlandır',delete:'Sil',compareSelected:'Seçilenleri karşılaştır',copySummary:'Özeti kopyala',whatsappCustomer:'Müşteriye WhatsApp',exportCsv:'CSV dışa aktar',clear:'Temizle',productSelect:'Ürün / seç',status:'Durum',stock:'Stok',sizes:'Ölçüler',packingList:'Paket listesi',media:'Medya',followUp:'Takip',source:'Kaynak',bundle:'DEMET',bundleSingular:'demet',bundles:'demet',jumpToSlab:'Plakaya git',slabPickerHint:'Bir plaka numarası veya ek görünüm seçin',totalSlabs:'Toplam plaka',totalArea:'Toplam alan',dimensions:'Ölçüler',location:'Konum',followUpStatus:'Durum',new:'Yeni',sent:'Müşteriye gönderildi',waiting:'Yanıt bekleniyor',quoted:'Teklif verildi',closed:'Kapandı',salesNote:'Satış notu',salesNotePlaceholder:'Ekibiniz için özel bir not ekleyin',saveNote:'Notu kaydet',saved:'Kaydedildi',customerCta:'Bu demetle ilgileniyor musunuz? Sayfayı ekibinizle paylaşın veya güncel fiyat ve uygunluk için Lucra Marble ile iletişime geçin.',copyLink:'Demet bağlantısını kopyala',printSheet:'Sayfayı yazdır',openDrive:'Google Drive klasörünü aç',salesAccess:'SATIŞ ERİŞİMİ',openSalesDashboard:'Satış panelini aç',salesAccessHint:'Paket listesi ve kaynak ayrıntılarını görmek için demo şifresini girin.',password:'Şifre',cancel:'İptal',unlockDashboard:'Paneli aç',compareBundles:'Seçilen demetleri karşılaştır',copyComparison:'Karşılaştırmayı kopyala',close:'Kapat',noMatchingBundles:'Eşleşen demet yok',tryAnother:'Başka bir malzeme adı deneyin veya filtreyi temizleyin.',slabs:'plaka',countUnavailable:'Adet bilgisi yok',sizesNotListed:'Ölçü listelenmemiş',noPackingList:'Paket listesi yok',noImageAvailable:'Fotoğraf bulunamadı',galleryReady:'Galeri hazır',views:'görünüm',photoFoldersSkipped:'fotoğraf klasörü atlandı',readError:'Okuma hatası',noExcel:'Demet klasöründe Excel dosyası yok',noReadableRows:'Okunabilir paket satırı yok',packingData:'Paket verisi',shownBundles:'Gösterilen demet',knownArea:'Bilinen alan',customerOptions:'Seçilen taş seçenekleri',contactForPricing:'Fiyat, uygunluk teyidi ve teslimat bilgisi için lütfen bizimle iletişime geçin.',inventoryHealthHint:'Bu kontroller son yayımlanan kataloğa göre hazırlanmıştır.',noIssues:'Katalog sorunu bulunamadı',missingPackingDetail:'paket listesi tanınmayan demet',missingImageDetail:'fotoğrafı olmayan demet',skippedPhotoDetail:'fotoğraf klasörü atlanan demet',syncErrorDetail:'senkronizasyon hatası olan demet',skippedFolders:'Atlanan fotoğraf klasörleri',syncIssues:'Senkronizasyon sorunları',added:'Eklenen',updated:'Güncellenen',unchanged:'Değişmeyen',lastSync:'Son yayımlanan senkronizasyon',details:'Ayrıntılar',viewRows:'Etkilenen satırları göster',noNote:'Not yok',listName:'Liste adı',seePackingList:'Paket listesini gör',galleryAvailable:'Galeri hazır'}
+  en:{heroEyebrow:'DENIZLI SLAB INVENTORY',heroTitle:'Available natural stone,',heroTitleEm:'ready to discover.',heroCopy:"Explore Lucra Marble's current slab collection. Search by material, browse individual bundles, and view every slab in detail.",liveCollection:'LIVE COLLECTION',slabInventory:'Slab inventory',searchPlaceholder:'Search material or bundle ID',allBundles:'All bundles',available:'Available',reserved:'Reserved',presentationMode:'Presentation Mode',salesMode:'Sales Mode',sort:'Sort',name:'Name',mostSlabs:'Most slabs',largestArea:'Largest area',minArea:'Min m²',maxArea:'Max m²',minSlabs:'Min slabs',maxSlabs:'Max slabs',size:'Size',sizePlaceholder:'e.g. 190 × 290',packing:'Packing',allData:'All data',connected:'Connected',fileFound:'File found',missing:'Missing',photos:'Photos',allPhotos:'All photos',withImages:'With images',missingImages:'Missing images',clearFilters:'Clear filters',moreFilters:'More filters',hideFilters:'Hide filters',salesWorkspace:'SALES WORKSPACE',inventoryDashboard:'Inventory dashboard',salesHint:'Click a product row to open its full image gallery and packing-list details.',showMissingPacking:'Show bundles without packing lists',dataQuality:'DATA QUALITY',inventoryHealth:'Inventory health',showDetails:'Show details',hideDetails:'Hide details',shortlist:'Shortlist',newList:'New list',rename:'Rename',delete:'Delete',compareSelected:'Compare selected',copySummary:'Copy summary',whatsappCustomer:'WhatsApp customer',exportCsv:'Export CSV',exportVisible:'Export visible CSV',clear:'Clear',productSelect:'Product / select',status:'Status',stock:'Stock',sizes:'Sizes',packingList:'Packing list',media:'Media',followUp:'Follow-up',source:'Source',bundle:'BUNDLE',bundleSingular:'bundle',bundles:'bundles',jumpToSlab:'Jump to slab',slabPickerHint:'Select a slab number or additional view',totalSlabs:'Total slabs',totalArea:'Total area',dimensions:'Dimensions',location:'Location',followUpStatus:'Status',new:'New',sent:'Sent to customer',waiting:'Waiting for reply',quoted:'Quoted',closed:'Closed',salesNote:'Sales note',salesNotePlaceholder:'Add a private note for your team',saveNote:'Save note',saved:'Saved',customerCta:'Interested in this bundle? Share the page with your team or contact Lucra Marble for current pricing and availability.',copyLink:'Copy bundle link',shareCustomer:'Share customer link',printSheet:'Print sheet',openDrive:'Open Google Drive folder',salesAccess:'SALES ACCESS',openSalesDashboard:'Open sales dashboard',salesAccessHint:'Enter the demo password to view packing-list and source details.',password:'Password',cancel:'Cancel',unlockDashboard:'Unlock dashboard',compareBundles:'Compare selected bundles',copyComparison:'Copy comparison',close:'Close',noMatchingBundles:'No matching bundles',tryAnother:'Try another material name or clear the filter.',slabs:'slabs',countUnavailable:'Count unavailable',sizesNotListed:'Sizes not listed',noPackingList:'No packing list',noImageAvailable:'No images found',galleryReady:'Gallery ready',views:'views',photoFoldersSkipped:'photo folder(s) skipped',readError:'Read error',noExcel:'No Excel file in bundle folder',noReadableRows:'No readable packing rows',packingData:'Packing data',shownBundles:'Shown bundles',knownArea:'Known area',areaData:'Area data',packingRows:'Packing rows',sizeData:'Size data',customerOptions:'Selected stone options',contactForPricing:'Please contact us for pricing, availability confirmation, and delivery information.',inventoryHealthHint:'These checks are based on the latest published catalogue.',noIssues:'No catalogue issues found',missingPackingDetail:'bundles without recognized packing lists',missingPackingRowsDetail:'bundles with packing files but no readable rows',missingSizeDetail:'bundles without readable m² or dimensions',missingImageDetail:'bundles without images',skippedPhotoDetail:'bundles with skipped photo folders',syncErrorDetail:'bundles with sync errors',skippedFolders:'Skipped photo folders',syncIssues:'Sync issues',added:'Added',updated:'Updated',unchanged:'Unchanged',lastSync:'Last published sync',details:'Details',viewRows:'View affected rows',noNote:'No note',imageLoadFailed:'Image failed to load',copied:'Copied',listName:'List name',seePackingList:'See packing list',galleryAvailable:'Gallery available'},
+  tr:{heroEyebrow:'DENİZLİ PLAKA ENVANTERİ',heroTitle:'Seçili doğal taşlar,',heroTitleEm:'keşfetmeye hazır.',heroCopy:'Lucra Marble güncel plaka koleksiyonunu keşfedin. Malzeme veya paket koduna göre arayın, tek tek demetleri inceleyin ve her plakayı ayrıntılı görüntüleyin.',liveCollection:'GÜNCEL KOLEKSİYON',slabInventory:'Plaka envanteri',searchPlaceholder:'Malzeme veya paket kodu ara',allBundles:'Tüm demetler',available:'Mevcut',reserved:'Rezerve',presentationMode:'Sunum Modu',salesMode:'Satış Modu',sort:'Sırala',name:'İsim',mostSlabs:'En çok plaka',largestArea:'En büyük alan',minArea:'Min m²',maxArea:'Maks m²',minSlabs:'Min plaka',maxSlabs:'Maks plaka',size:'Ölçü',sizePlaceholder:'örn. 190 × 290',packing:'Paket listesi',allData:'Tüm veriler',connected:'Bağlı',fileFound:'Dosya bulundu',missing:'Eksik',photos:'Fotoğraflar',allPhotos:'Tüm fotoğraflar',withImages:'Fotoğraflı',missingImages:'Fotoğraf eksik',clearFilters:'Filtreleri temizle',moreFilters:'Diğer filtreler',hideFilters:'Filtreleri gizle',salesWorkspace:'SATIŞ ÇALIŞMA ALANI',inventoryDashboard:'Envanter paneli',salesHint:'Tam fotoğraf galerisi ve paket listesi ayrıntılarını açmak için bir ürün satırına tıklayın.',showMissingPacking:'Paket listesi olmayan demetleri göster',dataQuality:'VERİ KALİTESİ',inventoryHealth:'Envanter durumu',showDetails:'Ayrıntıları göster',hideDetails:'Ayrıntıları gizle',shortlist:'Seçim listesi',newList:'Yeni liste',rename:'Yeniden adlandır',delete:'Sil',compareSelected:'Seçilenleri karşılaştır',copySummary:'Özeti kopyala',whatsappCustomer:'Müşteriye WhatsApp',exportCsv:'CSV dışa aktar',exportVisible:'Görünenleri CSV dışa aktar',clear:'Temizle',productSelect:'Ürün / seç',status:'Durum',stock:'Stok',sizes:'Ölçüler',packingList:'Paket listesi',media:'Medya',followUp:'Takip',source:'Kaynak',bundle:'DEMET',bundleSingular:'demet',bundles:'demet',jumpToSlab:'Plakaya git',slabPickerHint:'Bir plaka numarası veya ek görünüm seçin',totalSlabs:'Toplam plaka',totalArea:'Toplam alan',dimensions:'Ölçüler',location:'Konum',followUpStatus:'Durum',new:'Yeni',sent:'Müşteriye gönderildi',waiting:'Yanıt bekleniyor',quoted:'Teklif verildi',closed:'Kapandı',salesNote:'Satış notu',salesNotePlaceholder:'Ekibiniz için özel bir not ekleyin',saveNote:'Notu kaydet',saved:'Kaydedildi',customerCta:'Bu demetle ilgileniyor musunuz? Sayfayı ekibinizle paylaşın veya güncel fiyat ve uygunluk için Lucra Marble ile iletişime geçin.',copyLink:'Demet bağlantısını kopyala',shareCustomer:'Müşteri bağlantısını paylaş',printSheet:'Sayfayı yazdır',openDrive:'Google Drive klasörünü aç',salesAccess:'SATIŞ ERİŞİMİ',openSalesDashboard:'Satış panelini aç',salesAccessHint:'Paket listesi ve kaynak ayrıntılarını görmek için demo şifresini girin.',password:'Şifre',cancel:'İptal',unlockDashboard:'Paneli aç',compareBundles:'Seçilen demetleri karşılaştır',copyComparison:'Karşılaştırmayı kopyala',close:'Kapat',noMatchingBundles:'Eşleşen demet yok',tryAnother:'Başka bir malzeme adı deneyin veya filtreyi temizleyin.',slabs:'plaka',countUnavailable:'Adet bilgisi yok',sizesNotListed:'Ölçü listelenmemiş',noPackingList:'Paket listesi yok',noImageAvailable:'Fotoğraf bulunamadı',galleryReady:'Galeri hazır',views:'görünüm',photoFoldersSkipped:'fotoğraf klasörü atlandı',readError:'Okuma hatası',noExcel:'Demet klasöründe Excel dosyası yok',noReadableRows:'Okunabilir paket satırı yok',packingData:'Paket verisi',shownBundles:'Gösterilen demet',knownArea:'Bilinen alan',areaData:'Alan verisi',packingRows:'Paket satırları',sizeData:'Ölçü verisi',customerOptions:'Seçilen taş seçenekleri',contactForPricing:'Fiyat, uygunluk teyidi ve teslimat bilgisi için lütfen bizimle iletişime geçin.',inventoryHealthHint:'Bu kontroller son yayımlanan kataloğa göre hazırlanmıştır.',noIssues:'Katalog sorunu bulunamadı',missingPackingDetail:'paket listesi tanınmayan demet',missingPackingRowsDetail:'paket dosyası olup okunabilir satırı olmayan demet',missingSizeDetail:'okunabilir m² veya ölçüsü olmayan demet',missingImageDetail:'fotoğrafı olmayan demet',skippedPhotoDetail:'fotoğraf klasörü atlanan demet',syncErrorDetail:'senkronizasyon hatası olan demet',skippedFolders:'Atlanan fotoğraf klasörleri',syncIssues:'Senkronizasyon sorunları',added:'Eklenen',updated:'Güncellenen',unchanged:'Değişmeyen',lastSync:'Son yayımlanan senkronizasyon',details:'Ayrıntılar',viewRows:'Etkilenen satırları göster',noNote:'Not yok',imageLoadFailed:'Fotoğraf yüklenemedi',copied:'Kopyalandı',listName:'Liste adı',seePackingList:'Paket listesini gör',galleryAvailable:'Galeri hazır'}
 };
 let language='en';
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
@@ -61,12 +61,12 @@ const sortSelect=document.querySelector('#sortSelect'), syncButton=document.quer
 const minArea=document.querySelector('#minArea'), maxArea=document.querySelector('#maxArea'), minSlabs=document.querySelector('#minSlabs'), maxSlabs=document.querySelector('#maxSlabs'), dimensionFilter=document.querySelector('#dimensionFilter'), packingFilter=document.querySelector('#packingFilter'), mediaFilter=document.querySelector('#mediaFilter'), clearFiltersButton=document.querySelector('#clearFilters');
 const advancedFiltersToggle=document.querySelector('#advancedFiltersToggle');
 const showMissingPacking=document.querySelector('#showMissingPacking');
-const shortlistCount=document.querySelector('#shortlistCount'), compareSelectedButton=document.querySelector('#compareSelected'), copyShortlistButton=document.querySelector('#copyShortlist'), whatsappShortlistButton=document.querySelector('#whatsappShortlist'), exportShortlistButton=document.querySelector('#exportShortlist'), clearShortlistButton=document.querySelector('#clearShortlist');
+const shortlistCount=document.querySelector('#shortlistCount'), compareSelectedButton=document.querySelector('#compareSelected'), copyShortlistButton=document.querySelector('#copyShortlist'), whatsappShortlistButton=document.querySelector('#whatsappShortlist'), exportShortlistButton=document.querySelector('#exportShortlist'), exportVisibleButton=document.querySelector('#exportVisible'), clearShortlistButton=document.querySelector('#clearShortlist');
 const shortlistSelect=document.querySelector('#shortlistSelect'), newShortlistButton=document.querySelector('#newShortlist'), renameShortlistButton=document.querySelector('#renameShortlist'), deleteShortlistButton=document.querySelector('#deleteShortlist');
 const healthSummary=document.querySelector('#healthSummary'), healthDetails=document.querySelector('#healthDetails'), toggleHealthButton=document.querySelector('#toggleHealth');
 const salesGate=document.querySelector('#salesGate'), salesGateForm=document.querySelector('#salesGateForm'), salesPasswordInput=document.querySelector('#salesPasswordInput'), salesGateError=document.querySelector('#salesGateError');
 const compareDialog=document.querySelector('#compareDialog'), compareContent=document.querySelector('#compareContent'), copyCompareButton=document.querySelector('#copyCompare');
-const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved');
+const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved'), shareProductButton=document.querySelector('#shareProduct');
 let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={};
 try{showMissingPackingValue=localStorage.getItem('lucraShowMissingPacking')!=='0'}catch(error){}
 try{
@@ -98,7 +98,7 @@ function filteredProducts(){
 function packingListSummary(product){
   if(product.syncError)return {label:t('readError'),detail:product.syncError,className:'missing'};
   if(!product.packingList)return {label:t('missing'),detail:t('noExcel'),className:'missing'};
-  if(!product.lines?.length)return {label:t('fileFound'),detail:t('noReadableRows'),className:'partial'};
+  if(!product.lines?.length)return {label:t('fileFound'),detail:product.packingWarning||t('noReadableRows'),className:'partial'};
   const blocks=new Set(product.lines.map(line=>line.block).filter(Boolean)).size;
   return {label:t('connected'),detail:`${product.lines.length} lines${blocks?` · ${blocks} blocks`:''}`,className:'connected'};
 }
@@ -120,20 +120,50 @@ function productMediaSummary(product){
   return {label:`${images} ${t('views')}`,detail:skipped?`${skipped} ${t('photoFoldersSkipped')}`:t('galleryReady'),className:skipped?'partial':'connected'};
 }
 
+function deriveInventoryReport(records){
+  const previous=records.filter(product=>product.packingList);
+  const missingPacking=records.filter(product=>!product.packingList);
+  const unreadablePacking=records.filter(product=>product.packingList&&!product.lines?.length);
+  const missingImages=records.filter(product=>!product.images?.length);
+  const missingAreas=records.filter(product=>product.sqm==null);
+  const missingDimensions=records.filter(product=>!product.dimensions?.length);
+  const skippedPhotoFolders=records.reduce((total,product)=>total+(product.skippedPhotoFolders?.length||0),0);
+  return {
+    bundles:records.length,
+    added:0,
+    updated:0,
+    unchanged:previous.length,
+    missingPackingLists:missingPacking.length,
+    unreadablePackingLists:unreadablePacking.length,
+    missingImages:missingImages.length,
+    missingAreas:missingAreas.length,
+    missingDimensions:missingDimensions.length,
+    skippedPhotoFolders,
+    folderErrors:records.filter(product=>product.syncError).length,
+    warningCount:unreadablePacking.length+skippedPhotoFolders,
+    missingPackingListFolders:missingPacking.map(product=>product.folderName),
+    unreadablePackingListFolders:unreadablePacking.map(product=>product.folderName),
+    missingImageFolders:missingImages.map(product=>product.folderName),
+    missingAreaFolders:missingAreas.map(product=>product.folderName),
+    missingDimensionFolders:missingDimensions.map(product=>product.folderName),
+  };
+}
+
 function followupLabel(status){return t({new:'new',sent:'sent',waiting:'waiting',quoted:'quoted',closed:'closed'}[status]||'new')}
 function followupFor(product){const saved=salesNotes[productKey(product)]||{};return {status:saved.status||'new',note:saved.note||'',updatedAt:saved.updatedAt||null}}
 function renderInventoryHealth(){
-  const missingPacking=products.filter(product=>!product.packingList),missingImages=products.filter(product=>!product.images?.length),skippedFolders=products.filter(product=>product.skippedPhotoFolders?.length),syncErrors=products.filter(product=>product.syncError);
+  const missingPacking=products.filter(product=>!product.packingList),unreadablePacking=products.filter(product=>product.packingList&&!product.lines?.length),missingImages=products.filter(product=>!product.images?.length),skippedFolders=products.filter(product=>product.skippedPhotoFolders?.length),syncErrors=products.filter(product=>product.syncError),incompleteSizes=products.filter(product=>product.sqm==null||!product.dimensions?.length);
   const checks=[
     {label:t('packingList'),value:missingPacking.length,detail:t('missingPackingDetail'),className:missingPacking.length?'warning':'healthy'},
+    {label:t('packingRows'),value:unreadablePacking.length,detail:t('missingPackingRowsDetail'),className:unreadablePacking.length?'warning':'healthy'},
+    {label:t('sizeData'),value:incompleteSizes.length,detail:t('missingSizeDetail'),className:incompleteSizes.length?'warning':'healthy'},
     {label:t('photos'),value:missingImages.length,detail:t('missingImageDetail'),className:missingImages.length?'warning':'healthy'},
-    {label:t('skippedFolders'),value:skippedFolders.length,detail:t('skippedPhotoDetail'),className:skippedFolders.length?'warning':'healthy'},
-    {label:t('syncIssues'),value:syncErrors.length,detail:t('syncErrorDetail'),className:syncErrors.length?'warning':'healthy'},
+    {label:t('syncIssues'),value:syncErrors.length+skippedFolders.length,detail:t('syncErrorDetail'),className:syncErrors.length||skippedFolders.length?'warning':'healthy'},
   ];
   healthSummary.innerHTML=checks.map(check=>`<div class="health-card ${check.className}"><strong>${escapeHtml(check.value)}</strong><span>${escapeHtml(check.label)}</span><small>${escapeHtml(check.value===0?t('noIssues'):check.detail)}</small></div>`).join('');
   const issueList=(title,items,detail)=>items.length?`<section><h5>${escapeHtml(title)} <span>${items.length}</span></h5><p>${items.slice(0,8).map(product=>`<span>${escapeHtml(`${product.name}${product.code&&product.code!=='—'?` · ${product.code}`:''}`)}</span>`).join('')}${items.length>8?`<small>+ ${items.length-8} more</small>`:''}</p></section>`:`<section class="health-clear"><h5>${escapeHtml(title)}</h5><p>${escapeHtml(t('noIssues'))}</p></section>`;
   const reportLine=inventoryReport.added||inventoryReport.updated||inventoryReport.unchanged?`<section class="health-report"><h5>${escapeHtml(t('lastSync'))}</h5><p>${escapeHtml(`${t('added')}: ${inventoryReport.added||0} · ${t('updated')}: ${inventoryReport.updated||0} · ${t('unchanged')}: ${inventoryReport.unchanged||0}`)}</p></section>`:'';
-  healthDetails.innerHTML=`${reportLine}${issueList(t('packingList'),missingPacking,t('missing'))}${issueList(t('photos'),missingImages,t('missing'))}${issueList(t('skippedFolders'),skippedFolders,t('missing'))}${issueList(t('syncIssues'),syncErrors,t('missing'))}`;
+  healthDetails.innerHTML=`${reportLine}${issueList(t('packingList'),missingPacking,t('missing'))}${issueList(t('packingRows'),unreadablePacking,t('missing'))}${issueList(t('sizeData'),incompleteSizes,t('missing'))}${issueList(t('photos'),missingImages,t('missing'))}${issueList(t('skippedFolders'),skippedFolders,t('missing'))}${issueList(t('syncIssues'),syncErrors,t('missing'))}`;
 }
 
 function renderSalesDashboard(visible){
@@ -143,6 +173,7 @@ function renderSalesDashboard(visible){
   const knownArea=dashboardVisible.filter(product=>product.sqm!=null);
   const totalArea=knownArea.reduce((sum,product)=>sum+Number(product.sqm||0),0);
   const connected=dashboardVisible.filter(product=>packingListSummary(product).className==='connected').length;
+  exportVisibleButton.disabled=dashboardVisible.length===0;
   salesKpis.innerHTML=[
     [t('shownBundles'),dashboardVisible.length],
     [t('available'),dashboardVisible.filter(product=>!product.reserved).length],
@@ -245,6 +276,7 @@ function customerProductSummary(product){
     dimensions,
     'Location: Denizli, Türkiye',
     `Photos & details: ${customerProductUrl(product)}`,
+    `Google Drive folder: ${productDriveUrl(product)}`,
   ].filter(Boolean).join('\n');
 }
 function customerShortlistSummary(){
@@ -273,14 +305,28 @@ function renderCompare(){
   }).join('')}</tbody></table></div>`;
 }
 function csvCell(value){return `"${String(value??'').replace(/"/g,'""')}"`}
-function downloadShortlist(){
-  const rows=[['Product','Code','Status','Stock','Dimensions','Packing list','Packing detail','Media','Media detail','Drive URL'],...selectedProducts().map(product=>{
+function downloadProducts(records,filePrefix){
+  const rows=[['Product','Code','Status','Stock','Dimensions','Packing list','Packing detail','Media','Media detail','Drive URL'],...records.map(product=>{
     const packing=packingListSummary(product),media=productMediaSummary(product);
     return [product.name,product.code,product.reserved?'Reserved':'Available',productStock(product),productDimensions(product),packing.label,packing.detail,media.label,media.detail,productDriveUrl(product)];
   })];
   const csv=`\ufeff${rows.map(row=>row.map(csvCell).join(',')).join('\n')}`;
   const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
-  const link=document.createElement('a');link.href=url;link.download=`lucra-shortlist-${new Date().toISOString().slice(0,10)}.csv`;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  const link=document.createElement('a');link.href=url;link.download=`${filePrefix}-${new Date().toISOString().slice(0,10)}.csv`;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function downloadShortlist(){downloadProducts(selectedProducts(),'lucra-shortlist')}
+function downloadVisible(){
+  const visible=filteredProducts();
+  const records=showMissingPackingValue?visible:visible.filter(product=>product.packingList);
+  downloadProducts(records,'lucra-inventory-view');
+}
+async function shareCustomerProduct(){
+  if(!currentProduct)return;
+  const summary=customerProductSummary(currentProduct),url=customerProductUrl(currentProduct);
+  if(navigator.share){
+    try{await navigator.share({title:`Lucra Marble · ${currentProduct.name}`,text:summary,url});return}catch(error){if(error?.name==='AbortError')return}
+  }
+  await copyText(summary,shareProductButton,t('copied'));
 }
 function printProductSheet(){
   if(!currentProduct)return;
@@ -299,7 +345,7 @@ function render(){
   empty.hidden=visible.length>0;
   renderSalesDashboard(visible);
   grid.innerHTML=visible.map((p,index)=>`<article class="card" tabindex="0" data-product-id="${escapeHtml(productKey(p))}">
-    <div class="card-image"><div class="stone-placeholder" style="--stone:${p.stone}"></div>${p.images.length?`<img src="${escapeHtml(p.images[0].src)}" alt="${escapeHtml(p.name)} slab" loading="${index<2?'eager':'lazy'}" fetchpriority="${index<2?'high':'low'}" decoding="async" onload="this.classList.add('loaded')" onerror="this.remove()">`:''}
+    <div class="card-image"><div class="stone-placeholder" style="--stone:${p.stone}"></div>${p.images.length?`<img src="${escapeHtml(p.images[0].src)}" alt="${escapeHtml(p.name)} slab" loading="${index<2?'eager':'lazy'}" fetchpriority="${index<2?'high':'low'}" decoding="async" onload="this.classList.add('loaded')" onerror="this.remove();this.closest('.card-image').classList.add('image-error')"><span class="image-error-badge">${escapeHtml(t('imageLoadFailed'))}</span>`:''}
       <span class="status-badge ${p.reserved?'reserved':''}">${escapeHtml(p.reserved?t('reserved'):t('available'))}</span>${p.media?`<span class="media-badge">${escapeHtml(p.media)}</span>`:''}</div>
     <div class="card-info"><div><h3>${escapeHtml(p.name)}</h3><p class="card-meta">${p.pcs?escapeHtml(productStock(p)):p.packingList?escapeHtml(t('seePackingList')):escapeHtml(t('galleryAvailable'))}</p></div><span class="card-code">${escapeHtml(p.code)}</span></div>
   </article>`).join('');
@@ -338,6 +384,7 @@ compareSelectedButton.addEventListener('click',()=>{renderCompare();compareDialo
 copyShortlistButton.addEventListener('click',()=>copyText(shortlistSummary(),copyShortlistButton,'Copied'));
 whatsappShortlistButton.addEventListener('click',()=>openWhatsApp(customerShortlistSummary()));
 exportShortlistButton.addEventListener('click',downloadShortlist);
+exportVisibleButton.addEventListener('click',downloadVisible);
 clearShortlistButton.addEventListener('click',()=>{shortlist.clear();saveShortlist();render()});
 saveSalesNoteButton.addEventListener('click',()=>{if(!currentProduct)return;salesNotes[productKey(currentProduct)]={status:followupStatus.value,note:salesNote.value.trim(),updatedAt:new Date().toISOString()};try{localStorage.setItem('lucraSalesNotes',JSON.stringify(salesNotes))}catch(error){}noteSaved.textContent=t('saved');setTimeout(()=>noteSaved.textContent='',1600);renderSalesDashboard(filteredProducts())});
 
@@ -399,6 +446,7 @@ galleryExpandButton.addEventListener('click',()=>{dialog.classList.toggle('galle
 dialog.addEventListener('keydown',event=>{if(!dialog.open||event.target.matches('input,textarea,select'))return;if(event.key==='ArrowLeft'&&currentProduct?.images.length){event.preventDefault();imageIndex=(imageIndex-1+currentProduct.images.length)%currentProduct.images.length;updateGallery()}if(event.key==='ArrowRight'&&currentProduct?.images.length){event.preventDefault();imageIndex=(imageIndex+1)%currentProduct.images.length;updateGallery()}if(event.key.toLowerCase()==='z'){event.preventDefault();toggleGalleryZoom()}});
 dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');galleryExpandButton.textContent='⤢ Fullscreen';galleryPanX=0;galleryPanY=0;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';galleryZoomButton.textContent='＋ Zoom'});
 document.querySelector('#copyLink').addEventListener('click',async(e)=>{const url=`${location.href.split('#')[0]}#bundle-${encodeURIComponent(productKey(currentProduct))}`;await navigator.clipboard.writeText(url);e.currentTarget.textContent='Link copied';setTimeout(()=>e.currentTarget.textContent='Copy bundle link',1400)});
+shareProductButton.addEventListener('click',shareCustomerProduct);
 document.querySelector('#printProduct').addEventListener('click',()=>printProductSheet());
 document.querySelector('#whatsappProduct').addEventListener('click',()=>openWhatsApp(customerProductSummary(currentProduct)));
 document.querySelector('#compareClose').addEventListener('click',()=>compareDialog.close());
@@ -419,6 +467,8 @@ function syncSummary(data){
   const summary=[`${data.count??data.products?.length??0} bundles`];
   if(report.added||report.updated)summary.push(`+${report.added||0} new · ${report.updated||0} updated`);
   if(report.missingPackingLists)summary.push(`${report.missingPackingLists} without packing list`);
+  if(report.unreadablePackingLists)summary.push(`${report.unreadablePackingLists} unreadable packing file${report.unreadablePackingLists===1?'':'s'}`);
+  if(report.missingAreas)summary.push(`${report.missingAreas} without area`);
   if(warnings.length)summary.push(`${warnings.length} sync warning${warnings.length===1?'':'s'}`);
   if(errors.length)summary.push(`${errors.length} bundle error${errors.length===1?'':'s'}`);
   return summary.join(' · ');
@@ -452,7 +502,7 @@ async function loadInventory(){
       if(!response.ok)throw new Error('No synced inventory');
       data=await response.json();
     }
-    products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));pruneShortlist();inventoryReport=data.report||{};syncedAt=data.syncedAt;
+    products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));pruneShortlist();inventoryReport=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products);syncedAt=data.syncedAt;
     syncStatus.innerHTML=`<i></i> ${products.length} bundles · ${new Date(syncedAt).toLocaleDateString()}`;
     setSyncFeedback({...data,count:products.length},location.protocol==='file:'?'Local snapshot':isGithubPages?'Last published sync':'Last sync');
   }catch(error){syncStatus.innerHTML='<i></i> Preview data';syncStatus.title='';syncFeedback.textContent='';}

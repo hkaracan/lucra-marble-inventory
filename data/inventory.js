@@ -1,7 +1,7 @@
 // Generated from inventory.json by sync_drive.py.
 window.LUCRA_INVENTORY = {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-04T08:05:44Z",
+  "syncedAt": "2026-09-04T10:35:40Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
@@ -113,6 +113,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "Packing List K2970.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -589,6 +590,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "K4987 Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -824,6 +826,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K6235.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -1278,6 +1281,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "Packing List L1011.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -1386,6 +1390,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "Packing List K3332.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -1740,6 +1745,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "K6029 PACKING LIST.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -2086,6 +2092,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K6058.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -2206,6 +2213,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "K5567 Packing List .xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -2783,6 +2791,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "Packing List K6086.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -3150,6 +3159,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K3630.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -3663,6 +3673,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K6131.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -4265,6 +4276,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "M2878.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -4413,6 +4425,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -4844,6 +4857,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "K3491 Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -5243,6 +5257,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "K1442 Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -5505,6 +5520,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packimng List K5080.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -5938,6 +5954,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K3618.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -6302,6 +6319,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K4132.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -6427,6 +6445,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "K3280 Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -6708,6 +6727,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K5809.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -7148,6 +7168,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K 3619.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -7514,6 +7535,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "K3514 Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -7638,6 +7660,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "K5147 Packing List1.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -7902,6 +7925,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K5171.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -8267,6 +8291,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List L1009.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -9064,6 +9089,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "k6169.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -9694,6 +9720,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "K3490 Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -10157,6 +10184,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K6089.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -10441,6 +10469,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "L006 Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -10745,6 +10774,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "Packing List L1010.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -11019,6 +11049,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "K5480 Packing List.xlsx adlı dosyanın kopyası",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -11147,6 +11178,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": null,
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -11574,6 +11606,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "Packing List L1013 Rosso Levanto.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -11887,6 +11920,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "Packing List L1014.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -12077,6 +12111,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -12645,6 +12680,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K3561.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -12959,6 +12995,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K1443.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -13231,6 +13268,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "TERRANOVA K6044 PACKING LIST.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -13351,6 +13389,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List L009.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -13589,6 +13628,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "Packing List K1312 Tundra Grey.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -13877,6 +13917,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "K3966 Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -14380,6 +14421,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K6155.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -14719,6 +14761,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "Packing List K900 Tundra Grey.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -14837,6 +14880,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "K191 Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -15335,6 +15379,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "Packing List K6138.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -15747,6 +15792,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "Packing List K6139.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -16045,6 +16091,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "Packing List K6164.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -16393,6 +16440,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": "K3229 Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -16606,6 +16654,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "K6130 Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -16912,6 +16961,7 @@ window.LUCRA_INVENTORY = {
       ],
       "packingList": null,
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -17074,6 +17124,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "K3947 Packing List.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -17196,6 +17247,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "Packing List K3653.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     },
     {
@@ -17456,6 +17508,7 @@ window.LUCRA_INVENTORY = {
       "videos": [],
       "packingList": "Packing List K5420.xlsx",
       "syncError": null,
+      "packingWarning": null,
       "skippedPhotoFolders": []
     }
   ],
@@ -17464,19 +17517,85 @@ window.LUCRA_INVENTORY = {
   "report": {
     "bundles": 53,
     "added": 0,
-    "updated": 0,
-    "unchanged": 53,
+    "updated": 53,
+    "unchanged": 0,
     "missingPackingLists": 2,
+    "unreadablePackingLists": 0,
     "missingImages": 0,
+    "missingAreas": 2,
+    "missingDimensions": 2,
     "skippedPhotoFolders": 0,
     "folderErrors": 0,
     "warningCount": 0,
     "addedFolders": [],
-    "updatedFolders": [],
+    "updatedFolders": [
+      "Alaskan Blue K2970",
+      "Alexander Black K4987",
+      "Arabescato Imperiale K6235",
+      "Bianco Dolomite L1011",
+      "Breccia Montagna K3332",
+      "Bruno Perla K6029",
+      "Cafe Amore K6058",
+      "Ceppo Beige K5567",
+      "Ceppo Beige K6086",
+      "Ceppo Grey K3630",
+      "Crema Luna K6131",
+      "Diamond Grey M2878",
+      "Flinders White K3167",
+      "Flinders White K3491",
+      "Giallo Siena Dolomite K1442",
+      "Golden Roots K5080",
+      "Green Olive K3618",
+      "Ice Bloom K4132",
+      "Invisible Blue K3280",
+      "Karmania Traonyx K5809",
+      "Lilac Extra K3619",
+      "Marmara Equator K3514",
+      "MoonLight Grey K5147",
+      "Naturella K5171",
+      "NebuLa Wave L009",
+      "Nimbus White Veincut K6169",
+      "Nordic Ice K3490",
+      "Polar White K6089",
+      "Porto Rosa L006",
+      "Red Jasper L1010",
+      "Red Travertine K5094",
+      "Rosso Levanto K6222",
+      "Rosso Levanto L1013",
+      "Rosso Levanto L1014",
+      "Silver Travertine Ham (Raw) K5301",
+      "Sunset Dlomite K3561",
+      "Sunset Dolomite K1443",
+      "Terranova Ceppo K6044",
+      "Travertine L009",
+      "Tundra Grey K1312",
+      "Tundra Grey K3966",
+      "Tundra Grey K6155",
+      "Tundra Grey Brushed",
+      "Tundra Light K191",
+      "Reserved - Tundra Light K6138",
+      "Tundra Light K6139",
+      "Tundra Ocean K6164",
+      "Van Gogh K3229",
+      "Vanilla K6130",
+      "Vanilla Ice K5372",
+      "Reserved Velluto Onyx K3947",
+      "Velluto Onyx Cross Cut K3653",
+      "Verde Levanto K5420"
+    ],
     "missingPackingListFolders": [
       "Rosso Levanto K6222",
       "Vanilla Ice K5372"
     ],
-    "missingImageFolders": []
+    "unreadablePackingListFolders": [],
+    "missingImageFolders": [],
+    "missingAreaFolders": [
+      "Rosso Levanto K6222",
+      "Vanilla Ice K5372"
+    ],
+    "missingDimensionFolders": [
+      "Rosso Levanto K6222",
+      "Vanilla Ice K5372"
+    ]
   }
 };

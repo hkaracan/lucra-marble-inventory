@@ -33,6 +33,22 @@ def workbook_bytes(rows: list[list]) -> bytes:
 
 
 class MockedSyncTest(unittest.TestCase):
+    def test_code_only_excel_names_are_packing_lists_and_area_can_be_derived(self):
+        parsed = sync_drive.parse_packing_list(
+            workbook_bytes(
+                [
+                    ["Block Number", "Material", "Width", "Height", "Pcs"],
+                    ["K537201", "Vanilla Ice", 160, 320, 4],
+                    ["K537202", "Vanilla Ice", 165, 325, 2],
+                ]
+            )
+        )
+
+        self.assertTrue(sync_drive.is_packing_list_item({"name": "K5372.xlsx", "kind": "unknown"}))
+        self.assertEqual(parsed["totalPcs"], 6)
+        self.assertEqual(parsed["totalSqm"], 31.21)
+        self.assertEqual(parsed["lines"][0]["sqm"], 20.48)
+
     def test_packing_list_variants_provide_totals_and_dimensions(self):
         bruno = sync_drive.parse_packing_list(
             workbook_bytes(

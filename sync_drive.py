@@ -81,7 +81,16 @@ def is_file_item(name: str) -> bool:
 
 
 def is_packing_list_item(item: dict[str, str]) -> bool:
-    return bool(PACKING_LIST_PATTERN.search(item.get("name", "")) or item.get("kind") == "spreadsheet")
+    name = item.get("name", "")
+    # Several authoritative files are named only with their bundle code
+    # (for example ``M2878.xlsx``).  Drive may also classify an Excel file as
+    # ``unknown`` in the anonymous HTML, so the extension is an important
+    # read-only fallback in addition to the friendly-name checks.
+    return bool(
+        PACKING_LIST_PATTERN.search(name)
+        or item.get("kind") == "spreadsheet"
+        or re.search(r"\.xlsx?$", name, re.I)
+    )
 
 
 def is_bundle_folder(name: str) -> bool:
@@ -253,7 +262,7 @@ def _packing_mapping(rows: list[list]) -> dict | None:
         if height_col is None and length_col is not None:
             height_col = length_col
 
-        if block_col is not None and material_col is not None and pcs_col is not None and sqm_col is not None:
+        if block_col is not None and material_col is not None and pcs_col is not None:
             # A merged "Material Name" header is used by some lists even
             # though each data row stores finish first and material second.
             # Likewise, a merged "Dimensions" header may leave W/L unnamed.
@@ -262,7 +271,7 @@ def _packing_mapping(rows: list[list]) -> dict | None:
                     candidate
                     for candidate in rows[header_index + 1 : header_index + 8]
                     if any(str(cell or "").strip() for cell in candidate[block_col:])
-                    and len([index for index in range(block_col + 1, len(candidate)) if _numeric(candidate[index]) is not None]) >= 4
+                    and len([index for index in range(block_col + 1, len(candidate)) if _numeric(candidate[index]) is not None]) >= (4 if sqm_col is not None else 3)
                 ),
                 None,
             )
@@ -293,6 +302,8 @@ def _packing_mapping(rows: list[list]) -> dict | None:
                             finish_col, material_col = text_cols[0], text_cols[1]
                         else:
                             material_col, finish_col = text_cols[0], text_cols[1]
+            if sqm_col is None and (width_col is None or height_col is None):
+                continue
             return {
                 "start": header_index + 1,
                 "block": block_col,
@@ -319,7 +330,7 @@ def _packing_mapping(rows: list[list]) -> dict | None:
         if block_col is None:
             continue
         numeric_cols = [index for index in range(block_col + 1, len(row)) if _numeric(row[index]) is not None]
-        if len(numeric_cols) < 4:
+        if len(numeric_cols) < 3:
             continue
         text_cols = [index for index in range(block_col + 1, numeric_cols[0]) if str(row[index] or "").strip()]
         if len(text_cols) < 2:
@@ -334,7 +345,7 @@ def _packing_mapping(rows: list[list]) -> dict | None:
             "width": numeric_cols[0],
             "height": numeric_cols[1],
             "pcs": numeric_cols[2],
-            "sqm": numeric_cols[3],
+            "sqm": numeric_cols[3] if len(numeric_cols) > 3 else None,
         }
     return None
 
@@ -344,11 +355,13 @@ def parse_packing_list(content: bytes) -> dict:
     rows = [list(row) for row in workbook.active.iter_rows(values_only=True)]
     mapping = _packing_mapping(rows)
     if mapping is None:
-        return {"lines": [], "totalPcs": None, "totalSqm": None}
+        return {"lines": [], "totalPcs": None, "totalSqm": None, "parseWarning": "No recognizable packing-list columns."}
 
     lines = []
     current_material = ""
     current_finish = ""
+    declared_total_pcs = None
+    declared_total_sqm = None
     for row in rows[mapping["start"] :]:
         cells = list(row)
 
@@ -358,6 +371,16 @@ def parse_packing_list(content: bytes) -> dict:
         raw_block = cell_at(mapping["block"])
         raw_material = cell_at(mapping["material"])
         raw_finish = cell_at(mapping["finish"])
+        row_text = " ".join(str(cell or "").strip() for cell in cells if str(cell or "").strip())
+        is_total = bool(re.search(r"\b(?:grand\s+)?total\b|total\s+(?:sqm|m2|area)", row_text, re.I))
+        if is_total:
+            total_pcs = _numeric(cell_at(mapping["pcs"]))
+            total_sqm = _numeric(cell_at(mapping["sqm"]))
+            if total_pcs is not None:
+                declared_total_pcs = total_pcs
+            if total_sqm is not None:
+                declared_total_sqm = total_sqm
+            continue
         if str(raw_material or "").strip():
             current_material = str(raw_material).strip()
         if str(raw_finish or "").strip():
@@ -387,7 +410,14 @@ def parse_packing_list(content: bytes) -> dict:
         )
     total_pcs = sum(line["pcs"] for line in lines if isinstance(line["pcs"], (int, float)))
     total_sqm = _round_area(sum(line["sqm"] for line in lines if isinstance(line["sqm"], (int, float))))
-    return {"lines": lines, "totalPcs": total_pcs or None, "totalSqm": total_sqm or None}
+    if not total_pcs and declared_total_pcs:
+        total_pcs = declared_total_pcs
+    if not total_sqm and declared_total_sqm:
+        total_sqm = _round_area(declared_total_sqm)
+    result = {"lines": lines, "totalPcs": total_pcs or None, "totalSqm": total_sqm or None}
+    if not lines:
+        result["parseWarning"] = "Excel file found, but no readable packing rows were detected."
+    return result
 
 
 def collect_media(items: list[dict[str, str]]) -> tuple[list, list, list, dict | None, str | None, list[dict[str, str]]]:
@@ -473,18 +503,26 @@ def collect_media(items: list[dict[str, str]]) -> tuple[list, list, list, dict |
                 nested_folders_inside.append(child)
         if depth >= 2:
             return
-        for child_folder in nested_folders_inside:
+        # Read deeper photo folders through the same bounded worker pool as
+        # the first nested level.  A slow optional folder must not serialize
+        # the rest of the bundle's media discovery.
+        deeper_futures = {nested_pool.submit(read_nested, child_folder): child_folder for child_folder in nested_folders_inside}
+        for future in as_completed(deeper_futures):
+            child_folder = deeper_futures[future]
             try:
-                deeper = folder_items(child_folder["id"], timeout=NESTED_FOLDER_TIMEOUT, attempts=NESTED_FOLDER_ATTEMPTS)
-                walk_nested(child_folder, deeper, depth + 1)
+                _, deeper, error = future.result()
             except Exception as exc:
+                deeper, error = [], describe_error(exc)
+            if error:
                 skipped_photo_folders.append(
                     {
                         "name": f'{folder_name} / {child_folder["name"]}',
                         "folderId": child_folder["id"],
-                        "error": describe_error(exc),
+                        "error": error,
                     }
                 )
+                continue
+            walk_nested(child_folder, deeper, depth + 1)
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as nested_pool:
         futures = {nested_pool.submit(read_nested, item): item for item in nested_folders}
@@ -570,6 +608,7 @@ def normalize_folder(folder: dict[str, str]) -> dict:
         "videos": videos,
         "packingList": packing_name,
         "syncError": packing.get("error"),
+        "packingWarning": packing.get("parseWarning"),
         "skippedPhotoFolders": skipped_photo_folders,
     }
 
@@ -644,6 +683,14 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
                     "error": product["syncError"],
                 }
             )
+        if product.get("packingWarning"):
+            warnings.append(
+                {
+                    "folder": product["folderName"],
+                    "kind": "packing-list",
+                    "error": product["packingWarning"],
+                }
+            )
     payload = {
         "source": ROOT_FOLDER_URL,
         "syncedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -702,7 +749,10 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
         if current_json==previous_json:unchanged+=1
         else:updated.append(product)
     missing_packing=[product for product in products if not product.get("packingList")]
+    unreadable_packing=[product for product in products if product.get("packingList") and not product.get("lines")]
     missing_images=[product for product in products if not product.get("images") and not product.get("extraImages")]
+    missing_area=[product for product in products if product.get("sqm") is None]
+    missing_dimensions=[product for product in products if not product.get("dimensions")]
     skipped_photo_folders=sum(len(product.get("skippedPhotoFolders",[])) for product in products)
     payload["report"]={
         "bundles":len(products),
@@ -710,14 +760,20 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
         "updated":len(updated),
         "unchanged":unchanged,
         "missingPackingLists":len(missing_packing),
+        "unreadablePackingLists":len(unreadable_packing),
         "missingImages":len(missing_images),
+        "missingAreas":len(missing_area),
+        "missingDimensions":len(missing_dimensions),
         "skippedPhotoFolders":skipped_photo_folders,
         "folderErrors":len(errors),
         "warningCount":len(warnings),
         "addedFolders":[product.get("folderName") for product in added],
         "updatedFolders":[product.get("folderName") for product in updated],
         "missingPackingListFolders":[product.get("folderName") for product in missing_packing],
+        "unreadablePackingListFolders":[product.get("folderName") for product in unreadable_packing],
         "missingImageFolders":[product.get("folderName") for product in missing_images],
+        "missingAreaFolders":[product.get("folderName") for product in missing_area],
+        "missingDimensionFolders":[product.get("folderName") for product in missing_dimensions],
     }
     temporary = OUTPUT.with_suffix(".json.tmp")
     temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
