@@ -1,4 +1,6 @@
 const rootFolder = 'https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z?usp=drive_link';
+const actionsWorkflowUrl = 'https://github.com/hkaracan/lucra-marble-inventory/actions/workflows/sync-inventory.yml';
+const isGithubPages = /(^|\.)github\.io$/.test(location.hostname);
 const names = [
   'Alaskan Blue K2970','Alexander Black K4987','Arabescato Imperiale K6235','Bianco Dolomite L1011','Breccia Montagna K3332','Bruno Perla K6029','Cafe Amore K6058','Ceppo Beige K5567','Ceppo Beige K6086','Ceppo Grey K3630','Crema Luna K6131','Diamond Grey M2878','Flinders White','Golden Roots K5080','Green Olive K3618','Ice Bloom K4132','Invisible Blue K3280','Karmania Traonyx K5809','Lilac Extra K3619','Marmara Equator K3514','MoonLight Grey K5147','Naturella K5171','NebuLa Wave L009','Nimbus White Veincut K6169','Polar White K6089','Porto Rosa L006','Red Jasper L1010','Red Travertine K5094','Reserved Velluto Onyx K3947','Rosso Levanto K6222','Rosso Levanto L1013','Rosso Levanto L1014','Silver Travertine Ham (Raw) K5301','Sunset Dolomite New','Terranova Ceppo K6044','Travertine L009','Tundra Grey','Van Gogh K3229','Vanilla Ice K5372','Vanilla K6130','Velluto Onyx Cross Cut K3653','Verde Levanto K5420'
 ];
@@ -37,6 +39,10 @@ let products=assignBundleKeys(fallbackProducts), currentFilter='all', currentPro
 const grid=document.querySelector('#productGrid'), search=document.querySelector('#searchInput'), count=document.querySelector('#resultCount'), empty=document.querySelector('#emptyState'), syncStatus=document.querySelector('#syncStatus'), syncFeedback=document.querySelector('#syncFeedback');
 const salesKpis=document.querySelector('#salesKpis'), salesRows=document.querySelector('#salesRows');
 const sortSelect=document.querySelector('#sortSelect'), syncButton=document.querySelector('#syncButton');
+if(isGithubPages){
+  syncButton.textContent='↻ Sync via GitHub Actions';
+  syncButton.title='Open the manual GitHub Actions sync workflow';
+}
 function filteredProducts(){
   const q=search.value.trim().toLowerCase();
   const visible=products.filter(p=>(currentFilter==='all'||(currentFilter==='reserved'?p.reserved:!p.reserved))&&(`${p.name} ${p.code} ${p.groupName||''}`.toLowerCase().includes(q)));
@@ -203,7 +209,7 @@ async function loadInventory(){
     }
     products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));syncedAt=data.syncedAt;
     syncStatus.innerHTML=`<i></i> ${products.length} bundles · ${new Date(syncedAt).toLocaleDateString()}`;
-    setSyncFeedback({...data,count:products.length},location.protocol==='file:'?'Local snapshot':'Last sync');
+    setSyncFeedback({...data,count:products.length},location.protocol==='file:'?'Local snapshot':isGithubPages?'Last published sync':'Last sync');
   }catch(error){syncStatus.innerHTML='<i></i> Preview data';syncStatus.title='';syncFeedback.textContent='';}
   render();
 }
@@ -217,6 +223,11 @@ window.addEventListener('hashchange',openHashProduct);
 
 document.querySelector('#syncButton').addEventListener('click',async(event)=>{
   const button=event.currentTarget;
+  if(isGithubPages){
+    window.open(actionsWorkflowUrl,'_blank','noopener');
+    syncFeedback.textContent='GitHub Actions opened. Choose “Run workflow” to sync Drive; this page will update after GitHub Pages redeploys.';
+    return;
+  }
   if(location.protocol==='file:'){
     syncFeedback.textContent='Drive sync needs the local server. This HTML is showing the last synced snapshot.';
     return;
