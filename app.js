@@ -458,6 +458,7 @@ async function loadInventory(){
     setSyncFeedback({...data,count:products.length},location.protocol==='file:'?'Local snapshot':isGithubPages?'Last published sync':'Last sync');
   }catch(error){syncStatus.innerHTML='<i></i> Preview data';syncStatus.title='';syncFeedback.textContent='';}
   render();
+  document.documentElement.dataset.lucraLoadDone='1';
 }
 
 function openHashProduct(){
@@ -484,4 +485,4 @@ document.querySelector('#syncButton').addEventListener('click',async(event)=>{
   try{const response=await fetch('/api/sync',{method:'POST'});const result=await response.json();if(!result.ok)throw new Error(result.error||'The Drive sync failed');await loadInventory();setSyncFeedback(result);button.textContent=`Synced ${result.count} bundles`;setTimeout(()=>button.textContent='↻ Sync from Drive',1800)}catch(error){const message=error instanceof Error?error.message:String(error);button.textContent='Sync failed';syncStatus.innerHTML='<i></i> Sync failed';syncStatus.title=message;syncFeedback.textContent=`Sync failed: ${message}. The previous catalogue remains available.`;setTimeout(()=>button.textContent='↻ Try again',1800)}finally{button.disabled=false}
 });
 applyLanguage();
-loadInventory().then(openHashProduct);
+loadInventory().then(()=>{document.documentElement.dataset.lucraPromiseDone='1';openHashProduct()}).catch(error=>{document.documentElement.dataset.lucraLoadError=error instanceof Error?error.message:String(error)});
