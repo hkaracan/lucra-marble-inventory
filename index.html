@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260904-6" />
+  <link rel="stylesheet" href="styles.css?v=20260904-7" />
 </head>
 <body>
   <header class="site-header">
@@ -83,6 +83,24 @@
           <div class="inventory-health-head"><div><p class="eyebrow" data-i18n="dataQuality">DATA QUALITY</p><h4 id="inventoryHealthTitle" data-i18n="inventoryHealth">Inventory health</h4></div><button id="toggleHealth" class="quiet-button" type="button" aria-expanded="false" data-i18n="showDetails">Show details</button></div>
           <div id="healthSummary" class="health-summary"></div>
           <div id="healthDetails" class="health-details" hidden></div>
+        </section>
+        <section class="sync-audit" aria-labelledby="syncAuditTitle">
+          <div class="sync-audit-head">
+            <div><p class="eyebrow" data-i18n="auditEyebrow">SYNC AUDIT</p><h4 id="syncAuditTitle" data-i18n="syncAudit">Sync audit</h4><p class="sync-audit-hint" data-i18n="syncAuditHint">Review each product’s packing list, area, dimensions, photos, and sync status.</p></div>
+            <button id="toggleAudit" class="quiet-button" type="button" aria-expanded="false" data-i18n="openAudit">Open audit</button>
+          </div>
+          <div id="auditPanel" hidden>
+            <div class="audit-toolbar">
+              <label><span data-i18n="auditFilter">Show</span><select id="auditFilter"><option value="all" data-i18n="auditAll">All products</option><option value="attention" data-i18n="auditAttention">Needs attention</option><option value="no-packing" data-i18n="auditNoPacking">No packing list</option><option value="size" data-i18n="auditSize">Missing area / size</option><option value="images" data-i18n="auditImages">Missing images</option><option value="warnings" data-i18n="auditWarnings">Sync warnings</option></select></label>
+              <span class="audit-count" id="auditCount"></span>
+              <button id="exportAudit" class="secondary" type="button" data-i18n="exportAudit">Export audit CSV</button>
+            </div>
+            <div class="audit-list" role="table" aria-label="Sync audit list">
+              <div class="audit-list-head" role="row"><span role="columnheader" data-i18n="productSelect">Product / select</span><span role="columnheader" data-i18n="packingList">Packing list</span><span role="columnheader" data-i18n="auditAreaSize">Area / size</span><span role="columnheader" data-i18n="media">Media</span><span role="columnheader" data-i18n="auditSync">Sync</span><span role="columnheader" data-i18n="source">Source</span></div>
+              <div id="auditRows"></div>
+            </div>
+            <p class="audit-empty" id="auditEmpty" hidden data-i18n="auditNoResults">No products match this audit filter.</p>
+          </div>
         </section>
         <div class="sales-tools">
           <div class="shortlist-manager"><label><span data-i18n="shortlist">Shortlist</span><select id="shortlistSelect" aria-label="Select shortlist"></select></label><button id="newShortlist" class="quiet-button" type="button" data-i18n="newList">New list</button><button id="renameShortlist" class="quiet-button" type="button" data-i18n="rename">Rename</button><button id="deleteShortlist" class="quiet-button" type="button" data-i18n="delete">Delete</button></div>
@@ -202,6 +220,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260904-6"></script>
+  <script src="app.js?v=20260904-7"></script>
 </body>
 </html>
