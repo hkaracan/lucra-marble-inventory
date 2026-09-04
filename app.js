@@ -1,5 +1,6 @@
 const rootFolder = 'https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z?usp=drive_link';
 const actionsWorkflowUrl = 'https://github.com/hkaracan/lucra-marble-inventory/actions/workflows/sync-inventory.yml';
+const publicSiteBase = 'https://hkaracan.github.io/lucra-marble-inventory/';
 const isGithubPages = /(^|\.)github\.io$/.test(location.hostname);
 const salesPassword = 'lucra123';
 const names = [
@@ -24,6 +25,8 @@ Object.assign(translations.en,{printSheet:'Print bundle sheet',selectedViews:'Se
 Object.assign(translations.tr,{printSheet:'Demet sayfasını yazdır',selectedViews:'Seçili görseller',fullGallery:'Tam galeriyi görüntüle',bundleSheet:'Demet sayfası',sizeDetailsNotListed:'Ölçü ayrıntıları listelenmedi'});
 Object.assign(translations.en,{customerCollection:'CUSTOMER COLLECTION',customerCollectionHint:'Create a short list to share or print for a customer.',selectedBundles:'bundles selected',addToCollection:'Add to collection',removeFromCollection:'Remove from collection',printCollection:'Print collection',collectionSheet:'Customer collection',collectionIntro:'A curated selection from Lucra Marble.',onlineGallery:'Online gallery'});
 Object.assign(translations.tr,{customerCollection:'MÜŞTERİ KOLEKSİYONU',customerCollectionHint:'Müşteriyle paylaşmak veya yazdırmak için kısa bir seçim oluşturun.',selectedBundles:'demet seçildi',addToCollection:'Koleksiyona ekle',removeFromCollection:'Koleksiyondan çıkar',printCollection:'Koleksiyonu yazdır',collectionSheet:'Müşteri koleksiyonu',collectionIntro:'Lucra Marble’dan seçilmiş ürünler.',onlineGallery:'Çevrim içi galeri'});
+Object.assign(translations.en,{scanToView:'Scan to view online'});
+Object.assign(translations.tr,{scanToView:'Çevrim içi görüntülemek için tarayın'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
 function applyLanguage(){
@@ -382,6 +385,13 @@ function productDriveUrl(product){return product.folderId?`https://drive.google.
 function basePageUrl(){const url=new URL(location.href);url.hash='';url.searchParams.delete('collection');url.searchParams.delete('v');return url.toString()}
 function customerProductUrl(product){return `${basePageUrl()}#bundle-${encodeURIComponent(productKey(product))}`}
 function customerCollectionUrl(records){const url=new URL(basePageUrl());url.searchParams.set('collection',records.map(product=>productKey(product)).join(','));return url.toString()}
+function publicBasePageUrl(){return isGithubPages?basePageUrl():publicSiteBase}
+function publicCustomerProductUrl(product){return `${publicBasePageUrl()}#bundle-${encodeURIComponent(productKey(product))}`}
+function publicCustomerCollectionUrl(records){const url=new URL(publicBasePageUrl());url.searchParams.set('collection',records.map(product=>productKey(product)).join(','));return url.toString()}
+function qrCodeMarkup(url,label=t('scanToView'),className=''){
+  const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=10&data=${encodeURIComponent(url)}`;
+  return `<div class="print-qr ${className}"><img src="${escapeHtml(qrUrl)}" alt="${escapeHtml(label)}" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden>${escapeHtml(label)}<small>${escapeHtml(url)}</small></span><b>${escapeHtml(label)}</b></div>`;
+}
 function renderCollectionBanner(){
   if(!sharedCollectionActive){collectionBanner.hidden=true;return}
   const available=products.filter(product=>sharedCollectionKeys.has(productKey(product)));
@@ -482,10 +492,10 @@ async function shareCustomerCollection(){
   await copyText(url,shareCollectionButton,t('selectionShared'));
 }
 function printSheetMarkup(product){
-  const images=(product.images||[]).slice(0,6),onlineUrl=customerProductUrl(product),driveUrl=productDriveUrl(product);
+  const images=(product.images||[]).slice(0,6),onlineUrl=publicCustomerProductUrl(product),driveUrl=productDriveUrl(product);
   const imageGrid=images.length?`<section class="print-sheet-views"><h2>${escapeHtml(t('selectedViews'))}</h2><div class="print-sheet-image-grid">${images.map((image,index)=>`<figure><img src="${escapeHtml(image.src)}" alt="${escapeHtml(product.name)} ${escapeHtml(image.type==='slab'?`slab ${image.label}`:image.label)}"><figcaption>${escapeHtml(image.type==='slab'?`Slab ${image.label}`:image.label||`${t('selectedViews')} ${index+1}`)}</figcaption></figure>`).join('')}</div>${product.images.length>images.length?`<p class="print-sheet-muted">${escapeHtml(`${product.images.length-images.length} ${t('views')} · `)}<a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('fullGallery'))}</a></p>`:''}</section>`:'<p class="print-sheet-muted">No images found</p>';
   const dimensions=product.dimensions?.length?productDimensions(product):t('sizeDetailsNotListed');
-  return `<div class="print-sheet-page"><header class="print-sheet-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(product.name)}</h1><p>${escapeHtml(product.code)} · <span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></p></div><div class="print-sheet-label">${escapeHtml(t('bundleSheet'))}</div></header>${images[0]?.src?`<img class="print-sheet-hero" src="${escapeHtml(images[0].src)}" alt="${escapeHtml(product.name)}">`:''}<dl class="print-sheet-specs"><div><dt>${escapeHtml(t('totalSlabs'))}</dt><dd>${escapeHtml(product.pcs!=null?String(product.pcs):t('countUnavailable'))}</dd></div><div><dt>${escapeHtml(t('totalArea'))}</dt><dd>${escapeHtml(product.sqm!=null?`${Number(product.sqm).toFixed(2)} m²`:'—')}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl>${imageGrid}<div class="print-sheet-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('fullGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div><p class="print-sheet-footer">${escapeHtml(t('contactForPricing'))}</p></div>`;
+  return `<div class="print-sheet-page"><header class="print-sheet-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(product.name)}</h1><p>${escapeHtml(product.code)} · <span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></p></div><div class="print-sheet-header-side"><div class="print-sheet-label">${escapeHtml(t('bundleSheet'))}</div>${qrCodeMarkup(onlineUrl)}</div></header>${images[0]?.src?`<img class="print-sheet-hero" src="${escapeHtml(images[0].src)}" alt="${escapeHtml(product.name)}">`:''}<dl class="print-sheet-specs"><div><dt>${escapeHtml(t('totalSlabs'))}</dt><dd>${escapeHtml(product.pcs!=null?String(product.pcs):t('countUnavailable'))}</dd></div><div><dt>${escapeHtml(t('totalArea'))}</dt><dd>${escapeHtml(product.sqm!=null?`${Number(product.sqm).toFixed(2)} m²`:'—')}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl>${imageGrid}<div class="print-sheet-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('fullGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div><p class="print-sheet-footer">${escapeHtml(t('contactForPricing'))}</p></div>`;
 }
 
 function printProductSheet(){
@@ -501,15 +511,16 @@ function printProductSheet(){
 }
 
 function printCollectionMarkup(records){
+  const collectionUrl=publicCustomerCollectionUrl(records);
   const cards=records.map(product=>{
     const image=product.images?.[0],code=product.code&&product.code!=='—'?` · ${product.code}`:'';
     const stock=product.pcs!=null?`${Number(product.pcs)} ${t('slabs')}`:t('countUnavailable');
     const area=product.sqm!=null?` · ${Number(product.sqm).toFixed(2)} m²`:'';
     const dimensions=product.dimensions?.length?productDimensions(product):t('sizeDetailsNotListed');
-    const onlineUrl=customerProductUrl(product),driveUrl=productDriveUrl(product);
-    return `<article class="print-collection-card"><div class="print-collection-card-head"><div><h2>${escapeHtml(product.name)}</h2><p>${escapeHtml(code.replace(/^ · /,''))}</p></div><span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></div>${image?.src?`<img class="print-collection-image" src="${escapeHtml(image.src)}" alt="${escapeHtml(product.name)}">`:'<div class="print-collection-image print-collection-no-image">No image</div>'}<dl class="print-collection-specs"><div><dt>${escapeHtml(t('stock'))}</dt><dd>${escapeHtml(`${stock}${area}`)}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl><div class="print-collection-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('onlineGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div></article>`;
+    const onlineUrl=publicCustomerProductUrl(product),driveUrl=productDriveUrl(product);
+    return `<article class="print-collection-card"><div class="print-collection-card-head"><div><h2>${escapeHtml(product.name)}</h2><p>${escapeHtml(code.replace(/^ · /,''))}</p></div><span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></div>${image?.src?`<img class="print-collection-image" src="${escapeHtml(image.src)}" alt="${escapeHtml(product.name)}">`:'<div class="print-collection-image print-collection-no-image">No image</div>'}<dl class="print-collection-specs"><div><dt>${escapeHtml(t('stock'))}</dt><dd>${escapeHtml(`${stock}${area}`)}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl><div class="print-collection-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('onlineGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div>${qrCodeMarkup(onlineUrl,t('scanToView'),'print-collection-qr')}</article>`;
   }).join('');
-  return `<div class="print-collection-page"><header class="print-collection-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(t('collectionSheet'))}</h1><p>${escapeHtml(t('collectionIntro'))}</p></div><div class="print-sheet-label">${escapeHtml(`${records.length} ${t('selectedBundles')}`)}</div></header><section class="print-collection-grid">${cards}</section><p class="print-collection-footer">${escapeHtml(t('contactForPricing'))}</p></div>`;
+  return `<div class="print-collection-page"><header class="print-collection-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(t('collectionSheet'))}</h1><p>${escapeHtml(t('collectionIntro'))}</p></div><div class="print-collection-header-side"><div class="print-sheet-label">${escapeHtml(`${records.length} ${t('selectedBundles')}`)}</div>${qrCodeMarkup(collectionUrl)}</div></header><section class="print-collection-grid">${cards}</section><p class="print-collection-footer">${escapeHtml(t('contactForPricing'))}</p></div>`;
 }
 function printPresentationCollection(){
   const selected=selectedPresentationProducts();if(!selected.length)return;
