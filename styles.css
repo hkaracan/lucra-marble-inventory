@@ -99,3 +99,28 @@ body.sales-mode .sales-dashboard{display:block}
 /* Customer collection links */
 .collection-banner{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:-4px 0 24px;padding:16px 18px;border:1px solid #9fd8e3;background:#f1fafc}.collection-banner .eyebrow{margin:0 0 6px}.collection-banner strong{font:600 15px Manrope}.collection-banner>div>span{color:var(--muted);font-size:11px}.collection-banner .quiet-button{flex:0 0 auto;color:var(--navy);border:1px solid #b8dfe6;background:white}.collection-banner .quiet-button:hover{border-color:var(--aqua);background:#f8fdfe}
 @media(max-width:580px){.collection-banner{align-items:flex-start;flex-direction:column;gap:10px;margin:0 0 20px;padding:14px}.collection-banner .quiet-button{width:100%;text-align:left}}
+
+/* Customer-ready printable bundle sheet */
+.print-sheet{display:none}
+.dialog-actions{flex-wrap:wrap}.dialog-actions button,.dialog-actions a{min-width:140px}
+@media(max-width:580px){.dialog-actions button,.dialog-actions a{min-width:0;flex-basis:calc(50% - 5px)}}
+@media print{
+  @page{size:A4;margin:14mm}
+  html,body{background:#fff!important}
+  body.printing-sheet>*:not(#printSheet){display:none!important}
+  body.printing-sheet #printSheet{display:block!important}
+  .print-sheet-page{font-family:Arial,sans-serif;color:#17222c;max-width:900px;margin:0}
+  .print-sheet-header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;border-bottom:2px solid #17222c;padding-bottom:16px;margin-bottom:20px}
+  .print-sheet-brand{color:#24788c;font-size:11px;font-weight:700;letter-spacing:.16em}
+  .print-sheet-label{color:#6b7780;font-size:10px;text-transform:uppercase;letter-spacing:.1em}
+  .print-sheet-page h1{font-size:30px;line-height:1.1;margin:12px 0 7px}
+  .print-sheet-page h2{font-size:11px;margin:20px 0 9px;text-transform:uppercase;letter-spacing:.12em;color:#24788c}
+  .print-sheet-page p{color:#5d6a72;font-size:12px;line-height:1.5;margin:7px 0}
+  .print-sheet-status{display:inline-block;padding:7px 10px;background:#eaf6ed;color:#398158;border-radius:3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
+  .print-sheet-status.reserved{background:#fff3e8;color:#a45c25}
+  .print-sheet-hero{display:block;width:100%;height:265px;object-fit:contain;background:#eef3f4;margin:0 0 18px}
+  .print-sheet-specs{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:0;border-top:1px solid #dce5e9;border-bottom:1px solid #dce5e9;padding:13px 0}
+  .print-sheet-specs div{min-width:0}.print-sheet-specs dt{color:#6b7780;font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}.print-sheet-specs dd{font-size:12px;font-weight:700;line-height:1.35;margin:0}
+  .print-sheet-image-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.print-sheet-image-grid figure{margin:0;break-inside:avoid}.print-sheet-image-grid img{display:block;width:100%;height:112px;object-fit:cover;background:#eef3f4}.print-sheet-image-grid figcaption{padding:5px 2px 0;color:#6b7780;font-size:10px}
+  .print-sheet-muted{color:#6b7780!important}.print-sheet-muted a,.print-sheet-links a{color:#24788c;text-decoration:none}.print-sheet-links{display:flex;gap:18px;flex-wrap:wrap;margin-top:19px;font-size:11px}.print-sheet-footer{border-top:1px solid #dce5e9;margin-top:20px!important;padding-top:10px;color:#6b7780!important;font-size:10px!important}
+}
