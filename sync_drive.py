@@ -580,6 +580,12 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
     cache_clear = getattr(folder_items, "cache_clear", None)
     if callable(cache_clear):
         cache_clear()
+    previous_payload = {}
+    if OUTPUT.exists():
+        try:
+            previous_payload = json.loads(OUTPUT.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            previous_payload = {}
     root_folders = folder_items(root_folder_id)
     folders = []
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as discovery_pool:
@@ -648,9 +654,8 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
     }
     OUTPUT.parent.mkdir(exist_ok=True)
     if errors and OUTPUT.exists():
-        previous = json.loads(OUTPUT.read_text(encoding="utf-8"))
         failed_names = {error["folder"] for error in errors}
-        products.extend(product for product in previous.get("products", []) if product.get("folderName") in failed_names)
+        products.extend(product for product in previous_payload.get("products", []) if product.get("folderName") in failed_names)
         products.sort(key=lambda product: (product["name"].lower(), product["code"]))
         payload["products"] = products
     # L1014 is a real bundle, not an optional nested photo folder. If its
@@ -661,11 +666,10 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
     if l1014_folders and not any(
         any(product.get("folderId") == folder["id"] for folder in l1014_folders) for product in products
     ):
-        previous = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {}
         previous_l1014 = next(
             (
                 product
-                for product in previous.get("products", [])
+                for product in previous_payload.get("products", [])
                 if any(product.get("folderId") == folder["id"] for folder in l1014_folders)
             ),
             None,
@@ -685,6 +689,36 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
             raise RuntimeError("Rosso Levanto L1014 could not be read; the previous catalogue was preserved.")
     if not products:
         raise RuntimeError("Sync returned no products; the previous catalogue was preserved.")
+    previous_by_id={product.get("folderId"):product for product in previous_payload.get("products",[]) if product.get("folderId")}
+    added=[product for product in products if product.get("folderId") not in previous_by_id]
+    updated=[]
+    unchanged=0
+    for product in products:
+        previous=previous_by_id.get(product.get("folderId"))
+        if previous is None:
+            continue
+        current_json=json.dumps(product,ensure_ascii=False,sort_keys=True)
+        previous_json=json.dumps(previous,ensure_ascii=False,sort_keys=True)
+        if current_json==previous_json:unchanged+=1
+        else:updated.append(product)
+    missing_packing=[product for product in products if not product.get("packingList")]
+    missing_images=[product for product in products if not product.get("images") and not product.get("extraImages")]
+    skipped_photo_folders=sum(len(product.get("skippedPhotoFolders",[])) for product in products)
+    payload["report"]={
+        "bundles":len(products),
+        "added":len(added),
+        "updated":len(updated),
+        "unchanged":unchanged,
+        "missingPackingLists":len(missing_packing),
+        "missingImages":len(missing_images),
+        "skippedPhotoFolders":skipped_photo_folders,
+        "folderErrors":len(errors),
+        "warningCount":len(warnings),
+        "addedFolders":[product.get("folderName") for product in added],
+        "updatedFolders":[product.get("folderName") for product in updated],
+        "missingPackingListFolders":[product.get("folderName") for product in missing_packing],
+        "missingImageFolders":[product.get("folderName") for product in missing_images],
+    }
     temporary = OUTPUT.with_suffix(".json.tmp")
     temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     script_output = inventory_script_path()
@@ -697,4 +731,10 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
 
 if __name__ == "__main__":
     result = sync_inventory()
-    print(f'Synced {len(result["products"])} bundles with {len(result["errors"])} folder errors.')
+    report=result.get("report",{})
+    print(
+        f'Synced {len(result["products"])} bundles with {len(result["errors"])} folder errors. '
+        f'Added {report.get("added",0)}, updated {report.get("updated",0)}, '
+        f'{report.get("missingPackingLists",0)} without packing lists, '
+        f'{report.get("missingImages",0)} without images.'
+    )

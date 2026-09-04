@@ -188,6 +188,9 @@ class MockedSyncTest(unittest.TestCase):
         self.assertIn(("slow-photo-folder", sync_drive.NESTED_FOLDER_TIMEOUT, sync_drive.NESTED_FOLDER_ATTEMPTS), calls)
         self.assertIn("window.LUCRA_INVENTORY", script_content)
         self.assertIn("Rosso Levanto L1014", script_content)
+        self.assertEqual(payload["report"]["bundles"], 2)
+        self.assertEqual(payload["report"]["added"], 2)
+        self.assertEqual(payload["report"]["skippedPhotoFolders"], 1)
 
     def test_failed_l1014_refresh_keeps_previous_catalogue(self):
         tree = {"root": [{"id": "l1014", "name": "Rosso Levanto L1014"}]}

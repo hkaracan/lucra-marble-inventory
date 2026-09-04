@@ -53,6 +53,7 @@ class Handler(SimpleHTTPRequestHandler):
                     "count": len(payload["products"]),
                     "errors": payload.get("errors", []),
                     "warnings": payload.get("warnings", []),
+                    "report": payload.get("report", {}),
                     "syncedAt": payload["syncedAt"],
                 }
             )

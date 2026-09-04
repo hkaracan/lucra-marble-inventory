@@ -31,6 +31,37 @@ jobs:
       - name: Sync public Drive folder
         run: python sync_drive.py
 
+      - name: Add sync report to job summary
+        if: success()
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          payload = json.loads(Path("data/inventory.json").read_text(encoding="utf-8"))
+          report = payload.get("report", {})
+          lines = [
+              "## Inventory sync report",
+              f"- Bundles: {report.get('bundles', len(payload.get('products', [])))}",
+              f"- Added: {report.get('added', 0)}",
+              f"- Updated: {report.get('updated', 0)}",
+              f"- Unchanged: {report.get('unchanged', 0)}",
+              f"- Without packing lists: {report.get('missingPackingLists', 0)}",
+              f"- Without images: {report.get('missingImages', 0)}",
+              f"- Skipped optional photo folders: {report.get('skippedPhotoFolders', 0)}",
+              f"- Folder errors: {report.get('folderErrors', len(payload.get('errors', [])))}",
+          ]
+          missing = report.get("missingPackingListFolders", [])
+          if missing:
+              lines.append("\n### Bundles without packing lists\n" + "\n".join(f"- {name}" for name in missing))
+          warnings = payload.get("warnings", [])
+          if warnings:
+              lines.append("\n### Warnings\n" + "\n".join(f"- {item.get('folder', 'Unknown')}: {item.get('error', 'Unknown warning')}" for item in warnings[:25]))
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write("\n".join(lines) + "\n")
+          PY
+
       - name: Commit refreshed catalogue
         run: |
           git config user.name "github-actions[bot]"
