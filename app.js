@@ -461,8 +461,10 @@ async function loadInventory(){
 }
 
 function openHashProduct(){
+  document.documentElement.dataset.lucraHashSeen=location.hash;
   const match=location.hash.match(/^#bundle-(.+)$/);if(!match)return;
   const id=decodeURIComponent(match[1]), product=products.find(p=>productKey(p)===id)||(id!=='—'?products.find(p=>p.code===id):null);
+  document.documentElement.dataset.lucraHashProduct=product?product.code:'not-found';
   if(product)openProduct(productKey(product));
 }
 window.addEventListener('hashchange',openHashProduct);
