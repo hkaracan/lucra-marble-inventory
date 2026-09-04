@@ -22,11 +22,11 @@ The public website is available at [hkaracan.github.io/lucra-marble-inventory](h
 - Reserved bundles visible in both modes
 - Presentation/Sales mode switch
 - Sales dashboard with all products, stock totals, source links, and packing-list completeness
-- Sales shortlist with comparison, WhatsApp summary, printable sheets, and CSV export
+- Sales shortlist with comparison, customer-ready WhatsApp sharing, printable sheets, and CSV export
 - Optional hiding of bundles without packing lists
 - Responsive catalogue and product modal
 - Wide, horizontal slab-first product cards
-- Fullscreen gallery, zoom, keyboard navigation, and wrapped numbered image selector
+- Image-first fullscreen gallery with overlaid slab numbers, previous/next controls, zoom-and-pan, and keyboard navigation
 - HEIC/camera-photo support, including sequential labels for bundles without numbered filenames
 - Denizli, Türkiye inventory location
 - Real K5809 packing-list totals and representative slab photography
