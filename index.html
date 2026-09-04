@@ -55,7 +55,8 @@
           <button class="filter" data-filter="reserved" data-i18n="reserved" type="button">Reserved</button>
         </div>
       </div>
-      <div class="advanced-filters" aria-label="More inventory filters">
+      <button id="advancedFiltersToggle" class="advanced-filters-toggle" type="button" aria-expanded="false"><span data-i18n="moreFilters">More filters</span><span aria-hidden="true">⌄</span></button>
+      <div class="advanced-filters" id="advancedFilters" aria-label="More inventory filters">
         <label><span data-i18n="sort">Sort</span> <select id="sortSelect"><option value="name" data-i18n="name">Name</option><option value="slabs" data-i18n="mostSlabs">Most slabs</option><option value="area" data-i18n="largestArea">Largest area</option></select></label>
         <label><span data-i18n="minArea">Min m²</span> <input id="minArea" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0" /></label>
         <label><span data-i18n="maxArea">Max m²</span> <input id="maxArea" type="number" min="0" step="0.01" inputmode="decimal" placeholder="—" /></label>
