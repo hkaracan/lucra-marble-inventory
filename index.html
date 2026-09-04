@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260904-13" />
+  <link rel="stylesheet" href="styles.css?v=20260904-16" />
 </head>
 <body>
   <header class="site-header">
@@ -76,12 +76,15 @@
       <section class="presentation-collection" id="presentationCollection" hidden aria-labelledby="presentationCollectionTitle">
         <div class="presentation-collection-copy">
           <p class="eyebrow" data-i18n="customerCollection">CUSTOMER COLLECTION</p>
+          <label class="collection-title-field"><span data-i18n="collectionTitleLabel">Collection title</span><input id="presentationCollectionName" type="text" maxlength="80" data-i18n-placeholder="collectionTitlePlaceholder" placeholder="Optional project or customer name" /></label>
           <strong id="presentationCollectionTitle">0 bundles selected</strong>
+          <span id="presentationCollectionSummary"></span>
           <span data-i18n="customerCollectionHint">Create a short list to share or print for a customer.</span>
         </div>
         <div class="presentation-collection-actions">
           <button id="sharePresentationCollection" class="secondary" type="button" disabled data-i18n="shareSelection">Share selection link</button>
           <button id="printPresentationCollection" class="primary" type="button" disabled data-i18n="printCollection">Print collection</button>
+          <button id="whatsappPresentationCollection" class="secondary" type="button" disabled data-i18n="whatsappCollection">WhatsApp collection</button>
           <button id="clearPresentationCollection" class="quiet-button" type="button" disabled data-i18n="clear">Clear</button>
         </div>
       </section>
@@ -239,6 +242,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260904-13"></script>
+  <script src="app.js?v=20260904-16"></script>
 </body>
 </html>

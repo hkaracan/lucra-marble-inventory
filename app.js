@@ -27,6 +27,8 @@ Object.assign(translations.en,{customerCollection:'CUSTOMER COLLECTION',customer
 Object.assign(translations.tr,{customerCollection:'MÜŞTERİ KOLEKSİYONU',customerCollectionHint:'Müşteriyle paylaşmak veya yazdırmak için kısa bir seçim oluşturun.',selectedBundles:'demet seçildi',addToCollection:'Koleksiyona ekle',removeFromCollection:'Koleksiyondan çıkar',printCollection:'Koleksiyonu yazdır',collectionSheet:'Müşteri koleksiyonu',collectionIntro:'Lucra Marble’dan seçilmiş ürünler.',onlineGallery:'Çevrim içi galeri'});
 Object.assign(translations.en,{scanToView:'Scan to view online'});
 Object.assign(translations.tr,{scanToView:'Çevrim içi görüntülemek için tarayın'});
+Object.assign(translations.en,{collectionTitleLabel:'Collection title',collectionTitlePlaceholder:'Optional project or customer name',whatsappCollection:'WhatsApp collection',lastUpdated:'Last updated',availabilityNote:'Availability and pricing are subject to confirmation.'});
+Object.assign(translations.tr,{collectionTitleLabel:'Koleksiyon başlığı',collectionTitlePlaceholder:'İsteğe bağlı proje veya müşteri adı',whatsappCollection:'Koleksiyonu WhatsApp ile gönder',lastUpdated:'Son güncelleme',availabilityNote:'Uygunluk ve fiyat teyide tabidir.'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
 function applyLanguage(){
@@ -78,15 +80,17 @@ const healthSummary=document.querySelector('#healthSummary'), healthDetails=docu
 const auditSection=document.querySelector('.sync-audit'), auditPanel=document.querySelector('#auditPanel'), auditRows=document.querySelector('#auditRows'), auditEmpty=document.querySelector('#auditEmpty'), auditCount=document.querySelector('#auditCount'), auditFilterSelect=document.querySelector('#auditFilter'), toggleAuditButton=document.querySelector('#toggleAudit'), exportAuditButton=document.querySelector('#exportAudit');
 const followupFilterSelect=document.querySelector('#followupFilter');
 const collectionBanner=document.querySelector('#collectionBanner'), collectionTitle=document.querySelector('#collectionTitle'), collectionSummary=document.querySelector('#collectionSummary'), clearCollectionButton=document.querySelector('#clearCollection'), shareCollectionButton=document.querySelector('#shareCollection');
-const presentationCollection=document.querySelector('#presentationCollection'), presentationCollectionTitle=document.querySelector('#presentationCollectionTitle'), sharePresentationCollectionButton=document.querySelector('#sharePresentationCollection'), printPresentationCollectionButton=document.querySelector('#printPresentationCollection'), clearPresentationCollectionButton=document.querySelector('#clearPresentationCollection');
+const presentationCollection=document.querySelector('#presentationCollection'), presentationCollectionName=document.querySelector('#presentationCollectionName'), presentationCollectionTitle=document.querySelector('#presentationCollectionTitle'), presentationCollectionSummary=document.querySelector('#presentationCollectionSummary'), sharePresentationCollectionButton=document.querySelector('#sharePresentationCollection'), printPresentationCollectionButton=document.querySelector('#printPresentationCollection'), whatsappPresentationCollectionButton=document.querySelector('#whatsappPresentationCollection'), clearPresentationCollectionButton=document.querySelector('#clearPresentationCollection');
 const salesGate=document.querySelector('#salesGate'), salesGateForm=document.querySelector('#salesGateForm'), salesPasswordInput=document.querySelector('#salesPasswordInput'), salesGateError=document.querySelector('#salesGateError');
 const compareDialog=document.querySelector('#compareDialog'), compareContent=document.querySelector('#compareContent'), copyCompareButton=document.querySelector('#copyCompare');
 const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved'), shareProductButton=document.querySelector('#shareProduct');
-let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, auditFilter='all', salesFollowupFilter='all', sharedCollectionActive=false, sharedCollectionKeys=new Set(), presentationSelection=new Set();
+let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, auditFilter='all', salesFollowupFilter='all', sharedCollectionActive=false, sharedCollectionTitle='', sharedCollectionKeys=new Set(), presentationSelection=new Set(), customerCollectionTitle='';
 function readSharedCollection(){
-  const value=new URL(location.href).searchParams.get('collection');
+  const url=new URL(location.href),value=url.searchParams.get('collection');
   if(value===null)return;
   sharedCollectionActive=true;
+  sharedCollectionTitle=(url.searchParams.get('title')||'').trim();
+  document.body.classList.add('shared-collection-mode');
   sharedCollectionKeys=new Set(value.split(',').map(key=>key.trim()).filter(Boolean));
 }
 readSharedCollection();
@@ -100,6 +104,9 @@ if(!shortlistLists[activeShortlistName])activeShortlistName=Object.keys(shortlis
 shortlist=new Set(Array.isArray(shortlistLists[activeShortlistName])?shortlistLists[activeShortlistName]:[]);
 try{salesNotes=JSON.parse(localStorage.getItem('lucraSalesNotes')||'{}')||{}}catch(error){salesNotes={}}
 try{presentationSelection=new Set(JSON.parse(localStorage.getItem('lucraCustomerCollection')||'[]'))}catch(error){presentationSelection=new Set()}
+try{customerCollectionTitle=(localStorage.getItem('lucraCustomerCollectionTitle')||'').trim()}catch(error){customerCollectionTitle=''}
+if(sharedCollectionTitle)customerCollectionTitle=sharedCollectionTitle;
+presentationCollectionName.value=customerCollectionTitle;
 showMissingPacking.checked=showMissingPackingValue;
 if(isGithubPages){
   syncButton.textContent='↻ Sync via GitHub Actions';
@@ -360,9 +367,12 @@ function togglePresentationSelection(id,selected){if(selected)presentationSelect
 function renderPresentationCollection(){
   const selected=selectedPresentationProducts();
   presentationCollection.hidden=document.body.classList.contains('sales-mode')||selected.length===0;
-  presentationCollectionTitle.textContent=`${selected.length} ${t('selectedBundles')}`;
+  presentationCollectionName.value=customerCollectionTitle;
+  presentationCollectionTitle.textContent=customerCollectionTitle||`${selected.length} ${t('selectedBundles')}`;
+  presentationCollectionSummary.textContent=[collectionStats(selected),collectionUpdatedLabel(),t('availabilityNote')].filter(Boolean).join(' · ');
   sharePresentationCollectionButton.disabled=selected.length===0;
   printPresentationCollectionButton.disabled=selected.length===0;
+  whatsappPresentationCollectionButton.disabled=selected.length===0;
   clearPresentationCollectionButton.disabled=selected.length===0;
 }
 function pruneShortlist(){
@@ -382,12 +392,17 @@ function updateShortlistControls(){
   clearShortlistButton.disabled=selected.length===0;
 }
 function productDriveUrl(product){return product.folderId?`https://drive.google.com/drive/folders/${encodeURIComponent(product.folderId)}`:rootFolder}
-function basePageUrl(){const url=new URL(location.href);url.hash='';url.searchParams.delete('collection');url.searchParams.delete('v');return url.toString()}
+function basePageUrl(){const url=new URL(location.href);url.hash='';url.searchParams.delete('collection');url.searchParams.delete('title');url.searchParams.delete('v');return url.toString()}
 function customerProductUrl(product){return `${basePageUrl()}#bundle-${encodeURIComponent(productKey(product))}`}
-function customerCollectionUrl(records){const url=new URL(basePageUrl());url.searchParams.set('collection',records.map(product=>productKey(product)).join(','));return url.toString()}
+function customerCollectionUrl(records,title=''){const url=new URL(basePageUrl());url.searchParams.set('collection',records.map(product=>productKey(product)).join(','));if(title.trim())url.searchParams.set('title',title.trim());return url.toString()}
 function publicBasePageUrl(){return isGithubPages?basePageUrl():publicSiteBase}
 function publicCustomerProductUrl(product){return `${publicBasePageUrl()}#bundle-${encodeURIComponent(productKey(product))}`}
-function publicCustomerCollectionUrl(records){const url=new URL(publicBasePageUrl());url.searchParams.set('collection',records.map(product=>productKey(product)).join(','));return url.toString()}
+function publicCustomerCollectionUrl(records,title=''){const url=new URL(publicBasePageUrl());url.searchParams.set('collection',records.map(product=>productKey(product)).join(','));if(title.trim())url.searchParams.set('title',title.trim());return url.toString()}
+function collectionStats(records){
+  const slabs=records.reduce((sum,product)=>sum+(Number(product.pcs)||0),0),areas=records.filter(product=>product.sqm!=null&&Number.isFinite(Number(product.sqm))).reduce((sum,product)=>sum+Number(product.sqm),0);
+  return [`${records.length} ${records.length===1?t('bundleSingular'):t('bundles')}`,slabs?`${slabs} ${t('slabs')}`:'',areas?`${areas.toFixed(2)} m²`:'' ].filter(Boolean).join(' · ');
+}
+function collectionUpdatedLabel(){return syncedAt?`${t('lastUpdated')}: ${new Date(syncedAt).toLocaleDateString()}`:''}
 function qrCodeMarkup(url,label=t('scanToView'),className=''){
   const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=10&data=${encodeURIComponent(url)}`;
   return `<div class="print-qr ${className}"><img src="${escapeHtml(qrUrl)}" alt="${escapeHtml(label)}" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden>${escapeHtml(label)}<small>${escapeHtml(url)}</small></span><b>${escapeHtml(label)}</b></div>`;
@@ -396,12 +411,12 @@ function renderCollectionBanner(){
   if(!sharedCollectionActive){collectionBanner.hidden=true;return}
   const available=products.filter(product=>sharedCollectionKeys.has(productKey(product)));
   collectionBanner.hidden=false;
-  collectionTitle.textContent=available.length?`${available.length} ${available.length===1?t('bundleSingular'):t('bundles')}`:t('sharedCollectionEmpty');
-  collectionSummary.textContent=available.length?` · ${t('sharedSelectionHint')}`:'';
+  collectionTitle.textContent=available.length?(sharedCollectionTitle||collectionStats(available)):t('sharedCollectionEmpty');
+  collectionSummary.textContent=available.length?[collectionStats(available),collectionUpdatedLabel(),t('sharedSelectionHint'),t('availabilityNote')].filter(Boolean).join(' · '):'';
 }
 function clearSharedCollection(){
-  sharedCollectionActive=false;sharedCollectionKeys.clear();
-  const url=new URL(location.href);url.searchParams.delete('collection');history.replaceState(null,'',`${url.pathname}${url.search}${url.hash}`);render();
+  sharedCollectionActive=false;sharedCollectionTitle='';sharedCollectionKeys.clear();document.body.classList.remove('shared-collection-mode');
+  const url=new URL(location.href);url.searchParams.delete('collection');url.searchParams.delete('title');history.replaceState(null,'',`${url.pathname}${url.search}${url.hash}`);render();
 }
 function productSummary(product){
   const packing=packingListSummary(product),media=productMediaSummary(product);
@@ -410,7 +425,7 @@ function productSummary(product){
 function shortlistSummary(title='Lucra Marble shortlist'){
   return [title,...selectedProducts().map((product,index)=>`${index+1}. ${productSummary(product)}`)].join('\n\n');
 }
-function customerProductSummary(product){
+function customerProductSummary(product,usePublicLink=false){
   const code=product.code&&product.code!=='—'?` (${product.code})`:'';
   const stock=product.pcs!=null?`${Number(product.pcs)} slabs`:'Bundle details available on request';
   const area=product.sqm!=null?` · ${Number(product.sqm).toFixed(2)} m²`:'';
@@ -421,9 +436,21 @@ function customerProductSummary(product){
     `Stock: ${stock}${area}`,
     dimensions,
     'Location: Denizli, Türkiye',
-    `Photos & details: ${customerProductUrl(product)}`,
+    `Photos & details: ${usePublicLink?publicCustomerProductUrl(product):customerProductUrl(product)}`,
     `Google Drive folder: ${productDriveUrl(product)}`,
   ].filter(Boolean).join('\n');
+}
+function customerCollectionSummary(records,title=''){
+  return [
+    `Lucra Marble · ${title||t('collectionSheet')}`,
+    collectionStats(records),
+    collectionUpdatedLabel(),
+    '',
+    ...records.map((product,index)=>`${index+1}. ${customerProductSummary(product,true)}`),
+    '',
+    t('availabilityNote'),
+    t('contactForPricing'),
+  ].filter(Boolean).join('\n\n');
 }
 function customerShortlistSummary(){
   return [
@@ -477,7 +504,7 @@ function downloadAudit(){
 }
 async function shareCustomerProduct(){
   if(!currentProduct)return;
-  const summary=customerProductSummary(currentProduct),url=customerProductUrl(currentProduct);
+  const summary=customerProductSummary(currentProduct,true),url=publicCustomerProductUrl(currentProduct);
   if(navigator.share){
     try{await navigator.share({title:`Lucra Marble · ${currentProduct.name}`,text:summary,url});return}catch(error){if(error?.name==='AbortError')return}
   }
@@ -485,7 +512,7 @@ async function shareCustomerProduct(){
 }
 async function shareCustomerCollection(){
   const selected=selectedProducts();if(!selected.length)return;
-  const url=customerCollectionUrl(selected);
+  const url=publicCustomerCollectionUrl(selected,customerCollectionTitle);
   if(navigator.share){
     try{await navigator.share({title:`Lucra Marble · ${t('sharedSelection')}`,text:`${selected.length} ${t('bundles')}`,url});return}catch(error){if(error?.name==='AbortError')return}
   }
@@ -511,7 +538,7 @@ function printProductSheet(){
 }
 
 function printCollectionMarkup(records){
-  const collectionUrl=publicCustomerCollectionUrl(records);
+  const collectionUrl=publicCustomerCollectionUrl(records,customerCollectionTitle);
   const cards=records.map(product=>{
     const image=product.images?.[0],code=product.code&&product.code!=='—'?` · ${product.code}`:'';
     const stock=product.pcs!=null?`${Number(product.pcs)} ${t('slabs')}`:t('countUnavailable');
@@ -520,7 +547,7 @@ function printCollectionMarkup(records){
     const onlineUrl=publicCustomerProductUrl(product),driveUrl=productDriveUrl(product);
     return `<article class="print-collection-card"><div class="print-collection-card-head"><div><h2>${escapeHtml(product.name)}</h2><p>${escapeHtml(code.replace(/^ · /,''))}</p></div><span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></div>${image?.src?`<img class="print-collection-image" src="${escapeHtml(image.src)}" alt="${escapeHtml(product.name)}">`:'<div class="print-collection-image print-collection-no-image">No image</div>'}<dl class="print-collection-specs"><div><dt>${escapeHtml(t('stock'))}</dt><dd>${escapeHtml(`${stock}${area}`)}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl><div class="print-collection-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('onlineGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div>${qrCodeMarkup(onlineUrl,t('scanToView'),'print-collection-qr')}</article>`;
   }).join('');
-  return `<div class="print-collection-page"><header class="print-collection-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(t('collectionSheet'))}</h1><p>${escapeHtml(t('collectionIntro'))}</p></div><div class="print-collection-header-side"><div class="print-sheet-label">${escapeHtml(`${records.length} ${t('selectedBundles')}`)}</div>${qrCodeMarkup(collectionUrl)}</div></header><section class="print-collection-grid">${cards}</section><p class="print-collection-footer">${escapeHtml(t('contactForPricing'))}</p></div>`;
+  return `<div class="print-collection-page"><header class="print-collection-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(customerCollectionTitle||t('collectionSheet'))}</h1><p>${escapeHtml(t('collectionIntro'))}</p></div><div class="print-collection-header-side"><div class="print-sheet-label">${escapeHtml(`${records.length} ${t('selectedBundles')}`)}</div>${qrCodeMarkup(collectionUrl)}</div></header><section class="print-collection-grid">${cards}</section><p class="print-collection-footer">${escapeHtml(`${t('availabilityNote')} ${t('contactForPricing')}`)}</p></div>`;
 }
 function printPresentationCollection(){
   const selected=selectedPresentationProducts();if(!selected.length)return;
@@ -543,7 +570,7 @@ function render(){
   renderSalesDashboard(visible);
   grid.innerHTML=visible.map((p,index)=>{const selected=presentationSelection.has(productKey(p));return `<article class="card" tabindex="0" data-product-id="${escapeHtml(productKey(p))}">
     <div class="card-image"><div class="stone-placeholder" style="--stone:${p.stone}"></div>${p.images.length?`<img src="${escapeHtml(p.images[0].src)}" alt="${escapeHtml(p.name)} slab" loading="${index<2?'eager':'lazy'}" fetchpriority="${index<2?'high':'low'}" decoding="async" onload="this.classList.add('loaded')" onerror="this.remove();this.closest('.card-image').classList.add('image-error')"><span class="image-error-badge">${escapeHtml(t('imageLoadFailed'))}</span>`:''}
-      <span class="status-badge ${p.reserved?'reserved':''}">${escapeHtml(p.reserved?t('reserved'):t('available'))}</span><button type="button" class="card-collection-toggle ${selected?'selected':''}" data-product-id="${escapeHtml(productKey(p))}" aria-pressed="${selected}" aria-label="${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))} ${escapeHtml(p.name)}"><span aria-hidden="true">${selected?'✓':'+'}</span><span>${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))}</span></button>${p.media?`<span class="media-badge">${escapeHtml(p.media)}</span>`:''}</div>
+      <span class="status-badge ${p.reserved?'reserved':''}">${escapeHtml(p.reserved?t('reserved'):t('available'))}</span>${sharedCollectionActive?'':`<button type="button" class="card-collection-toggle ${selected?'selected':''}" data-product-id="${escapeHtml(productKey(p))}" aria-pressed="${selected}" aria-label="${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))} ${escapeHtml(p.name)}"><span aria-hidden="true">${selected?'✓':'+'}</span><span>${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))}</span></button>`}${p.media?`<span class="media-badge">${escapeHtml(p.media)}</span>`:''}</div>
     <div class="card-info"><div><h3>${escapeHtml(p.name)}</h3><p class="card-meta">${p.pcs?escapeHtml(productStock(p)):p.packingList?escapeHtml(t('seePackingList')):escapeHtml(t('galleryAvailable'))}</p></div><span class="card-code">${escapeHtml(p.code)}</span></div>
   </article>`}).join('');
   grid.querySelectorAll('.card').forEach(card=>{const toggle=card.querySelector('.card-collection-toggle');toggle?.addEventListener('click',event=>{event.stopPropagation();togglePresentationSelection(card.dataset.productId,!presentationSelection.has(card.dataset.productId))});card.addEventListener('click',event=>{if(!event.target.closest('button'))openProduct(card.dataset.productId)});card.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.target.closest('button'))openProduct(card.dataset.productId)})});
@@ -555,8 +582,10 @@ sortSelect.addEventListener('change',render);
 [minArea,maxArea,minSlabs,maxSlabs,dimensionFilter,packingFilter,mediaFilter].forEach(input=>input.addEventListener(input.tagName==='SELECT'?'change':'input',render));
 clearFiltersButton.addEventListener('click',()=>{minArea.value='';maxArea.value='';minSlabs.value='';maxSlabs.value='';dimensionFilter.value='';packingFilter.value='all';mediaFilter.value='all';render()});
 clearCollectionButton.addEventListener('click',clearSharedCollection);
-sharePresentationCollectionButton.addEventListener('click',async()=>{const selected=selectedPresentationProducts();if(!selected.length)return;const url=customerCollectionUrl(selected);if(navigator.share){try{await navigator.share({title:`Lucra Marble · ${t('customerCollection')}`,text:`${selected.length} ${t('selectedBundles')}`,url});return}catch(error){if(error?.name==='AbortError')return}}await copyText(url,sharePresentationCollectionButton,t('selectionShared'))});
+presentationCollectionName.addEventListener('input',event=>{customerCollectionTitle=event.currentTarget.value.trim();try{localStorage.setItem('lucraCustomerCollectionTitle',customerCollectionTitle)}catch(error){}renderPresentationCollection()});
+sharePresentationCollectionButton.addEventListener('click',async()=>{const selected=selectedPresentationProducts();if(!selected.length)return;const title=customerCollectionTitle.trim(),url=publicCustomerCollectionUrl(selected,title);if(navigator.share){try{await navigator.share({title:`Lucra Marble · ${title||t('customerCollection')}`,text:customerCollectionSummary(selected,title),url});return}catch(error){if(error?.name==='AbortError')return}}await copyText(url,sharePresentationCollectionButton,t('selectionShared'))});
 printPresentationCollectionButton.addEventListener('click',printPresentationCollection);
+whatsappPresentationCollectionButton.addEventListener('click',()=>{const selected=selectedPresentationProducts();if(selected.length)openWhatsApp(customerCollectionSummary(selected,customerCollectionTitle.trim()))});
 clearPresentationCollectionButton.addEventListener('click',()=>{presentationSelection.clear();savePresentationSelection();render()});
 advancedFiltersToggle.addEventListener('click',()=>{const open=document.body.classList.toggle('filters-open');advancedFiltersToggle.setAttribute('aria-expanded',String(open));advancedFiltersToggle.querySelector('[data-i18n]').textContent=t(open?'hideFilters':'moreFilters');advancedFiltersToggle.lastElementChild.textContent=open?'⌃':'⌄'});
 showMissingPacking.addEventListener('change',event=>{showMissingPackingValue=event.currentTarget.checked;try{localStorage.setItem('lucraShowMissingPacking',showMissingPackingValue?'1':'0')}catch(error){}render()});
