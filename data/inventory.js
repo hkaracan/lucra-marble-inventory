@@ -1,7 +1,7 @@
 // Generated from inventory.json by sync_drive.py.
 window.LUCRA_INVENTORY = {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-04T07:38:47Z",
+  "syncedAt": "2026-09-04T07:41:45Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
