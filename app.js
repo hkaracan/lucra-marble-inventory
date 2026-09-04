@@ -22,6 +22,8 @@ Object.assign(translations.tr,{auditEyebrow:'SENKRONİZASYON DENETİMİ',syncAud
 let language='en';
 Object.assign(translations.en,{printSheet:'Print bundle sheet',selectedViews:'Selected views',fullGallery:'View full gallery',bundleSheet:'Bundle sheet',sizeDetailsNotListed:'Size details not listed'});
 Object.assign(translations.tr,{printSheet:'Demet sayfasını yazdır',selectedViews:'Seçili görseller',fullGallery:'Tam galeriyi görüntüle',bundleSheet:'Demet sayfası',sizeDetailsNotListed:'Ölçü ayrıntıları listelenmedi'});
+Object.assign(translations.en,{customerCollection:'CUSTOMER COLLECTION',customerCollectionHint:'Create a short list to share or print for a customer.',selectedBundles:'bundles selected',addToCollection:'Add to collection',removeFromCollection:'Remove from collection',printCollection:'Print collection',collectionSheet:'Customer collection',collectionIntro:'A curated selection from Lucra Marble.',onlineGallery:'Online gallery'});
+Object.assign(translations.tr,{customerCollection:'MÜŞTERİ KOLEKSİYONU',customerCollectionHint:'Müşteriyle paylaşmak veya yazdırmak için kısa bir seçim oluşturun.',selectedBundles:'demet seçildi',addToCollection:'Koleksiyona ekle',removeFromCollection:'Koleksiyondan çıkar',printCollection:'Koleksiyonu yazdır',collectionSheet:'Müşteri koleksiyonu',collectionIntro:'Lucra Marble’dan seçilmiş ürünler.',onlineGallery:'Çevrim içi galeri'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
 function applyLanguage(){
@@ -73,10 +75,11 @@ const healthSummary=document.querySelector('#healthSummary'), healthDetails=docu
 const auditSection=document.querySelector('.sync-audit'), auditPanel=document.querySelector('#auditPanel'), auditRows=document.querySelector('#auditRows'), auditEmpty=document.querySelector('#auditEmpty'), auditCount=document.querySelector('#auditCount'), auditFilterSelect=document.querySelector('#auditFilter'), toggleAuditButton=document.querySelector('#toggleAudit'), exportAuditButton=document.querySelector('#exportAudit');
 const followupFilterSelect=document.querySelector('#followupFilter');
 const collectionBanner=document.querySelector('#collectionBanner'), collectionTitle=document.querySelector('#collectionTitle'), collectionSummary=document.querySelector('#collectionSummary'), clearCollectionButton=document.querySelector('#clearCollection'), shareCollectionButton=document.querySelector('#shareCollection');
+const presentationCollection=document.querySelector('#presentationCollection'), presentationCollectionTitle=document.querySelector('#presentationCollectionTitle'), sharePresentationCollectionButton=document.querySelector('#sharePresentationCollection'), printPresentationCollectionButton=document.querySelector('#printPresentationCollection'), clearPresentationCollectionButton=document.querySelector('#clearPresentationCollection');
 const salesGate=document.querySelector('#salesGate'), salesGateForm=document.querySelector('#salesGateForm'), salesPasswordInput=document.querySelector('#salesPasswordInput'), salesGateError=document.querySelector('#salesGateError');
 const compareDialog=document.querySelector('#compareDialog'), compareContent=document.querySelector('#compareContent'), copyCompareButton=document.querySelector('#copyCompare');
 const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved'), shareProductButton=document.querySelector('#shareProduct');
-let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, auditFilter='all', salesFollowupFilter='all', sharedCollectionActive=false, sharedCollectionKeys=new Set();
+let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, auditFilter='all', salesFollowupFilter='all', sharedCollectionActive=false, sharedCollectionKeys=new Set(), presentationSelection=new Set();
 function readSharedCollection(){
   const value=new URL(location.href).searchParams.get('collection');
   if(value===null)return;
@@ -93,6 +96,7 @@ try{
 if(!shortlistLists[activeShortlistName])activeShortlistName=Object.keys(shortlistLists)[0]||'Sales shortlist';
 shortlist=new Set(Array.isArray(shortlistLists[activeShortlistName])?shortlistLists[activeShortlistName]:[]);
 try{salesNotes=JSON.parse(localStorage.getItem('lucraSalesNotes')||'{}')||{}}catch(error){salesNotes={}}
+try{presentationSelection=new Set(JSON.parse(localStorage.getItem('lucraCustomerCollection')||'[]'))}catch(error){presentationSelection=new Set()}
 showMissingPacking.checked=showMissingPackingValue;
 if(isGithubPages){
   syncButton.textContent='↻ Sync via GitHub Actions';
@@ -346,6 +350,18 @@ function deleteShortlist(){
   delete shortlistLists[activeShortlistName];activeShortlistName=Object.keys(shortlistLists)[0];shortlist=new Set(shortlistLists[activeShortlistName]||[]);saveShortlist();render();
 }
 function selectedProducts(){return products.filter(product=>shortlist.has(productKey(product)))}
+function selectedPresentationProducts(){return products.filter(product=>presentationSelection.has(productKey(product)))}
+function savePresentationSelection(){try{localStorage.setItem('lucraCustomerCollection',JSON.stringify([...presentationSelection]))}catch(error){}}
+function prunePresentationSelection(){const valid=new Set(products.map(product=>productKey(product)));let changed=false;presentationSelection.forEach(key=>{if(!valid.has(key)){presentationSelection.delete(key);changed=true}});if(changed)savePresentationSelection()}
+function togglePresentationSelection(id,selected){if(selected)presentationSelection.add(id);else presentationSelection.delete(id);savePresentationSelection();render()}
+function renderPresentationCollection(){
+  const selected=selectedPresentationProducts();
+  presentationCollection.hidden=document.body.classList.contains('sales-mode')||selected.length===0;
+  presentationCollectionTitle.textContent=`${selected.length} ${t('selectedBundles')}`;
+  sharePresentationCollectionButton.disabled=selected.length===0;
+  printPresentationCollectionButton.disabled=selected.length===0;
+  clearPresentationCollectionButton.disabled=selected.length===0;
+}
 function pruneShortlist(){
   const valid=new Set(products.map(product=>productKey(product)));let changed=false;
   shortlist.forEach(key=>{if(!valid.has(key)){shortlist.delete(key);changed=true}});
@@ -484,18 +500,42 @@ function printProductSheet(){
   Promise.race([Promise.all(waitForImages),new Promise(resolve=>setTimeout(resolve,3500))]).then(()=>window.print());
 }
 
+function printCollectionMarkup(records){
+  const cards=records.map(product=>{
+    const image=product.images?.[0],code=product.code&&product.code!=='—'?` · ${product.code}`:'';
+    const stock=product.pcs!=null?`${Number(product.pcs)} ${t('slabs')}`:t('countUnavailable');
+    const area=product.sqm!=null?` · ${Number(product.sqm).toFixed(2)} m²`:'';
+    const dimensions=product.dimensions?.length?productDimensions(product):t('sizeDetailsNotListed');
+    const onlineUrl=customerProductUrl(product),driveUrl=productDriveUrl(product);
+    return `<article class="print-collection-card"><div class="print-collection-card-head"><div><h2>${escapeHtml(product.name)}</h2><p>${escapeHtml(code.replace(/^ · /,''))}</p></div><span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></div>${image?.src?`<img class="print-collection-image" src="${escapeHtml(image.src)}" alt="${escapeHtml(product.name)}">`:'<div class="print-collection-image print-collection-no-image">No image</div>'}<dl class="print-collection-specs"><div><dt>${escapeHtml(t('stock'))}</dt><dd>${escapeHtml(`${stock}${area}`)}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl><div class="print-collection-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('onlineGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div></article>`;
+  }).join('');
+  return `<div class="print-collection-page"><header class="print-collection-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(t('collectionSheet'))}</h1><p>${escapeHtml(t('collectionIntro'))}</p></div><div class="print-sheet-label">${escapeHtml(`${records.length} ${t('selectedBundles')}`)}</div></header><section class="print-collection-grid">${cards}</section><p class="print-collection-footer">${escapeHtml(t('contactForPricing'))}</p></div>`;
+}
+function printPresentationCollection(){
+  const selected=selectedPresentationProducts();if(!selected.length)return;
+  let sheet=document.querySelector('#printCollectionSheet');
+  if(!sheet){sheet=document.createElement('div');sheet.id='printCollectionSheet';sheet.className='print-collection';document.body.appendChild(sheet)}
+  sheet.innerHTML=printCollectionMarkup(selected);
+  document.body.classList.add('printing-collection');
+  const cleanup=()=>{document.body.classList.remove('printing-collection');sheet.innerHTML='';window.removeEventListener('afterprint',cleanup)};
+  window.addEventListener('afterprint',cleanup);
+  const waitForImages=Array.from(sheet.querySelectorAll('img')).map(image=>new Promise(resolve=>{if(image.complete){resolve();return}image.onload=resolve;image.onerror=resolve;setTimeout(resolve,3200)}));
+  Promise.race([Promise.all(waitForImages),new Promise(resolve=>setTimeout(resolve,3500))]).then(()=>window.print());
+}
+
 function render(){
   renderCollectionBanner();
+  renderPresentationCollection();
   const visible=filteredProducts();
   count.textContent=`${visible.length} ${visible.length===1?t('bundleSingular'):t('bundles')}`;
   empty.hidden=visible.length>0;
   renderSalesDashboard(visible);
-  grid.innerHTML=visible.map((p,index)=>`<article class="card" tabindex="0" data-product-id="${escapeHtml(productKey(p))}">
+  grid.innerHTML=visible.map((p,index)=>{const selected=presentationSelection.has(productKey(p));return `<article class="card" tabindex="0" data-product-id="${escapeHtml(productKey(p))}">
     <div class="card-image"><div class="stone-placeholder" style="--stone:${p.stone}"></div>${p.images.length?`<img src="${escapeHtml(p.images[0].src)}" alt="${escapeHtml(p.name)} slab" loading="${index<2?'eager':'lazy'}" fetchpriority="${index<2?'high':'low'}" decoding="async" onload="this.classList.add('loaded')" onerror="this.remove();this.closest('.card-image').classList.add('image-error')"><span class="image-error-badge">${escapeHtml(t('imageLoadFailed'))}</span>`:''}
-      <span class="status-badge ${p.reserved?'reserved':''}">${escapeHtml(p.reserved?t('reserved'):t('available'))}</span>${p.media?`<span class="media-badge">${escapeHtml(p.media)}</span>`:''}</div>
+      <span class="status-badge ${p.reserved?'reserved':''}">${escapeHtml(p.reserved?t('reserved'):t('available'))}</span><button type="button" class="card-collection-toggle ${selected?'selected':''}" data-product-id="${escapeHtml(productKey(p))}" aria-pressed="${selected}" aria-label="${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))} ${escapeHtml(p.name)}"><span aria-hidden="true">${selected?'✓':'+'}</span><span>${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))}</span></button>${p.media?`<span class="media-badge">${escapeHtml(p.media)}</span>`:''}</div>
     <div class="card-info"><div><h3>${escapeHtml(p.name)}</h3><p class="card-meta">${p.pcs?escapeHtml(productStock(p)):p.packingList?escapeHtml(t('seePackingList')):escapeHtml(t('galleryAvailable'))}</p></div><span class="card-code">${escapeHtml(p.code)}</span></div>
-  </article>`).join('');
-  grid.querySelectorAll('.card').forEach(card=>{card.addEventListener('click',()=>openProduct(card.dataset.productId));card.addEventListener('keydown',e=>{if(e.key==='Enter')openProduct(card.dataset.productId)})});
+  </article>`}).join('');
+  grid.querySelectorAll('.card').forEach(card=>{const toggle=card.querySelector('.card-collection-toggle');toggle?.addEventListener('click',event=>{event.stopPropagation();togglePresentationSelection(card.dataset.productId,!presentationSelection.has(card.dataset.productId))});card.addEventListener('click',event=>{if(!event.target.closest('button'))openProduct(card.dataset.productId)});card.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.target.closest('button'))openProduct(card.dataset.productId)})});
 }
 
 document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.filter.active').classList.remove('active');btn.classList.add('active');currentFilter=btn.dataset.filter;render()}));
@@ -504,6 +544,9 @@ sortSelect.addEventListener('change',render);
 [minArea,maxArea,minSlabs,maxSlabs,dimensionFilter,packingFilter,mediaFilter].forEach(input=>input.addEventListener(input.tagName==='SELECT'?'change':'input',render));
 clearFiltersButton.addEventListener('click',()=>{minArea.value='';maxArea.value='';minSlabs.value='';maxSlabs.value='';dimensionFilter.value='';packingFilter.value='all';mediaFilter.value='all';render()});
 clearCollectionButton.addEventListener('click',clearSharedCollection);
+sharePresentationCollectionButton.addEventListener('click',async()=>{const selected=selectedPresentationProducts();if(!selected.length)return;const url=customerCollectionUrl(selected);if(navigator.share){try{await navigator.share({title:`Lucra Marble · ${t('customerCollection')}`,text:`${selected.length} ${t('selectedBundles')}`,url});return}catch(error){if(error?.name==='AbortError')return}}await copyText(url,sharePresentationCollectionButton,t('selectionShared'))});
+printPresentationCollectionButton.addEventListener('click',printPresentationCollection);
+clearPresentationCollectionButton.addEventListener('click',()=>{presentationSelection.clear();savePresentationSelection();render()});
 advancedFiltersToggle.addEventListener('click',()=>{const open=document.body.classList.toggle('filters-open');advancedFiltersToggle.setAttribute('aria-expanded',String(open));advancedFiltersToggle.querySelector('[data-i18n]').textContent=t(open?'hideFilters':'moreFilters');advancedFiltersToggle.lastElementChild.textContent=open?'⌃':'⌄'});
 showMissingPacking.addEventListener('change',event=>{showMissingPackingValue=event.currentTarget.checked;try{localStorage.setItem('lucraShowMissingPacking',showMissingPackingValue?'1':'0')}catch(error){}render()});
 followupFilterSelect.addEventListener('change',event=>{salesFollowupFilter=event.currentTarget.value;render()});
@@ -655,7 +698,7 @@ async function loadInventory(){
       if(!response.ok)throw new Error('No synced inventory');
       data=await response.json();
     }
-    products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));pruneShortlist();inventoryReport=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products);syncedAt=data.syncedAt;
+    products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));pruneShortlist();prunePresentationSelection();inventoryReport=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products);syncedAt=data.syncedAt;
     syncStatus.innerHTML=`<i></i> ${products.length} bundles · ${new Date(syncedAt).toLocaleDateString()}`;
     setSyncFeedback({...data,count:products.length},location.protocol==='file:'?'Local snapshot':isGithubPages?'Last published sync':'Last sync');
   }catch(error){syncStatus.innerHTML='<i></i> Preview data';syncStatus.title='';syncFeedback.textContent='';}

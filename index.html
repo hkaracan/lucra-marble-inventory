@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260904-11" />
+  <link rel="stylesheet" href="styles.css?v=20260904-12" />
 </head>
 <body>
   <header class="site-header">
@@ -72,6 +72,19 @@
         <button id="clearFilters" class="quiet-button" type="button" data-i18n="clearFilters">Clear filters</button>
       </div>
       <p class="sync-feedback sales-only" id="syncFeedback" role="status" aria-live="polite"></p>
+
+      <section class="presentation-collection" id="presentationCollection" hidden aria-labelledby="presentationCollectionTitle">
+        <div class="presentation-collection-copy">
+          <p class="eyebrow" data-i18n="customerCollection">CUSTOMER COLLECTION</p>
+          <strong id="presentationCollectionTitle">0 bundles selected</strong>
+          <span data-i18n="customerCollectionHint">Create a short list to share or print for a customer.</span>
+        </div>
+        <div class="presentation-collection-actions">
+          <button id="sharePresentationCollection" class="secondary" type="button" disabled data-i18n="shareSelection">Share selection link</button>
+          <button id="printPresentationCollection" class="primary" type="button" disabled data-i18n="printCollection">Print collection</button>
+          <button id="clearPresentationCollection" class="quiet-button" type="button" disabled data-i18n="clear">Clear</button>
+        </div>
+      </section>
 
       <section class="sales-dashboard sales-only" id="salesDashboard" aria-labelledby="salesDashboardTitle">
         <div class="sales-dashboard-head">
@@ -226,6 +239,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260904-11"></script>
+  <script src="app.js?v=20260904-12"></script>
 </body>
 </html>
