@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260904-8" />
+  <link rel="stylesheet" href="styles.css?v=20260904-9" />
 </head>
 <body>
   <header class="site-header">
@@ -42,6 +42,10 @@
           <h2 id="catalogTitle" data-i18n="slabInventory">Slab inventory</h2>
         </div>
         <p class="result-count" id="resultCount"></p>
+      </div>
+      <div class="collection-banner" id="collectionBanner" hidden>
+        <div><p class="eyebrow" data-i18n="sharedSelection">SHARED SELECTION</p><strong id="collectionTitle"></strong><span id="collectionSummary"></span></div>
+        <button id="clearCollection" class="quiet-button" type="button" data-i18n="showAllBundles">Show all bundles</button>
       </div>
 
       <div class="controls">
@@ -109,6 +113,7 @@
           <div class="shortlist-actions">
             <button id="compareSelected" class="secondary" type="button" disabled data-i18n="compareSelected">Compare selected</button>
             <button id="copyShortlist" class="secondary" type="button" disabled data-i18n="copySummary">Copy summary</button>
+            <button id="shareCollection" class="secondary" type="button" disabled data-i18n="shareSelection">Share selection link</button>
             <button id="whatsappShortlist" class="secondary" type="button" disabled data-i18n="whatsappCustomer">WhatsApp customer</button>
             <button id="exportShortlist" class="secondary" type="button" disabled data-i18n="exportCsv">Export CSV</button>
             <button id="exportVisible" class="secondary" type="button" disabled data-i18n="exportVisible">Export visible CSV</button>
@@ -221,6 +226,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260904-8"></script>
+  <script src="app.js?v=20260904-9"></script>
 </body>
 </html>

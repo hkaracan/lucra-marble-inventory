@@ -95,3 +95,7 @@ body.sales-mode .sales-dashboard{display:block}
 @media(max-width:900px){.sales-view-filter{flex:1 1 100%;width:100%;max-width:280px}}
 @media(max-width:720px){.sales-row>.sales-links{align-items:flex-start;border-bottom:0}.sales-links{gap:6px}.sales-customer-action{font-size:10px}}
 @media(max-width:580px){.sales-view-filter{max-width:none}.sales-view-filter label{justify-content:space-between}.sales-view-filter select{flex:1}}
+
+/* Customer collection links */
+.collection-banner{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:-4px 0 24px;padding:16px 18px;border:1px solid #9fd8e3;background:#f1fafc}.collection-banner .eyebrow{margin:0 0 6px}.collection-banner strong{font:600 15px Manrope}.collection-banner>div>span{color:var(--muted);font-size:11px}.collection-banner .quiet-button{flex:0 0 auto;color:var(--navy);border:1px solid #b8dfe6;background:white}.collection-banner .quiet-button:hover{border-color:var(--aqua);background:#f8fdfe}
+@media(max-width:580px){.collection-banner{align-items:flex-start;flex-direction:column;gap:10px;margin:0 0 20px;padding:14px}.collection-banner .quiet-button{width:100%;text-align:left}}
