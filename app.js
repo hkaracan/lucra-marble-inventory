@@ -341,6 +341,7 @@ const dialog=document.querySelector('#productDialog');
 const galleryImage=document.querySelector('#dialogImage'), galleryHint=document.querySelector('#galleryHint'), galleryZoomButton=document.querySelector('#galleryZoom'), galleryExpandButton=document.querySelector('#galleryExpand');
 let galleryPanX=0, galleryPanY=0, galleryPanning=false, galleryPanStart=null;
 function openProduct(id){
+  try{
   currentProduct=products.find(p=>productKey(p)===id); imageIndex=0;
   if(!currentProduct)return;
   document.querySelector('#dialogCode').textContent=currentProduct.code;
@@ -359,6 +360,10 @@ function openProduct(id){
   salesNote.value=followup.note;
   noteSaved.textContent='';
   updateGallery(); dialog.showModal();
+  }catch(error){
+    document.documentElement.dataset.lucraError=error instanceof Error?error.message:String(error);
+    throw error;
+  }
 }
 function updateGallery(){
   const img=galleryImage;
