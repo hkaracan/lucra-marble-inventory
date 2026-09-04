@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260904-7" />
+  <link rel="stylesheet" href="styles.css?v=20260904-8" />
 </head>
 <body>
   <header class="site-header">
@@ -103,6 +103,7 @@
           </div>
         </section>
         <div class="sales-tools">
+          <div class="sales-view-filter"><label><span data-i18n="followupFilter">Follow-up</span><select id="followupFilter"><option value="all" data-i18n="allFollowups">All follow-up statuses</option><option value="new" data-i18n="new">New</option><option value="sent" data-i18n="sent">Sent to customer</option><option value="waiting" data-i18n="waiting">Waiting for reply</option><option value="quoted" data-i18n="quoted">Quoted</option><option value="closed" data-i18n="closed">Closed</option></select></label></div>
           <div class="shortlist-manager"><label><span data-i18n="shortlist">Shortlist</span><select id="shortlistSelect" aria-label="Select shortlist"></select></label><button id="newShortlist" class="quiet-button" type="button" data-i18n="newList">New list</button><button id="renameShortlist" class="quiet-button" type="button" data-i18n="rename">Rename</button><button id="deleteShortlist" class="quiet-button" type="button" data-i18n="delete">Delete</button></div>
           <span class="shortlist-count" id="shortlistCount">0 selected</span>
           <div class="shortlist-actions">
@@ -220,6 +221,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260904-7"></script>
+  <script src="app.js?v=20260904-8"></script>
 </body>
 </html>
