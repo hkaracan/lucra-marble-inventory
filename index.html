@@ -22,23 +22,24 @@
       <button class="mode-switch" id="modeSwitch" type="button" aria-label="Switch display mode">
         <span class="mode-icon">◫</span><span id="modeLabel">Presentation Mode</span>
       </button>
+      <button class="language-switch" id="languageSwitch" type="button" aria-label="Switch language">TR</button>
     </div>
   </header>
 
   <main>
     <section class="hero">
       <div>
-        <p class="eyebrow">DENIZLI SLAB INVENTORY</p>
-        <h1>Available natural stone,<br><em>ready to discover.</em></h1>
+        <p class="eyebrow" data-i18n="heroEyebrow">DENIZLI SLAB INVENTORY</p>
+        <h1><span data-i18n="heroTitle">Available natural stone,</span><br><em data-i18n="heroTitleEm">ready to discover.</em></h1>
       </div>
-      <p class="hero-copy">Explore Lucra Marble's current slab collection. Search by material, browse individual bundles, and view every slab in detail.</p>
+      <p class="hero-copy" data-i18n="heroCopy">Explore Lucra Marble's current slab collection. Search by material, browse individual bundles, and view every slab in detail.</p>
     </section>
 
     <section class="catalog" aria-labelledby="catalogTitle">
       <div class="catalog-head">
         <div>
-          <p class="eyebrow">LIVE COLLECTION</p>
-          <h2 id="catalogTitle">Slab inventory</h2>
+          <p class="eyebrow" data-i18n="liveCollection">LIVE COLLECTION</p>
+          <h2 id="catalogTitle" data-i18n="slabInventory">Slab inventory</h2>
         </div>
         <p class="result-count" id="resultCount"></p>
       </div>
@@ -46,49 +47,64 @@
       <div class="controls">
         <label class="search">
           <span>⌕</span>
-          <input id="searchInput" type="search" placeholder="Search material or bundle ID" autocomplete="off" />
+          <input id="searchInput" type="search" placeholder="Search material or bundle ID" data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
         </label>
         <div class="filters" role="group" aria-label="Inventory filters">
-          <button class="filter active" data-filter="all" type="button">All bundles</button>
-          <button class="filter" data-filter="available" type="button">Available</button>
-          <button class="filter" data-filter="reserved" type="button">Reserved</button>
+          <button class="filter active" data-filter="all" data-i18n="allBundles" type="button">All bundles</button>
+          <button class="filter" data-filter="available" data-i18n="available" type="button">Available</button>
+          <button class="filter" data-filter="reserved" data-i18n="reserved" type="button">Reserved</button>
         </div>
       </div>
       <div class="advanced-filters" aria-label="More inventory filters">
-        <label>Sort <select id="sortSelect"><option value="name">Name</option><option value="slabs">Most slabs</option><option value="area">Largest area</option></select></label>
+        <label><span data-i18n="sort">Sort</span> <select id="sortSelect"><option value="name" data-i18n="name">Name</option><option value="slabs" data-i18n="mostSlabs">Most slabs</option><option value="area" data-i18n="largestArea">Largest area</option></select></label>
+        <label><span data-i18n="minArea">Min m²</span> <input id="minArea" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0" /></label>
+        <label><span data-i18n="maxArea">Max m²</span> <input id="maxArea" type="number" min="0" step="0.01" inputmode="decimal" placeholder="—" /></label>
+        <label><span data-i18n="minSlabs">Min slabs</span> <input id="minSlabs" type="number" min="0" step="1" inputmode="numeric" placeholder="0" /></label>
+        <label><span data-i18n="maxSlabs">Max slabs</span> <input id="maxSlabs" type="number" min="0" step="1" inputmode="numeric" placeholder="—" /></label>
+        <label><span data-i18n="size">Size</span> <input id="dimensionFilter" type="search" data-i18n-placeholder="sizePlaceholder" placeholder="e.g. 190 × 290" /></label>
+        <label><span data-i18n="packing">Packing</span> <select id="packingFilter"><option value="all" data-i18n="allData">All data</option><option value="connected" data-i18n="connected">Connected</option><option value="partial" data-i18n="fileFound">File found</option><option value="missing" data-i18n="missing">Missing</option></select></label>
+        <label><span data-i18n="photos">Photos</span> <select id="mediaFilter"><option value="all" data-i18n="allPhotos">All photos</option><option value="with-images" data-i18n="withImages">With images</option><option value="missing" data-i18n="missingImages">Missing images</option></select></label>
+        <button id="clearFilters" class="quiet-button" type="button" data-i18n="clearFilters">Clear filters</button>
       </div>
       <p class="sync-feedback sales-only" id="syncFeedback" role="status" aria-live="polite"></p>
 
       <section class="sales-dashboard sales-only" id="salesDashboard" aria-labelledby="salesDashboardTitle">
         <div class="sales-dashboard-head">
           <div class="sales-dashboard-head-copy">
-            <p class="eyebrow">SALES WORKSPACE</p>
-            <h3 id="salesDashboardTitle">Inventory dashboard</h3>
-            <p class="sales-dashboard-hint">Click a product row to open its full image gallery and packing-list details.</p>
+            <p class="eyebrow" data-i18n="salesWorkspace">SALES WORKSPACE</p>
+            <h3 id="salesDashboardTitle" data-i18n="inventoryDashboard">Inventory dashboard</h3>
+            <p class="sales-dashboard-hint" data-i18n="salesHint">Click a product row to open its full image gallery and packing-list details.</p>
           </div>
-          <label class="show-missing"><input id="showMissingPacking" type="checkbox" checked /> <span>Show bundles without packing lists</span></label>
+          <label class="show-missing"><input id="showMissingPacking" type="checkbox" checked /> <span data-i18n="showMissingPacking">Show bundles without packing lists</span></label>
         </div>
         <div class="sales-kpis" id="salesKpis"></div>
+        <section class="inventory-health" aria-labelledby="inventoryHealthTitle">
+          <div class="inventory-health-head"><div><p class="eyebrow" data-i18n="dataQuality">DATA QUALITY</p><h4 id="inventoryHealthTitle" data-i18n="inventoryHealth">Inventory health</h4></div><button id="toggleHealth" class="quiet-button" type="button" aria-expanded="false" data-i18n="showDetails">Show details</button></div>
+          <div id="healthSummary" class="health-summary"></div>
+          <div id="healthDetails" class="health-details" hidden></div>
+        </section>
         <div class="sales-tools">
+          <div class="shortlist-manager"><label><span data-i18n="shortlist">Shortlist</span><select id="shortlistSelect" aria-label="Select shortlist"></select></label><button id="newShortlist" class="quiet-button" type="button" data-i18n="newList">New list</button><button id="renameShortlist" class="quiet-button" type="button" data-i18n="rename">Rename</button><button id="deleteShortlist" class="quiet-button" type="button" data-i18n="delete">Delete</button></div>
           <span class="shortlist-count" id="shortlistCount">0 selected</span>
           <div class="shortlist-actions">
-            <button id="compareSelected" class="secondary" type="button" disabled>Compare selected</button>
-            <button id="copyShortlist" class="secondary" type="button" disabled>Copy summary</button>
-            <button id="whatsappShortlist" class="secondary" type="button" disabled>WhatsApp customer</button>
-            <button id="exportShortlist" class="secondary" type="button" disabled>Export CSV</button>
-            <button id="clearShortlist" class="quiet-button" type="button" disabled>Clear</button>
+            <button id="compareSelected" class="secondary" type="button" disabled data-i18n="compareSelected">Compare selected</button>
+            <button id="copyShortlist" class="secondary" type="button" disabled data-i18n="copySummary">Copy summary</button>
+            <button id="whatsappShortlist" class="secondary" type="button" disabled data-i18n="whatsappCustomer">WhatsApp customer</button>
+            <button id="exportShortlist" class="secondary" type="button" disabled data-i18n="exportCsv">Export CSV</button>
+            <button id="clearShortlist" class="quiet-button" type="button" disabled data-i18n="clear">Clear</button>
           </div>
         </div>
         <p class="sales-filter-note" id="salesFilterNote"></p>
         <div class="sales-list" role="table" aria-label="Sales inventory list">
           <div class="sales-list-head" role="row">
-            <span role="columnheader">Product / select</span>
-            <span role="columnheader">Status</span>
-            <span role="columnheader">Stock</span>
-            <span role="columnheader">Sizes</span>
-            <span role="columnheader">Packing list</span>
-            <span role="columnheader">Media</span>
-            <span role="columnheader">Source</span>
+            <span role="columnheader" data-i18n="productSelect">Product / select</span>
+            <span role="columnheader" data-i18n="status">Status</span>
+            <span role="columnheader" data-i18n="stock">Stock</span>
+            <span role="columnheader" data-i18n="sizes">Sizes</span>
+            <span role="columnheader" data-i18n="packingList">Packing list</span>
+            <span role="columnheader" data-i18n="media">Media</span>
+            <span role="columnheader" data-i18n="followUp">Follow-up</span>
+            <span role="columnheader" data-i18n="source">Source</span>
           </div>
           <div id="salesRows"></div>
         </div>
@@ -96,7 +112,7 @@
 
       <div class="grid" id="productGrid"></div>
       <div class="empty" id="emptyState" hidden>
-        <p>No matching bundles</p><span>Try another material name or clear the filter.</span>
+        <p data-i18n="noMatchingBundles">No matching bundles</p><span data-i18n="tryAnother">Try another material name or clear the filter.</span>
       </div>
     </section>
   </main>
@@ -122,23 +138,30 @@
         <p class="gallery-hint" id="galleryHint" hidden></p>
       </div>
         <div class="dialog-info">
-        <div class="dialog-title-row"><div><p class="eyebrow">BUNDLE <span id="dialogCode"></span></p><h2 id="dialogName"></h2></div><span id="dialogStatus"></span></div>
+        <div class="dialog-title-row"><div><p class="eyebrow" data-i18n="bundle">BUNDLE <span id="dialogCode"></span></p><h2 id="dialogName"></h2></div><span id="dialogStatus"></span></div>
         <div class="slab-picker" id="slabPickerWrap">
-          <div class="slab-picker-head"><span>Jump to slab</span><small>Select a slab number or additional view</small></div>
+          <div class="slab-picker-head"><span data-i18n="jumpToSlab">Jump to slab</span><small data-i18n="slabPickerHint">Select a slab number or additional view</small></div>
           <div class="slab-numbers" id="slabNumbers" aria-label="Select slab number"></div>
         </div>
         <dl class="specs">
-          <div><dt>Total slabs</dt><dd id="dialogPcs"></dd></div>
-          <div><dt>Total area</dt><dd id="dialogSqm"></dd></div>
-          <div><dt>Dimensions</dt><dd id="dialogSize"></dd></div>
-          <div><dt>Location</dt><dd>Denizli, Türkiye</dd></div>
+          <div><dt data-i18n="totalSlabs">Total slabs</dt><dd id="dialogPcs"></dd></div>
+          <div><dt data-i18n="totalArea">Total area</dt><dd id="dialogSqm"></dd></div>
+          <div><dt data-i18n="dimensions">Dimensions</dt><dd id="dialogSize"></dd></div>
+          <div><dt data-i18n="location">Location</dt><dd>Denizli, Türkiye</dd></div>
         </dl>
         <div class="bundle-lines sales-only" id="bundleLines"></div>
+        <section class="sales-followup sales-only" aria-labelledby="followupTitle">
+          <div class="followup-head"><h3 id="followupTitle" data-i18n="followUp">Follow-up</h3><span id="noteSaved" role="status"></span></div>
+          <label><span data-i18n="followUpStatus">Status</span><select id="followupStatus"><option value="new" data-i18n="new">New</option><option value="sent" data-i18n="sent">Sent to customer</option><option value="waiting" data-i18n="waiting">Waiting for reply</option><option value="quoted" data-i18n="quoted">Quoted</option><option value="closed" data-i18n="closed">Closed</option></select></label>
+          <label><span data-i18n="salesNote">Sales note</span><textarea id="salesNote" rows="3" data-i18n-placeholder="salesNotePlaceholder" placeholder="Add a private note for your team"></textarea></label>
+          <button id="saveSalesNote" class="secondary" type="button" data-i18n="saveNote">Save note</button>
+        </section>
+        <p class="customer-cta" data-i18n="customerCta">Interested in this bundle? Share the page with your team or contact Lucra Marble for current pricing and availability.</p>
         <div class="dialog-actions">
-          <button id="copyLink" class="primary" type="button">Copy bundle link</button>
-          <button id="printProduct" class="secondary sales-only" type="button">Print sheet</button>
-          <button id="whatsappProduct" class="secondary sales-only" type="button">WhatsApp customer</button>
-          <a id="openDrive" class="secondary sales-only" target="_blank" rel="noreferrer">Open in Drive</a>
+          <button id="copyLink" class="primary" type="button" data-i18n="copyLink">Copy bundle link</button>
+          <button id="printProduct" class="secondary sales-only" type="button" data-i18n="printSheet">Print sheet</button>
+          <button id="whatsappProduct" class="secondary" type="button" data-i18n="whatsappCustomer">WhatsApp customer</button>
+          <a id="openDrive" class="secondary sales-only" target="_blank" rel="noreferrer" data-i18n="openDrive">Open in Drive</a>
         </div>
       </div>
     </div>
@@ -146,16 +169,16 @@
 
   <dialog id="salesGate" class="access-dialog" aria-labelledby="salesGateTitle">
     <div class="access-shell">
-      <p class="eyebrow">SALES ACCESS</p>
-      <h2 id="salesGateTitle">Open sales dashboard</h2>
-      <p>Enter the demo password to view packing-list and source details.</p>
+      <p class="eyebrow" data-i18n="salesAccess">SALES ACCESS</p>
+      <h2 id="salesGateTitle" data-i18n="openSalesDashboard">Open sales dashboard</h2>
+      <p data-i18n="salesAccessHint">Enter the demo password to view packing-list and source details.</p>
       <form id="salesGateForm">
-        <label for="salesPasswordInput">Password</label>
+        <label for="salesPasswordInput" data-i18n="password">Password</label>
         <input id="salesPasswordInput" type="password" autocomplete="current-password" />
         <p class="access-error" id="salesGateError" role="alert"></p>
         <div class="dialog-actions">
-          <button id="cancelSalesAccess" class="secondary" type="button">Cancel</button>
-          <button class="primary" type="submit">Unlock dashboard</button>
+          <button id="cancelSalesAccess" class="secondary" type="button" data-i18n="cancel">Cancel</button>
+          <button class="primary" type="submit" data-i18n="unlockDashboard">Unlock dashboard</button>
         </div>
       </form>
       <small>Demo protection only. Real access control requires server-side authentication.</small>
@@ -165,12 +188,12 @@
   <dialog id="compareDialog" class="compare-dialog" aria-labelledby="compareTitle">
     <div class="compare-shell">
       <button class="dialog-close" id="compareClose" type="button" aria-label="Close comparison">×</button>
-      <p class="eyebrow">SHORTLIST</p>
-      <h2 id="compareTitle">Compare selected bundles</h2>
+      <p class="eyebrow" data-i18n="shortlist">SHORTLIST</p>
+      <h2 id="compareTitle" data-i18n="compareBundles">Compare selected bundles</h2>
       <div class="compare-content" id="compareContent"></div>
       <div class="dialog-actions">
-        <button id="copyCompare" class="primary" type="button">Copy comparison</button>
-        <button id="closeCompare" class="secondary" type="button">Close</button>
+        <button id="copyCompare" class="primary" type="button" data-i18n="copyComparison">Copy comparison</button>
+        <button id="closeCompare" class="secondary" type="button" data-i18n="close">Close</button>
       </div>
     </div>
   </dialog>
