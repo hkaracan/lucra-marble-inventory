@@ -144,12 +144,36 @@ function updateShortlistControls(){
   clearShortlistButton.disabled=selected.length===0;
 }
 function productDriveUrl(product){return product.folderId?`https://drive.google.com/drive/folders/${encodeURIComponent(product.folderId)}`:rootFolder}
+function customerProductUrl(product){return `${location.href.split('#')[0]}#bundle-${encodeURIComponent(productKey(product))}`}
 function productSummary(product){
   const packing=packingListSummary(product),media=productMediaSummary(product);
   return `${product.name} ${product.code} — ${product.reserved?'Reserved':'Available'}\nStock: ${productStock(product)}\nSizes: ${productDimensions(product)}\nPacking list: ${packing.label} (${packing.detail})\nMedia: ${media.label} (${media.detail})\nDrive: ${productDriveUrl(product)}`;
 }
 function shortlistSummary(title='Lucra Marble shortlist'){
   return [title,...selectedProducts().map((product,index)=>`${index+1}. ${productSummary(product)}`)].join('\n\n');
+}
+function customerProductSummary(product){
+  const code=product.code&&product.code!=='—'?` (${product.code})`:'';
+  const stock=product.pcs!=null?`${Number(product.pcs)} slabs`:'Bundle details available on request';
+  const area=product.sqm!=null?` · ${Number(product.sqm).toFixed(2)} m²`:'';
+  const dimensions=product.dimensions?.length?`Sizes: ${productDimensions(product)}`:'';
+  return [
+    `Lucra Marble · ${product.name}${code}`,
+    product.reserved?'Currently reserved':'Available',
+    `Stock: ${stock}${area}`,
+    dimensions,
+    'Location: Denizli, Türkiye',
+    `Photos & details: ${customerProductUrl(product)}`,
+  ].filter(Boolean).join('\n');
+}
+function customerShortlistSummary(){
+  return [
+    'Lucra Marble · Selected stone options',
+    '',
+    ...selectedProducts().map((product,index)=>`${index+1}. ${customerProductSummary(product)}`),
+    '',
+    'Please contact us for pricing, availability confirmation, and delivery information.',
+  ].join('\n\n');
 }
 async function copyText(text,button,successText){
   const original=button.textContent;
@@ -224,12 +248,13 @@ salesGateForm.addEventListener('submit',event=>{
 document.querySelector('#cancelSalesAccess').addEventListener('click',()=>salesGate.close());
 compareSelectedButton.addEventListener('click',()=>{renderCompare();compareDialog.showModal()});
 copyShortlistButton.addEventListener('click',()=>copyText(shortlistSummary(),copyShortlistButton,'Copied'));
-whatsappShortlistButton.addEventListener('click',()=>openWhatsApp(shortlistSummary()));
+whatsappShortlistButton.addEventListener('click',()=>openWhatsApp(customerShortlistSummary()));
 exportShortlistButton.addEventListener('click',downloadShortlist);
 clearShortlistButton.addEventListener('click',()=>{shortlist.clear();saveShortlist();render()});
 
 const dialog=document.querySelector('#productDialog');
 const galleryImage=document.querySelector('#dialogImage'), galleryHint=document.querySelector('#galleryHint'), galleryZoomButton=document.querySelector('#galleryZoom'), galleryExpandButton=document.querySelector('#galleryExpand');
+let galleryPanX=0, galleryPanY=0, galleryPanning=false, galleryPanStart=null;
 function openProduct(id){
   currentProduct=products.find(p=>productKey(p)===id); imageIndex=0;
   if(!currentProduct)return;
@@ -250,7 +275,7 @@ function updateGallery(){
   const img=galleryImage;
   const selected=currentProduct.images[imageIndex];
   const slabLabel=selected?.label??'';
-  img.classList.remove('zoomed');galleryZoomButton.textContent='＋ Zoom';
+  galleryPanX=0;galleryPanY=0;img.classList.remove('zoomed','panning');img.style.transform='';galleryZoomButton.textContent='＋ Zoom';
   galleryHint.hidden=currentProduct.images.length>0;galleryHint.textContent=currentProduct.images.length?'':'No image is available for this bundle.';
   if(currentProduct.images.length){img.src=selected.src;img.alt=`${currentProduct.name} ${selected.type==='slab'?`slab ${selected.label}`:selected.label}`;img.style.background=''}else{img.removeAttribute('src');img.alt='';img.style.background=currentProduct.stone}
   document.querySelector('#galleryCount').textContent=currentProduct.images.length?`${selected.type==='slab'?`Slab ${slabLabel}`:selected.label} · ${imageIndex+1} / ${currentProduct.images.length}`:'Drive gallery';
@@ -268,15 +293,20 @@ document.querySelector('#nextImage').addEventListener('click',()=>{imageIndex=(i
 document.querySelector('#dialogClose').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
 galleryImage.addEventListener('error',()=>{galleryHint.hidden=false;galleryHint.textContent='This image is unavailable from the public Drive folder.'});
-function toggleGalleryZoom(){if(!currentProduct?.images.length)return;galleryImage.classList.toggle('zoomed');galleryZoomButton.textContent=galleryImage.classList.contains('zoomed')?'− Reset zoom':'＋ Zoom'}
+function applyGalleryTransform(){galleryImage.style.transform=galleryImage.classList.contains('zoomed')?`translate(${galleryPanX}px, ${galleryPanY}px) scale(1.55)`:''}
+function toggleGalleryZoom(){if(!currentProduct?.images.length)return;const zoomed=galleryImage.classList.toggle('zoomed');if(!zoomed){galleryPanX=0;galleryPanY=0}galleryZoomButton.textContent=zoomed?'− Reset zoom':'＋ Zoom';applyGalleryTransform()}
 galleryImage.addEventListener('dblclick',toggleGalleryZoom);
 galleryZoomButton.addEventListener('click',toggleGalleryZoom);
+galleryImage.addEventListener('pointerdown',event=>{if(!galleryImage.classList.contains('zoomed'))return;galleryPanning=true;galleryPanStart={x:event.clientX,y:event.clientY,panX:galleryPanX,panY:galleryPanY};galleryImage.classList.add('panning');galleryImage.setPointerCapture?.(event.pointerId)});
+galleryImage.addEventListener('pointermove',event=>{if(!galleryPanning||!galleryPanStart)return;galleryPanX=galleryPanStart.panX+event.clientX-galleryPanStart.x;galleryPanY=galleryPanStart.panY+event.clientY-galleryPanStart.y;applyGalleryTransform()});
+function stopGalleryPan(){galleryPanning=false;galleryPanStart=null;galleryImage.classList.remove('panning')}
+galleryImage.addEventListener('pointerup',stopGalleryPan);galleryImage.addEventListener('pointercancel',stopGalleryPan);galleryImage.addEventListener('pointerleave',event=>{if(galleryPanning&&!galleryImage.hasPointerCapture?.(event.pointerId))stopGalleryPan()});
 galleryExpandButton.addEventListener('click',()=>{dialog.classList.toggle('gallery-focus');galleryExpandButton.textContent=dialog.classList.contains('gallery-focus')?'⤡ Exit fullscreen':'⤢ Fullscreen'});
 dialog.addEventListener('keydown',event=>{if(!dialog.open||event.target.matches('input,textarea,select'))return;if(event.key==='ArrowLeft'&&currentProduct?.images.length){event.preventDefault();imageIndex=(imageIndex-1+currentProduct.images.length)%currentProduct.images.length;updateGallery()}if(event.key==='ArrowRight'&&currentProduct?.images.length){event.preventDefault();imageIndex=(imageIndex+1)%currentProduct.images.length;updateGallery()}if(event.key.toLowerCase()==='z'){event.preventDefault();toggleGalleryZoom()}});
-dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');galleryExpandButton.textContent='⤢ Fullscreen';galleryImage.classList.remove('zoomed');galleryZoomButton.textContent='＋ Zoom'});
+dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');galleryExpandButton.textContent='⤢ Fullscreen';galleryPanX=0;galleryPanY=0;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';galleryZoomButton.textContent='＋ Zoom'});
 document.querySelector('#copyLink').addEventListener('click',async(e)=>{const url=`${location.href.split('#')[0]}#bundle-${encodeURIComponent(productKey(currentProduct))}`;await navigator.clipboard.writeText(url);e.currentTarget.textContent='Link copied';setTimeout(()=>e.currentTarget.textContent='Copy bundle link',1400)});
 document.querySelector('#printProduct').addEventListener('click',()=>printProductSheet());
-document.querySelector('#whatsappProduct').addEventListener('click',()=>openWhatsApp(productSummary(currentProduct)));
+document.querySelector('#whatsappProduct').addEventListener('click',()=>openWhatsApp(customerProductSummary(currentProduct)));
 document.querySelector('#compareClose').addEventListener('click',()=>compareDialog.close());
 document.querySelector('#closeCompare').addEventListener('click',()=>compareDialog.close());
 document.querySelector('#copyCompare').addEventListener('click',()=>copyText(shortlistSummary('Lucra Marble comparison'),copyCompareButton,'Copied'));
