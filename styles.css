@@ -190,6 +190,7 @@ body.shared-collection-mode .hero{display:none}body.shared-collection-mode .mode
 @media(max-width:580px){.collection-title-field{max-width:none}.collection-title-field input{font-size:12px}body.shared-collection-mode .catalog{padding-top:32px}}
 
 /* Customer-ready printable bundle sheet */
+.collection-review{margin-top:2px}.collection-review summary{display:inline-block;color:var(--navy);font-size:10px;font-weight:700;cursor:pointer}.collection-review summary:hover{color:#24788c}.collection-review-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 16px;max-height:190px;overflow:auto;margin-top:9px;padding:10px;border:1px solid #b8dfe6;background:white}.collection-review-list span{display:flex;flex-direction:column;gap:2px;min-width:0}.collection-review-list strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-size:11px}.collection-review-list small{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.05em}
 .print-sheet{display:none}
 .dialog-actions{flex-wrap:wrap}.dialog-actions button,.dialog-actions a{min-width:140px}
 @media(max-width:580px){.dialog-actions button,.dialog-actions a{min-width:0;flex-basis:calc(50% - 5px)}}

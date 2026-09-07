@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260907-38" />
+  <link rel="stylesheet" href="styles.css?v=20260907-39" />
 </head>
 <body>
   <header class="site-header">
@@ -87,6 +87,10 @@
           <label class="collection-title-field"><span data-i18n="collectionTitleLabel">Collection title</span><input id="presentationCollectionName" type="text" maxlength="80" data-i18n-placeholder="collectionTitlePlaceholder" placeholder="Optional project or customer name" /></label>
           <strong id="presentationCollectionTitle">0 bundles selected</strong>
           <span id="presentationCollectionSummary"></span>
+          <details class="collection-review">
+            <summary data-i18n="reviewSelection">Review selected bundles</summary>
+            <div id="presentationCollectionItems" class="collection-review-list"></div>
+          </details>
           <span data-i18n="customerCollectionHint">Create a short list to share or print for a customer.</span>
         </div>
         <div class="presentation-collection-actions">
@@ -265,6 +269,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260907-38"></script>
+  <script src="app.js?v=20260907-39"></script>
 </body>
 </html>
