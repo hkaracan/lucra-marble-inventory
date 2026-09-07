@@ -708,7 +708,28 @@ document.querySelector('#nextImage').addEventListener('click',()=>moveGalleryIma
 document.querySelector('#dialogClose').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
 galleryImage.addEventListener('error',()=>{galleryHint.hidden=false;galleryHint.textContent='This image is unavailable from the public Drive folder.'});
-function applyGalleryTransform(){galleryImage.style.transform=galleryImage.classList.contains('zoomed')?`translate(${galleryPanX}px, ${galleryPanY}px) scale(${galleryZoomScale})`:''}
+function galleryContainedSize(){
+  const gallery=galleryImage.parentElement;
+  const width=gallery?.clientWidth||0, height=gallery?.clientHeight||0;
+  const naturalWidth=galleryImage.naturalWidth, naturalHeight=galleryImage.naturalHeight;
+  if(!width||!height||!naturalWidth||!naturalHeight)return {width,height};
+  const imageRatio=naturalWidth/naturalHeight, boxRatio=width/height;
+  return imageRatio>boxRatio?{width,height:width/imageRatio}:{width:height*imageRatio,height};
+}
+function clampGalleryPan(){
+  if(!galleryImage.classList.contains('zoomed')){galleryPanX=0;galleryPanY=0;return;}
+  const gallery=galleryImage.parentElement, width=gallery?.clientWidth||0, height=gallery?.clientHeight||0;
+  const base=galleryContainedSize();
+  if(!width||!height||!base.width||!base.height)return;
+  const limitX=Math.max(0,(base.width*galleryZoomScale-width)/2);
+  const limitY=Math.max(0,(base.height*galleryZoomScale-height)/2);
+  galleryPanX=Math.min(limitX,Math.max(-limitX,galleryPanX));
+  galleryPanY=Math.min(limitY,Math.max(-limitY,galleryPanY));
+}
+function applyGalleryTransform(){
+  clampGalleryPan();
+  galleryImage.style.transform=galleryImage.classList.contains('zoomed')?`translate(${galleryPanX}px, ${galleryPanY}px) scale(${galleryZoomScale})`:'';
+}
 function toggleGalleryZoom(){if(!currentProduct?.images.length)return;const zoomed=galleryImage.classList.toggle('zoomed');if(zoomed)galleryZoomScale=1.55;else{galleryPanX=0;galleryPanY=0;galleryZoomScale=1.55}updateGalleryZoomControl();applyGalleryTransform()}
 galleryImage.addEventListener('dblclick',toggleGalleryZoom);
 galleryZoomButton.addEventListener('click',toggleGalleryZoom);
@@ -738,6 +759,8 @@ galleryImage.addEventListener('pointermove',event=>{
   if(galleryPanning&&galleryPanStart){galleryPanX=galleryPanStart.panX+event.clientX-galleryPanStart.x;galleryPanY=galleryPanStart.panY+event.clientY-galleryPanStart.y;applyGalleryTransform();return;}
   if(gallerySwipeStart&&Math.abs(event.clientX-gallerySwipeStart.x)>10)event.preventDefault();
 });
+galleryImage.addEventListener('load',()=>{if(galleryImage.classList.contains('zoomed'))applyGalleryTransform()});
+window.addEventListener('resize',()=>{if(galleryImage.classList.contains('zoomed'))applyGalleryTransform()});
 function stopGalleryPan(){galleryPanning=false;galleryPanStart=null;galleryImage.classList.remove('panning')}
 function finishGalleryPointer(event){
   galleryPointers.delete(event.pointerId);
