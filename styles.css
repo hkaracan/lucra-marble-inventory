@@ -81,6 +81,9 @@ body.sales-mode .sales-dashboard{display:block}
   body.filters-open .advanced-filters{display:grid}
 }
 
+/* Catalogue cards follow the measured dominant source ratio: 3:2. */
+.card-image{aspect-ratio:1.5}
+
 @media print{
   .print-sheet-header-side,.print-collection-header-side{display:grid;justify-items:end;align-content:start;gap:7px}.print-qr{display:grid;justify-items:center;gap:4px;width:88px}.print-qr img{display:block;width:82px;height:82px;object-fit:contain}.print-qr b{color:#6b7780;font-size:8px;line-height:1.2;text-align:center;font-weight:700}.print-qr span{color:#6b7780;font-size:8px;line-height:1.25;text-align:center;overflow-wrap:anywhere}.print-qr span small{display:block;margin-top:3px;font-size:7px}.print-collection-qr{display:flex;align-items:center;justify-items:initial;gap:8px;width:auto;border-top:1px solid #dce5e9;margin-top:10px;padding-top:9px}.print-collection-qr img{width:42px;height:42px}.print-collection-qr b{font-size:8px;max-width:80px}
 }
