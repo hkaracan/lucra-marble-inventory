@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260907-33" />
+  <link rel="stylesheet" href="styles.css?v=20260907-34" />
 </head>
 <body>
   <header class="site-header">
@@ -41,7 +41,15 @@
           <p class="eyebrow" data-i18n="liveCollection">LIVE COLLECTION</p>
           <h2 id="catalogTitle" data-i18n="slabInventory">Slab inventory</h2>
         </div>
-        <p class="result-count" id="resultCount"></p>
+        <div class="catalog-head-tools">
+          <p class="result-count" id="resultCount"></p>
+          <div class="catalog-view" role="group" aria-label="Catalog view">
+            <span data-i18n="catalogView">Cards per row</span>
+            <button type="button" class="catalog-view-button" data-columns="2" aria-label="2 cards per row" aria-pressed="true">2</button>
+            <button type="button" class="catalog-view-button" data-columns="3" aria-label="3 cards per row" aria-pressed="false">3</button>
+            <button type="button" class="catalog-view-button" data-columns="4" aria-label="4 cards per row" aria-pressed="false">4</button>
+          </div>
+        </div>
       </div>
       <div class="collection-banner" id="collectionBanner" hidden>
         <div class="collection-banner-copy"><p class="eyebrow" data-i18n="sharedSelection">SHARED SELECTION</p><strong id="collectionTitle"></strong><span id="collectionSummary"></span></div>
@@ -99,6 +107,16 @@
           <label class="show-missing"><input id="showMissingPacking" type="checkbox" checked /> <span data-i18n="showMissingPacking">Include bundles without packing lists</span></label>
         </div>
         <div class="sales-kpis" id="salesKpis"></div>
+        <div class="sales-quick-filters" role="group" aria-label="Quick data filters">
+          <span data-i18n="quickFilters">Quick filters</span>
+          <button type="button" class="sales-quick-filter active" data-audit-filter="all" data-i18n="auditAll">All products</button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="attention" data-i18n="auditAttention">Needs attention</button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="no-packing" data-i18n="auditNoPacking">No packing list</button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="size" data-i18n="auditSize">Missing area / size</button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="images" data-i18n="auditImages">Missing images</button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="warnings" data-i18n="auditWarnings">Sync warnings</button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="reserved" data-i18n="reserved">Reserved</button>
+        </div>
         <section class="inventory-health" aria-labelledby="inventoryHealthTitle">
           <div class="inventory-health-head"><div><p class="eyebrow" data-i18n="dataQuality">DATA QUALITY</p><h4 id="inventoryHealthTitle" data-i18n="inventoryHealth">Inventory health</h4></div><button id="toggleHealth" class="quiet-button" type="button" aria-expanded="false" data-i18n="showDetails">Show details</button></div>
           <div id="healthSummary" class="health-summary"></div>
@@ -243,6 +261,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260907-33"></script>
+  <script src="app.js?v=20260907-34"></script>
 </body>
 </html>

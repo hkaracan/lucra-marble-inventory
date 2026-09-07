@@ -43,6 +43,8 @@ Object.assign(translations.en,{zoom:'Zoom',resetZoom:'Reset zoom',fullscreen:'Fu
 Object.assign(translations.tr,{zoom:'Yakınlaştır',resetZoom:'Yakınlaştırmayı sıfırla',fullscreen:'Tam ekran',exitFullscreen:'Tam ekrandan çık'});
 Object.assign(translations.en,{showMissingPacking:'Include bundles without packing lists'});
 Object.assign(translations.tr,{showMissingPacking:'Paket listesi olmayan demetleri dahil et'});
+Object.assign(translations.en,{catalogView:'Cards per row',quickFilters:'Quick filters',quickFilterHiddenNote:'bundles hidden by quick filter'});
+Object.assign(translations.tr,{catalogView:'Kart / satır',quickFilters:'Hızlı filtreler',quickFilterHiddenNote:'demet hızlı filtreyle gizlendi'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
 function applyLanguage(){
@@ -81,7 +83,11 @@ function assignBundleKeys(records){
 }
 function productKey(product){return product.bundleKey||bundleBase(product);}
 let products=assignBundleKeys(fallbackProducts), currentFilter='all', currentProduct=null, imageIndex=0, syncedAt=null;
+let catalogColumns='2';
+try{const storedColumns=localStorage.getItem('lucraCatalogColumns');if(['2','3','4'].includes(storedColumns))catalogColumns=storedColumns}catch(error){}
+document.body.classList.add(`catalog-columns-${catalogColumns}`);
 const grid=document.querySelector('#productGrid'), search=document.querySelector('#searchInput'), count=document.querySelector('#resultCount'), empty=document.querySelector('#emptyState'), syncStatus=document.querySelector('#syncStatus'), syncFeedback=document.querySelector('#syncFeedback');
+const catalogViewButtons=document.querySelectorAll('.catalog-view-button');
 const salesKpis=document.querySelector('#salesKpis'), salesRows=document.querySelector('#salesRows'), salesFilterNote=document.querySelector('#salesFilterNote');
 const sortSelect=document.querySelector('#sortSelect'), syncButton=document.querySelector('#syncButton');
 const minArea=document.querySelector('#minArea'), maxArea=document.querySelector('#maxArea'), minSlabs=document.querySelector('#minSlabs'), maxSlabs=document.querySelector('#maxSlabs'), dimensionFilter=document.querySelector('#dimensionFilter'), packingFilter=document.querySelector('#packingFilter'), mediaFilter=document.querySelector('#mediaFilter'), clearFiltersButton=document.querySelector('#clearFilters');
@@ -97,7 +103,7 @@ const presentationCollection=document.querySelector('#presentationCollection'), 
 const salesGate=document.querySelector('#salesGate'), salesGateForm=document.querySelector('#salesGateForm'), salesPasswordInput=document.querySelector('#salesPasswordInput'), salesGateError=document.querySelector('#salesGateError');
 const compareDialog=document.querySelector('#compareDialog'), compareContent=document.querySelector('#compareContent'), copyCompareButton=document.querySelector('#copyCompare');
 const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved'), shareProductButton=document.querySelector('#shareProduct');
-let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, auditFilter='all', salesFollowupFilter='all', sharedCollectionActive=false, sharedCollectionTitle='', sharedCollectionKeys=new Set(), presentationSelection=new Set(), customerCollectionTitle='';
+let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, auditFilter='all', salesQuickFilter='all', salesFollowupFilter='all', sharedCollectionActive=false, sharedCollectionTitle='', sharedCollectionKeys=new Set(), presentationSelection=new Set(), customerCollectionTitle='';
 function readSharedCollection(){
   const url=new URL(location.href),values=url.searchParams.getAll('collection');
   if(!values.length)return;
@@ -258,9 +264,12 @@ function auditInfo(product){
   return {packing,size,media,sync,overall:{label:attention?t('auditAttention'):t('ready'),detail:attention?t('auditAttention'):t('clean'),className:attention?'warning':'connected'},packingMissing,packingUnreadable,sizeMissing:!hasArea||!hasDimensions,imageMissing:!imageCount,imageCheck:imageCheck.mismatch,syncWarning};
 }
 function auditStatusMarkup(status){return `<span class="audit-status ${escapeHtml(status.className)}"><b>${escapeHtml(status.label)}</b><small>${escapeHtml(status.detail)}</small></span>`}
-function auditMatches(product){
+function auditMatchesFilter(product,filter){
   const info=auditInfo(product);
-  return auditFilter==='attention'?info.overall.className==='warning':auditFilter==='no-packing'?info.packingMissing:auditFilter==='size'?info.sizeMissing:auditFilter==='images'?info.imageMissing:auditFilter==='image-check'?info.imageCheck:auditFilter==='warnings'?info.syncWarning:true;
+  return filter==='attention'?info.overall.className==='warning':filter==='no-packing'?info.packingMissing:filter==='size'?info.sizeMissing:filter==='images'?info.imageMissing:filter==='image-check'?info.imageCheck:filter==='warnings'?info.syncWarning:true;
+}
+function auditMatches(product){
+  return auditMatchesFilter(product,auditFilter);
 }
 function renderSyncAudit(){
   const records=products.filter(auditMatches);
@@ -296,16 +305,23 @@ function setAuditFilter(value){
   requestAnimationFrame(()=>auditSection.scrollIntoView({behavior:'smooth',block:'nearest'}));
 }
 
+function salesQuickFilterMatches(product){
+  return salesQuickFilter==='reserved'?Boolean(product.reserved):auditMatchesFilter(product,salesQuickFilter);
+}
 function salesVisibleProducts(visible){
   const packingVisible=showMissingPackingValue?visible:visible.filter(product=>product.packingList);
-  return salesFollowupFilter==='all'?packingVisible:packingVisible.filter(product=>followupFor(product).status===salesFollowupFilter);
+  const quickVisible=salesQuickFilter==='all'?packingVisible:packingVisible.filter(salesQuickFilterMatches);
+  return salesFollowupFilter==='all'?quickVisible:quickVisible.filter(product=>followupFor(product).status===salesFollowupFilter);
 }
 function renderSalesDashboard(visible){
   const hiddenPacking=visible.filter(product=>!product.packingList).length;
   const packingVisible=showMissingPackingValue?visible:visible.filter(product=>product.packingList);
+  const quickVisible=salesQuickFilter==='all'?packingVisible:packingVisible.filter(salesQuickFilterMatches);
   const dashboardVisible=salesVisibleProducts(visible);
-  const hiddenFollowup=packingVisible.length-dashboardVisible.length;
+  const hiddenQuick=packingVisible.length-quickVisible.length;
+  const hiddenFollowup=quickVisible.length-dashboardVisible.length;
   followupFilterSelect.value=salesFollowupFilter;
+  document.querySelectorAll('.sales-quick-filter').forEach(button=>button.classList.toggle('active',(button.dataset.auditFilter||'all')===salesQuickFilter));
   const totalSlabs=dashboardVisible.reduce((sum,product)=>sum+(Number(product.pcs)||0),0);
   const knownArea=dashboardVisible.filter(product=>product.sqm!=null);
   const totalArea=knownArea.reduce((sum,product)=>sum+Number(product.sqm||0),0);
@@ -323,6 +339,7 @@ function renderSalesDashboard(visible){
   renderInventoryHealth();renderSyncAudit();renderShortlistManager();
   const dashboardNotes=[];
   if(!showMissingPackingValue&&hiddenPacking)dashboardNotes.push(`${hiddenPacking} ${t('packingHiddenNote')}`);
+  if(salesQuickFilter!=='all'&&hiddenQuick)dashboardNotes.push(`${hiddenQuick} ${t('quickFilterHiddenNote')}`);
   if(salesFollowupFilter!=='all'&&hiddenFollowup)dashboardNotes.push(`${hiddenFollowup} ${t('followupHiddenNote')}`);
   salesFilterNote.textContent=dashboardNotes.join(' · ');
   salesRows.innerHTML=dashboardVisible.map(product=>{
@@ -586,6 +603,19 @@ function printPresentationCollection(){
   Promise.race([Promise.all(waitForImages),new Promise(resolve=>setTimeout(resolve,3500))]).then(()=>window.print());
 }
 
+function setCatalogColumns(value){
+  if(!['2','3','4'].includes(value))return;
+  catalogColumns=value;
+  document.body.classList.remove('catalog-columns-2','catalog-columns-3','catalog-columns-4');
+  document.body.classList.add(`catalog-columns-${value}`);
+  catalogViewButtons.forEach(button=>{
+    const active=button.dataset.columns===value;
+    button.classList.toggle('active',active);
+    button.setAttribute('aria-pressed',String(active));
+  });
+  try{localStorage.setItem('lucraCatalogColumns',value)}catch(error){}
+}
+
 function render(){
   renderCollectionBanner();
   renderPresentationCollection();
@@ -602,6 +632,7 @@ function render(){
 }
 
 document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.filter.active').classList.remove('active');btn.classList.add('active');currentFilter=btn.dataset.filter;render()}));
+catalogViewButtons.forEach(button=>button.addEventListener('click',()=>setCatalogColumns(button.dataset.columns)));
 search.addEventListener('input',render);
 sortSelect.addEventListener('change',render);
 [minArea,maxArea,minSlabs,maxSlabs,dimensionFilter,packingFilter,mediaFilter].forEach(input=>input.addEventListener(input.tagName==='SELECT'?'change':'input',render));
@@ -614,6 +645,7 @@ whatsappPresentationCollectionButton.addEventListener('click',()=>{const selecte
 clearPresentationCollectionButton.addEventListener('click',()=>{presentationSelection.clear();savePresentationSelection();render()});
 advancedFiltersToggle.addEventListener('click',()=>{const open=document.body.classList.toggle('filters-open');advancedFiltersToggle.setAttribute('aria-expanded',String(open));advancedFiltersToggle.querySelector('[data-i18n]').textContent=t(open?'hideFilters':'moreFilters');advancedFiltersToggle.lastElementChild.textContent=open?'⌃':'⌄'});
 showMissingPacking.addEventListener('change',event=>{showMissingPackingValue=event.currentTarget.checked;try{localStorage.setItem('lucraShowMissingPacking',showMissingPackingValue?'1':'0')}catch(error){}render()});
+document.querySelectorAll('.sales-quick-filter').forEach(button=>button.addEventListener('click',()=>{salesQuickFilter=button.dataset.auditFilter||'all';render()}));
 followupFilterSelect.addEventListener('change',event=>{salesFollowupFilter=event.currentTarget.value;render()});
 shortlistSelect.addEventListener('change',event=>switchShortlist(event.currentTarget.value));
 newShortlistButton.addEventListener('click',createShortlist);renameShortlistButton.addEventListener('click',renameShortlist);deleteShortlistButton.addEventListener('click',deleteShortlist);
@@ -881,4 +913,5 @@ document.querySelector('#syncButton').addEventListener('click',async(event)=>{
   try{const response=await fetch('/api/sync',{method:'POST'});const result=await response.json();if(!result.ok)throw new Error(result.error||'The Drive sync failed');await loadInventory();setSyncFeedback(result);button.textContent=`Synced ${result.count} bundles`;setTimeout(()=>button.textContent='↻ Sync from Drive',1800)}catch(error){const message=error instanceof Error?error.message:String(error);button.textContent='Sync failed';syncStatus.innerHTML='<i></i> Sync failed';syncStatus.title=message;syncFeedback.textContent=`Sync failed: ${message}. The previous catalogue remains available.`;setTimeout(()=>button.textContent='↻ Try again',1800)}finally{button.disabled=false}
 });
 applyLanguage();
+setCatalogColumns(catalogColumns);
 loadInventory().then(openHashProduct);

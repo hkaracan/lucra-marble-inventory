@@ -93,6 +93,27 @@ body.sales-mode .sales-dashboard{display:block}
   .site-header{height:64px;padding:0 12px}.brand img{width:clamp(108px,34vw,136px)}.header-actions{gap:5px}.mode-switch{width:36px;height:36px;flex:0 0 36px;justify-content:center;padding:0;gap:0}.mode-switch #modeLabel{display:none}.mode-icon{font-size:14px}.language-switch{width:32px;height:32px}.header-actions .sync-button{width:36px;height:36px;padding:0;justify-content:center;font-size:0}.header-actions .sync-button::after{content:'↻';font-size:17px}
 }
 
+/* Catalog density and sales data-quality shortcuts */
+.catalog-head-tools{display:flex;align-items:center;gap:18px}
+.catalog-view{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.catalog-view-button{width:30px;height:30px;border:1px solid var(--line);background:white;color:var(--navy);font:600 11px "DM Sans";cursor:pointer}
+.catalog-view-button.active,.catalog-view-button:hover,.catalog-view-button:focus-visible{background:var(--navy);border-color:var(--navy);color:white;outline:0}
+@media(min-width:901px){
+  body.catalog-columns-2 .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body.catalog-columns-3 .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  body.catalog-columns-4 .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+.sales-quick-filters{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 0 20px;padding:12px;background:var(--mist);border:1px solid var(--line)}
+.sales-quick-filters>span{margin-right:4px;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.sales-quick-filter{border:1px solid var(--line);background:white;color:var(--navy);padding:8px 10px;border-radius:3px;font:600 11px "DM Sans";cursor:pointer}
+.sales-quick-filter.active,.sales-quick-filter:hover,.sales-quick-filter:focus-visible{background:var(--navy);border-color:var(--navy);color:white;outline:0}
+@media(max-width:720px){
+  .catalog-head-tools{align-items:flex-end;flex-direction:column;gap:8px}
+  .sales-quick-filters{align-items:stretch}
+  .sales-quick-filters>span{width:100%;margin-bottom:2px}
+  .sales-quick-filter{flex:1 1 calc(50% - 7px)}
+}
+
 /* Customer-first presentation layout */
 body:not(.sales-mode) .hero{min-height:250px;padding:46px 7vw 38px;gap:6vw}
 body:not(.sales-mode) .hero h1{font-size:clamp(36px,4.5vw,58px)}
