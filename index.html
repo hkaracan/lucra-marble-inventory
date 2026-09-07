@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260907-41" />
+  <link rel="stylesheet" href="styles.css?v=20260907-42" />
 </head>
 <body>
   <header class="site-header">
@@ -95,6 +95,7 @@
         </div>
         <div class="presentation-collection-actions">
           <button id="sharePresentationCollection" class="secondary" type="button" disabled data-i18n="copyCollectionLink">Copy list link</button>
+          <button id="copyPresentationCollectionSummary" class="secondary" type="button" disabled data-i18n="copyCollectionSummary">Copy list summary</button>
           <button id="printPresentationCollection" class="primary" type="button" disabled data-i18n="printCollection">Print list</button>
           <button id="whatsappPresentationCollection" class="secondary" type="button" disabled data-i18n="whatsappCollection">Send list via WhatsApp</button>
           <button id="clearPresentationCollection" class="quiet-button" type="button" disabled data-i18n="clear">Clear</button>
@@ -107,6 +108,7 @@
             <p class="eyebrow" data-i18n="salesWorkspace">SALES WORKSPACE</p>
             <h3 id="salesDashboardTitle" data-i18n="inventoryDashboard">Inventory dashboard</h3>
             <p class="sales-dashboard-hint" data-i18n="salesHint">Click a product row to open its full image gallery and packing-list details.</p>
+            <p class="catalogue-freshness-note sales-only" id="catalogueFreshness" role="status" aria-live="polite" hidden></p>
           </div>
           <label class="show-missing"><input id="showMissingPacking" type="checkbox" checked /> <span data-i18n="showMissingPacking">Include bundles without packing lists</span></label>
         </div>
@@ -269,6 +271,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260907-41"></script>
+  <script src="app.js?v=20260907-42"></script>
 </body>
 </html>

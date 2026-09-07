@@ -49,6 +49,8 @@ Object.assign(translations.en,{catalogView:'Cards per row',quickFilters:'Quick f
 Object.assign(translations.tr,{catalogView:'Kart / satır',quickFilters:'Hızlı filtreler',quickFilterHiddenNote:'demet hızlı filtreyle gizlendi'});
 Object.assign(translations.en,{salesSearchPlaceholder:'Search dashboard list',salesSort:'Sort list',showing:'Showing',imageChecks:'Photo notes',imageMismatchDetail:'photo count differs from slab count; missing slabs can be normal production loss',auditImageCheck:'Photo number notes',reviewImages:'Review photo coverage'});
 Object.assign(translations.tr,{salesSearchPlaceholder:'Panel listesini ara',salesSort:'Listeyi sırala',showing:'Gösterilen',imageChecks:'Fotoğraf notları',imageMismatchDetail:'fotoğraf sayısı plaka sayısından farklı; eksik plakalar üretim kaybı nedeniyle normal olabilir',auditImageCheck:'Fotoğraf numarası notları',reviewImages:'Fotoğraf kapsamını kontrol edin'});
+Object.assign(translations.en,{staleCatalogue:'Catalogue may be out of date.',lastSynced:'Last synced',dayAgo:'day ago',daysAgo:'days ago',copyCollectionSummary:'Copy list summary',collectionSummaryCopied:'List summary copied',listLink:'List link'});
+Object.assign(translations.tr,{staleCatalogue:'Katalog güncelliğini yitirmiş olabilir.',lastSynced:'Son senkronizasyon',dayAgo:'gün önce',daysAgo:'gün önce',copyCollectionSummary:'Liste özetini kopyala',collectionSummaryCopied:'Liste özeti kopyalandı',listLink:'Liste bağlantısı'});
 Object.assign(translations.en,{reviewSelection:'Review selected bundles'});
 Object.assign(translations.tr,{reviewSelection:'Seçilen demetleri incele'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
@@ -105,7 +107,8 @@ const healthSummary=document.querySelector('#healthSummary'), healthDetails=docu
 const auditSection=document.querySelector('.sync-audit'), auditPanel=document.querySelector('#auditPanel'), auditRows=document.querySelector('#auditRows'), auditEmpty=document.querySelector('#auditEmpty'), auditCount=document.querySelector('#auditCount'), auditFilterSelect=document.querySelector('#auditFilter'), toggleAuditButton=document.querySelector('#toggleAudit'), exportAuditButton=document.querySelector('#exportAudit');
 const followupFilterSelect=document.querySelector('#followupFilter');
 const collectionBanner=document.querySelector('#collectionBanner'), collectionTitle=document.querySelector('#collectionTitle'), collectionSummary=document.querySelector('#collectionSummary'), clearCollectionButton=document.querySelector('#clearCollection'), shareCollectionButton=document.querySelector('#shareCollection');
-const presentationCollection=document.querySelector('#presentationCollection'), presentationCollectionName=document.querySelector('#presentationCollectionName'), presentationCollectionTitle=document.querySelector('#presentationCollectionTitle'), presentationCollectionSummary=document.querySelector('#presentationCollectionSummary'), presentationCollectionItems=document.querySelector('#presentationCollectionItems'), sharePresentationCollectionButton=document.querySelector('#sharePresentationCollection'), printPresentationCollectionButton=document.querySelector('#printPresentationCollection'), whatsappPresentationCollectionButton=document.querySelector('#whatsappPresentationCollection'), clearPresentationCollectionButton=document.querySelector('#clearPresentationCollection');
+const presentationCollection=document.querySelector('#presentationCollection'), presentationCollectionName=document.querySelector('#presentationCollectionName'), presentationCollectionTitle=document.querySelector('#presentationCollectionTitle'), presentationCollectionSummary=document.querySelector('#presentationCollectionSummary'), presentationCollectionItems=document.querySelector('#presentationCollectionItems'), sharePresentationCollectionButton=document.querySelector('#sharePresentationCollection'), copyPresentationCollectionSummaryButton=document.querySelector('#copyPresentationCollectionSummary'), printPresentationCollectionButton=document.querySelector('#printPresentationCollection'), whatsappPresentationCollectionButton=document.querySelector('#whatsappPresentationCollection'), clearPresentationCollectionButton=document.querySelector('#clearPresentationCollection');
+const catalogueFreshness=document.querySelector('#catalogueFreshness');
 const salesGate=document.querySelector('#salesGate'), salesGateForm=document.querySelector('#salesGateForm'), salesPasswordInput=document.querySelector('#salesPasswordInput'), salesGateError=document.querySelector('#salesGateError');
 const compareDialog=document.querySelector('#compareDialog'), compareContent=document.querySelector('#compareContent'), copyCompareButton=document.querySelector('#copyCompare');
 const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved'), shareProductButton=document.querySelector('#shareProduct');
@@ -332,6 +335,7 @@ function salesVisibleProducts(visible){
   return salesSortProducts(searched);
 }
 function renderSalesDashboard(visible){
+  renderCatalogueFreshness();
   const hiddenPacking=visible.filter(product=>!product.packingList).length;
   const packingVisible=showMissingPackingValue?visible:visible.filter(product=>product.packingList);
   const quickVisible=salesQuickFilter==='all'?packingVisible:packingVisible.filter(salesQuickFilterMatches);
@@ -434,8 +438,10 @@ function renderPresentationCollection(){
   presentationCollectionName.value=customerCollectionTitle;
   presentationCollectionTitle.textContent=customerCollectionTitle||`${selected.length} ${t('selectedBundles')}`;
   presentationCollectionSummary.textContent=[collectionStats(selected),collectionUpdatedLabel(),t('availabilityNote')].filter(Boolean).join(' · ');
-  presentationCollectionItems.innerHTML=selected.map(product=>`<span><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.code&&product.code!=='—'?product.code:t('bundle'))} · ${escapeHtml(product.reserved?t('reserved'):t('available'))}</small></span>`).join('');
+  presentationCollectionItems.innerHTML=selected.map(product=>`<span><span class="collection-review-copy"><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.code&&product.code!=='—'?product.code:t('bundle'))} · ${escapeHtml(product.reserved?t('reserved'):t('available'))}</small></span><button class="collection-review-remove" type="button" data-product-id="${escapeHtml(productKey(product))}" aria-label="${escapeHtml(t('removeFromCollection'))} ${escapeHtml(product.name)}" title="${escapeHtml(t('removeFromCollection'))}">×</button></span>`).join('');
+  presentationCollectionItems.querySelectorAll('.collection-review-remove').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();togglePresentationSelection(button.dataset.productId,false)}));
   sharePresentationCollectionButton.disabled=selected.length===0;
+  copyPresentationCollectionSummaryButton.disabled=selected.length===0;
   printPresentationCollectionButton.disabled=selected.length===0;
   whatsappPresentationCollectionButton.disabled=selected.length===0;
   clearPresentationCollectionButton.disabled=selected.length===0;
@@ -469,6 +475,15 @@ function collectionStats(records){
   return [`${records.length} ${records.length===1?t('bundleSingular'):t('bundles')}`,slabs?`${slabs} ${t('slabs')}`:'',areas?`${areas.toFixed(2)} m²`:'',areas?`${t('approxWeight')}: ${Math.round(areas*58)} kg`:'' ].filter(Boolean).join(' · ');
 }
 function collectionUpdatedLabel(){return syncedAt?`${t('lastUpdated')}: ${new Date(syncedAt).toLocaleDateString()}`:''}
+function renderCatalogueFreshness(){
+  if(!catalogueFreshness)return;
+  const syncedDate=syncedAt?new Date(syncedAt):null,ageMs=syncedDate&&!Number.isNaN(syncedDate.getTime())?Date.now()-syncedDate.getTime():null;
+  const staleAfterDays=7;
+  if(ageMs===null||ageMs<staleAfterDays*86400000){catalogueFreshness.hidden=true;catalogueFreshness.textContent='';return}
+  const ageDays=Math.max(1,Math.floor(ageMs/86400000));
+  catalogueFreshness.hidden=false;
+  catalogueFreshness.textContent=`${t('staleCatalogue')} ${t('lastSynced')} ${syncedDate.toLocaleDateString()} (${ageDays} ${ageDays===1?t('dayAgo'):t('daysAgo')}).`;
+}
 function qrCodeMarkup(url,label=t('scanToView'),className=''){
   const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=10&data=${encodeURIComponent(url)}`;
   return `<div class="print-qr ${className}"><img src="${escapeHtml(qrUrl)}" alt="${escapeHtml(label)}" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden>${escapeHtml(label)}<small>${escapeHtml(url)}</small></span><b>${escapeHtml(label)}</b></div>`;
@@ -512,6 +527,7 @@ function customerCollectionSummary(records,title=''){
     `Lucra Marble · ${title||t('collectionSheet')}`,
     collectionStats(records),
     collectionUpdatedLabel(),
+    `${t('listLink')}: ${publicCustomerCollectionUrl(records,title)}`,
     '',
     ...records.map((product,index)=>`${index+1}. ${customerProductSummary(product,true)}`),
     '',
@@ -666,6 +682,7 @@ clearFiltersButton.addEventListener('click',()=>{minArea.value='';maxArea.value=
 clearCollectionButton.addEventListener('click',clearSharedCollection);
 presentationCollectionName.addEventListener('input',event=>{customerCollectionTitle=event.currentTarget.value.trim();try{localStorage.setItem('lucraCustomerCollectionTitle',customerCollectionTitle)}catch(error){}renderPresentationCollection()});
 sharePresentationCollectionButton.addEventListener('click',async()=>{const selected=selectedPresentationProducts();if(!selected.length)return;const title=customerCollectionTitle.trim(),url=publicCustomerCollectionUrl(selected,title);await copyText(url,sharePresentationCollectionButton,t('collectionLinkCopied'))});
+copyPresentationCollectionSummaryButton.addEventListener('click',()=>{const selected=selectedPresentationProducts();if(selected.length)copyText(customerCollectionSummary(selected,customerCollectionTitle.trim()),copyPresentationCollectionSummaryButton,t('collectionSummaryCopied'))});
 printPresentationCollectionButton.addEventListener('click',printPresentationCollection);
 whatsappPresentationCollectionButton.addEventListener('click',()=>{const selected=selectedPresentationProducts();if(selected.length)openWhatsApp(customerCollectionSummary(selected,customerCollectionTitle.trim()))});
 clearPresentationCollectionButton.addEventListener('click',()=>{presentationSelection.clear();savePresentationSelection();render()});
