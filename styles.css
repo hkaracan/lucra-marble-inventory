@@ -95,6 +95,7 @@ body.sales-mode .sales-dashboard{display:block}
 
 /* Catalog density and sales data-quality shortcuts */
 .catalog-head-tools{display:flex;align-items:center;gap:18px}
+.health-details[hidden]{display:none}
 .catalog-view{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
 .catalog-view-button{width:30px;height:30px;border:1px solid var(--line);background:white;color:var(--navy);font:600 11px "DM Sans";cursor:pointer}
 .catalog-view-button.active,.catalog-view-button:hover,.catalog-view-button:focus-visible{background:var(--navy);border-color:var(--navy);color:white;outline:0}
