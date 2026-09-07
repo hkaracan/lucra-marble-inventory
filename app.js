@@ -642,7 +642,7 @@ function moveGalleryImage(direction){
   updateGallery();
 }
 function compactGalleryLabel(label){
-  return String(label??'').replace(/\bbookmatch(?:ed)?\b/ig,'BM').replace(/\blight\b/ig,'L').replace(/\bzoom\b/ig,'Z').replace(/[()]/g,'').replace(/\s+/g,' ').trim();
+  return String(label??'').replace(/\bclose(?:[- ]?up)?\b/ig,'C').replace(/\bbookmatch(?:ed)?\b/ig,'BM').replace(/\blight\b/ig,'L').replace(/\bzoom\b/ig,'Z').replace(/[()]/g,'').replace(/\s+/g,' ').trim();
 }
 function updateGalleryJumpLabels(){
   const compact=dialog.classList.contains('gallery-focus');
