@@ -705,6 +705,7 @@ saveSalesNoteButton.addEventListener('click',()=>{if(!currentProduct)return;sale
 
 const dialog=document.querySelector('#productDialog');
 const galleryImage=document.querySelector('#dialogImage'), galleryHint=document.querySelector('#galleryHint'), galleryZoomButton=document.querySelector('#galleryZoom'), galleryExpandButton=document.querySelector('#galleryExpand'), customerCta=document.querySelector('.customer-cta');
+const salesFollowupSection=document.querySelector('.sales-followup');
 let galleryPanX=0, galleryPanY=0, galleryPanning=false, galleryPanStart=null, gallerySwipeStart=null, galleryZoomScale=1.55, galleryPointers=new Map(), galleryPinchStart=null;
 function moveGalleryImage(direction){
   if(!currentProduct?.images.length)return;
@@ -845,9 +846,9 @@ function finishGalleryPointer(event){
 galleryImage.addEventListener('pointerup',finishGalleryPointer);
 galleryImage.addEventListener('pointercancel',event=>{galleryPointers.delete(event.pointerId);stopGalleryPan();gallerySwipeStart=null;galleryPinchStart=null});
 galleryImage.addEventListener('pointerleave',event=>{if(galleryPanning&&!galleryImage.hasPointerCapture?.(event.pointerId))stopGalleryPan()});
-galleryExpandButton.addEventListener('click',()=>{const fullscreen=dialog.classList.toggle('gallery-focus');customerCta.hidden=fullscreen;galleryExpandButton.textContent=fullscreen?'⤡ Exit':'⤢ Fullscreen';galleryExpandButton.title=fullscreen?t('exitFullscreen'):t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);updateGalleryZoomControl();updateGalleryJumpLabels()});
+galleryExpandButton.addEventListener('click',()=>{const fullscreen=dialog.classList.toggle('gallery-focus');customerCta.hidden=fullscreen;salesFollowupSection.hidden=fullscreen;galleryExpandButton.textContent=fullscreen?'⤡ Exit':'⤢ Fullscreen';galleryExpandButton.title=fullscreen?t('exitFullscreen'):t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);updateGalleryZoomControl();updateGalleryJumpLabels()});
 dialog.addEventListener('keydown',event=>{if(!dialog.open||event.target.matches('input,textarea,select'))return;if(event.key==='ArrowLeft'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(-1)}if(event.key==='ArrowRight'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(1)}if(event.key.toLowerCase()==='z'){event.preventDefault();toggleGalleryZoom()}});
-dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');customerCta.hidden=false;galleryExpandButton.textContent='⤢ Fullscreen';galleryExpandButton.title=t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);galleryPanX=0;galleryPanY=0;galleryZoomScale=1.55;galleryPointers.clear();galleryPinchStart=null;gallerySwipeStart=null;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';updateGalleryZoomControl()});
+dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');customerCta.hidden=false;salesFollowupSection.hidden=false;galleryExpandButton.textContent='⤢ Fullscreen';galleryExpandButton.title=t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);galleryPanX=0;galleryPanY=0;galleryZoomScale=1.55;galleryPointers.clear();galleryPinchStart=null;gallerySwipeStart=null;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';updateGalleryZoomControl()});
 document.querySelector('#copyLink').addEventListener('click',async(e)=>{const url=customerProductUrl(currentProduct);await navigator.clipboard.writeText(url);e.currentTarget.textContent='Link copied';setTimeout(()=>e.currentTarget.textContent='Copy bundle link',1400)});
 shareProductButton.addEventListener('click',shareCustomerProduct);
 shareCollectionButton.addEventListener('click',shareCustomerCollection);

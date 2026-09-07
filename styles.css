@@ -35,7 +35,7 @@ body.sales-mode .sales-dashboard{display:block}
 .gallery-focus .gallery>img{object-fit:contain;transform-origin:center;transition:transform .2s ease}
 .gallery-focus .gallery>img.zoomed{transform:scale(1.55);cursor:grab}
 .gallery-focus .dialog-info{position:absolute;inset:0;z-index:4;padding:0;overflow:visible;pointer-events:none;color:white}
-.gallery-focus .dialog-title-row,.gallery-focus .dialog-info>.specs,.gallery-focus .dialog-info>.bundle-lines,.gallery-focus .sales-followup,.gallery-focus .dialog-info>.dialog-actions,.gallery-focus .customer-cta{display:none}
+.gallery-focus .dialog-title-row,.gallery-focus .dialog-info>.specs,.gallery-focus .dialog-info>.bundle-lines,.gallery-focus .sales-followup,.gallery-focus .dialog-info>.dialog-actions,.gallery-focus .customer-cta{display:none!important}
 .gallery-focus .slab-picker{display:block;position:absolute;left:24px;right:24px;bottom:24px;margin:0;padding:14px 16px 11px;border:1px solid rgba(255,255,255,.2);background:rgba(10,19,26,.82);backdrop-filter:blur(12px);pointer-events:auto}
 .gallery-focus .slab-picker-head{color:white;margin-bottom:10px}.gallery-focus .slab-picker-head small{color:rgba(255,255,255,.68)}
 .gallery-focus .slab-numbers{flex-wrap:nowrap;overflow-x:auto;padding:0 0 3px;scrollbar-color:rgba(255,255,255,.55) transparent}
