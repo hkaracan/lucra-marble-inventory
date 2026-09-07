@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260907-35" />
+  <link rel="stylesheet" href="styles.css?v=20260907-36" />
 </head>
 <body>
   <header class="site-header">
@@ -109,13 +109,13 @@
         <div class="sales-kpis" id="salesKpis"></div>
         <div class="sales-quick-filters" role="group" aria-label="Quick data filters">
           <span data-i18n="quickFilters">Quick filters</span>
-          <button type="button" class="sales-quick-filter active" data-audit-filter="all" data-i18n="auditAll">All products</button>
-          <button type="button" class="sales-quick-filter" data-audit-filter="attention" data-i18n="auditAttention">Needs attention</button>
-          <button type="button" class="sales-quick-filter" data-audit-filter="no-packing" data-i18n="auditNoPacking">No packing list</button>
-          <button type="button" class="sales-quick-filter" data-audit-filter="size" data-i18n="auditSize">Missing area / size</button>
-          <button type="button" class="sales-quick-filter" data-audit-filter="images" data-i18n="auditImages">Missing images</button>
-          <button type="button" class="sales-quick-filter" data-audit-filter="warnings" data-i18n="auditWarnings">Sync warnings</button>
-          <button type="button" class="sales-quick-filter" data-audit-filter="reserved" data-i18n="reserved">Reserved</button>
+          <button type="button" class="sales-quick-filter active" data-audit-filter="all"><span data-i18n="auditAll">All products</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="attention"><span data-i18n="auditAttention">Needs attention</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="no-packing"><span data-i18n="auditNoPacking">No packing list</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="size"><span data-i18n="auditSize">Missing area / size</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="images"><span data-i18n="auditImages">Missing images</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="warnings"><span data-i18n="auditWarnings">Sync warnings</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="reserved"><span data-i18n="reserved">Reserved</span><b class="quick-filter-count">0</b></button>
         </div>
         <section class="inventory-health" aria-labelledby="inventoryHealthTitle">
           <div class="inventory-health-head"><div><p class="eyebrow" data-i18n="dataQuality">DATA QUALITY</p><h4 id="inventoryHealthTitle" data-i18n="inventoryHealth">Inventory health</h4></div><button id="toggleHealth" class="quiet-button" type="button" aria-expanded="false" data-i18n="showDetails">Show details</button></div>
@@ -140,6 +140,10 @@
             <p class="audit-empty" id="auditEmpty" hidden data-i18n="auditNoResults">No products match this audit filter.</p>
           </div>
         </section>
+        <div class="sales-list-controls">
+          <label class="sales-list-search"><span aria-hidden="true">⌕</span><input id="salesSearchInput" type="search" data-i18n-placeholder="salesSearchPlaceholder" placeholder="Search dashboard list" autocomplete="off" /></label>
+          <label class="sales-list-sort"><span data-i18n="salesSort">Sort list</span><select id="salesSortSelect"><option value="name" data-i18n="name">Name</option><option value="slabs" data-i18n="mostSlabs">Most slabs</option><option value="area" data-i18n="largestArea">Largest area</option><option value="packing" data-i18n="packingList">Packing list</option><option value="status" data-i18n="status">Status</option></select></label>
+        </div>
         <div class="sales-tools">
           <div class="sales-view-filter"><label><span data-i18n="followupFilter">Follow-up</span><select id="followupFilter"><option value="all" data-i18n="allFollowups">All follow-up statuses</option><option value="new" data-i18n="new">New</option><option value="sent" data-i18n="sent">Sent to customer</option><option value="waiting" data-i18n="waiting">Waiting for reply</option><option value="quoted" data-i18n="quoted">Quoted</option><option value="closed" data-i18n="closed">Closed</option></select></label></div>
           <div class="shortlist-manager"><label><span data-i18n="shortlist">Shortlist</span><select id="shortlistSelect" aria-label="Select shortlist"></select></label><button id="newShortlist" class="quiet-button" type="button" data-i18n="newList">New list</button><button id="renameShortlist" class="quiet-button" type="button" data-i18n="rename">Rename</button><button id="deleteShortlist" class="quiet-button" type="button" data-i18n="delete">Delete</button></div>
@@ -261,6 +265,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260907-35"></script>
+  <script src="app.js?v=20260907-36"></script>
 </body>
 </html>

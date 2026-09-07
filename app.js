@@ -45,6 +45,8 @@ Object.assign(translations.en,{showMissingPacking:'Include bundles without packi
 Object.assign(translations.tr,{showMissingPacking:'Paket listesi olmayan demetleri dahil et'});
 Object.assign(translations.en,{catalogView:'Cards per row',quickFilters:'Quick filters',quickFilterHiddenNote:'bundles hidden by quick filter'});
 Object.assign(translations.tr,{catalogView:'Kart / satır',quickFilters:'Hızlı filtreler',quickFilterHiddenNote:'demet hızlı filtreyle gizlendi'});
+Object.assign(translations.en,{salesSearchPlaceholder:'Search dashboard list',salesSort:'Sort list',showing:'Showing',imageChecks:'Photo notes',imageMismatchDetail:'photo count differs from slab count; missing slabs can be normal production loss',auditImageCheck:'Photo number notes',reviewImages:'Review photo coverage'});
+Object.assign(translations.tr,{salesSearchPlaceholder:'Panel listesini ara',salesSort:'Listeyi sırala',showing:'Gösterilen',imageChecks:'Fotoğraf notları',imageMismatchDetail:'fotoğraf sayısı plaka sayısından farklı; eksik plakalar üretim kaybı nedeniyle normal olabilir',auditImageCheck:'Fotoğraf numarası notları',reviewImages:'Fotoğraf kapsamını kontrol edin'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
 function applyLanguage(){
@@ -88,7 +90,7 @@ try{const storedColumns=localStorage.getItem('lucraCatalogColumns');if(['2','3',
 document.body.classList.add(`catalog-columns-${catalogColumns}`);
 const grid=document.querySelector('#productGrid'), search=document.querySelector('#searchInput'), count=document.querySelector('#resultCount'), empty=document.querySelector('#emptyState'), syncStatus=document.querySelector('#syncStatus'), syncFeedback=document.querySelector('#syncFeedback');
 const catalogViewButtons=document.querySelectorAll('.catalog-view-button');
-const salesKpis=document.querySelector('#salesKpis'), salesRows=document.querySelector('#salesRows'), salesFilterNote=document.querySelector('#salesFilterNote');
+const salesKpis=document.querySelector('#salesKpis'), salesRows=document.querySelector('#salesRows'), salesFilterNote=document.querySelector('#salesFilterNote'), salesSearchInput=document.querySelector('#salesSearchInput'), salesSortSelect=document.querySelector('#salesSortSelect');
 const sortSelect=document.querySelector('#sortSelect'), syncButton=document.querySelector('#syncButton');
 const minArea=document.querySelector('#minArea'), maxArea=document.querySelector('#maxArea'), minSlabs=document.querySelector('#minSlabs'), maxSlabs=document.querySelector('#maxSlabs'), dimensionFilter=document.querySelector('#dimensionFilter'), packingFilter=document.querySelector('#packingFilter'), mediaFilter=document.querySelector('#mediaFilter'), clearFiltersButton=document.querySelector('#clearFilters');
 const advancedFiltersToggle=document.querySelector('#advancedFiltersToggle');
@@ -103,7 +105,7 @@ const presentationCollection=document.querySelector('#presentationCollection'), 
 const salesGate=document.querySelector('#salesGate'), salesGateForm=document.querySelector('#salesGateForm'), salesPasswordInput=document.querySelector('#salesPasswordInput'), salesGateError=document.querySelector('#salesGateError');
 const compareDialog=document.querySelector('#compareDialog'), compareContent=document.querySelector('#compareContent'), copyCompareButton=document.querySelector('#copyCompare');
 const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved'), shareProductButton=document.querySelector('#shareProduct');
-let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, auditFilter='all', salesQuickFilter='all', salesFollowupFilter='all', sharedCollectionActive=false, sharedCollectionTitle='', sharedCollectionKeys=new Set(), presentationSelection=new Set(), customerCollectionTitle='';
+let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, auditFilter='all', salesQuickFilter='all', salesFollowupFilter='all', salesSearch='', salesSort='name', sharedCollectionActive=false, sharedCollectionTitle='', sharedCollectionKeys=new Set(), presentationSelection=new Set(), customerCollectionTitle='';
 function readSharedCollection(){
   const url=new URL(location.href),values=url.searchParams.getAll('collection');
   if(!values.length)return;
@@ -194,7 +196,7 @@ function productMediaSummary(product){
   if(!images)return {label:t('missing'),detail:t('noImageAvailable'),className:'missing'};
   const skipped=product.skippedPhotoFolders?.length||0;
   const check=imageAudit(product);
-  if(check.mismatch)return {label:`${images} ${t('views')}`,detail:imageCoverageDetail(check),className:'partial'};
+  if(check.mismatch)return {label:`${images} ${t('views')}`,detail:imageCoverageDetail(check),className:'info'};
   return {label:`${images} ${t('views')}`,detail:skipped?`${skipped} ${t('photoFoldersSkipped')}`:t('galleryReady'),className:skipped?'partial':'connected'};
 }
 
@@ -236,7 +238,7 @@ function renderInventoryHealth(){
     {label:t('packingRows'),value:unreadablePacking.length,detail:t('missingPackingRowsDetail'),className:unreadablePacking.length?'warning':'healthy',filter:'attention'},
     {label:t('sizeData'),value:incompleteSizes.length,detail:t('missingSizeDetail'),className:incompleteSizes.length?'warning':'healthy',filter:'size'},
     {label:t('photos'),value:missingImages.length,detail:t('missingImageDetail'),className:missingImages.length?'warning':'healthy',filter:'images'},
-    {label:t('imageChecks'),value:imageChecks.length,detail:t('imageMismatchDetail'),className:imageChecks.length?'warning':'healthy',filter:'image-check'},
+    {label:t('imageChecks'),value:imageChecks.length,detail:t('imageMismatchDetail'),className:imageChecks.length?'info':'healthy',filter:'image-check'},
     {label:t('syncIssues'),value:syncErrors.length+skippedFolders.length,detail:t('syncErrorDetail'),className:syncErrors.length||skippedFolders.length?'warning':'healthy',filter:'warnings'},
   ];
   healthSummary.innerHTML=checks.map(check=>`<button type="button" class="health-card ${check.className}" data-audit-filter="${escapeHtml(check.filter)}"><strong>${escapeHtml(check.value)}</strong><span>${escapeHtml(check.label)}</span><small>${escapeHtml(check.value===0?t('noIssues'):check.detail)}</small></button>`).join('');
@@ -258,9 +260,9 @@ function auditInfo(product){
   const dimensions=hasDimensions?productDimensions(product):t('missing');
   const size=!hasArea&&!hasDimensions?{label:t('missing'),detail:`${t('areaData')}: ${area} · ${t('dimensions')}: ${dimensions}`,className:'missing'}:!hasArea||!hasDimensions?{label:t('partial'),detail:`${t('areaData')}: ${area} · ${t('dimensions')}: ${dimensions}`,className:'partial'}:{label:t('complete'),detail:`${area} · ${dimensions}`,className:'connected'};
   const imageCheck=imageAudit(product);
-  const media=!imageCount?{label:t('missing'),detail:t('noImageAvailable'),className:'missing'}:imageCheck.mismatch?{label:`${imageCount} ${t('views')}`,detail:imageCoverageDetail(imageCheck),className:'partial'}:skippedCount?{label:`${imageCount} ${t('views')}`,detail:`${skippedCount} ${t('photoFoldersSkipped')}`,className:'partial'}:{label:`${imageCount} ${t('views')}`,detail:t('galleryReady'),className:'connected'};
+  const media=!imageCount?{label:t('missing'),detail:t('noImageAvailable'),className:'missing'}:imageCheck.mismatch?{label:`${imageCount} ${t('views')}`,detail:imageCoverageDetail(imageCheck),className:'info'}:skippedCount?{label:`${imageCount} ${t('views')}`,detail:`${skippedCount} ${t('photoFoldersSkipped')}`,className:'partial'}:{label:`${imageCount} ${t('views')}`,detail:t('galleryReady'),className:'connected'};
   const sync=product.syncError?{label:t('readError'),detail:product.syncError,className:'missing'}:skippedCount?{label:t('partial'),detail:`${skippedCount} ${t('photoFoldersSkipped')}`,className:'partial'}:{label:t('clean'),detail:t('noIssues'),className:'connected'};
-  const attention=packingUnreadable||!hasArea||!hasDimensions||!imageCount||syncWarning||imageCheck.mismatch;
+  const attention=packingUnreadable||!hasArea||!hasDimensions||!imageCount||syncWarning;
   return {packing,size,media,sync,overall:{label:attention?t('auditAttention'):t('ready'),detail:attention?t('auditAttention'):t('clean'),className:attention?'warning':'connected'},packingMissing,packingUnreadable,sizeMissing:!hasArea||!hasDimensions,imageMissing:!imageCount,imageCheck:imageCheck.mismatch,syncWarning};
 }
 function auditStatusMarkup(status){return `<span class="audit-status ${escapeHtml(status.className)}"><b>${escapeHtml(status.label)}</b><small>${escapeHtml(status.detail)}</small></span>`}
@@ -305,13 +307,25 @@ function setAuditFilter(value){
   requestAnimationFrame(()=>auditSection.scrollIntoView({behavior:'smooth',block:'nearest'}));
 }
 
-function salesQuickFilterMatches(product){
-  return salesQuickFilter==='reserved'?Boolean(product.reserved):auditMatchesFilter(product,salesQuickFilter);
+function salesQuickFilterMatches(product,filter=salesQuickFilter){
+  return filter==='reserved'?Boolean(product.reserved):auditMatchesFilter(product,filter);
+}
+function salesSortProducts(records){
+  return [...records].sort((a,b)=>{
+    if(salesSort==='slabs')return (Number(b.pcs)||0)-(Number(a.pcs)||0)||a.name.localeCompare(b.name);
+    if(salesSort==='area')return (Number(b.sqm)||0)-(Number(a.sqm)||0)||a.name.localeCompare(b.name);
+    if(salesSort==='packing')return Number(Boolean(a.packingList))-Number(Boolean(b.packingList))||a.name.localeCompare(b.name);
+    if(salesSort==='status')return Number(Boolean(a.reserved))-Number(Boolean(b.reserved))||a.name.localeCompare(b.name);
+    return a.name.localeCompare(b.name)||String(a.code||'').localeCompare(String(b.code||''));
+  });
 }
 function salesVisibleProducts(visible){
   const packingVisible=showMissingPackingValue?visible:visible.filter(product=>product.packingList);
   const quickVisible=salesQuickFilter==='all'?packingVisible:packingVisible.filter(salesQuickFilterMatches);
-  return salesFollowupFilter==='all'?quickVisible:quickVisible.filter(product=>followupFor(product).status===salesFollowupFilter);
+  const followupVisible=salesFollowupFilter==='all'?quickVisible:quickVisible.filter(product=>followupFor(product).status===salesFollowupFilter);
+  const query=salesSearch.trim().toLowerCase();
+  const searched=query?followupVisible.filter(product=>`${product.name} ${product.code} ${product.groupName||''} ${product.folderName||''} ${productDimensions(product)}`.toLowerCase().includes(query)):followupVisible;
+  return salesSortProducts(searched);
 }
 function renderSalesDashboard(visible){
   const hiddenPacking=visible.filter(product=>!product.packingList).length;
@@ -321,7 +335,14 @@ function renderSalesDashboard(visible){
   const hiddenQuick=packingVisible.length-quickVisible.length;
   const hiddenFollowup=quickVisible.length-dashboardVisible.length;
   followupFilterSelect.value=salesFollowupFilter;
-  document.querySelectorAll('.sales-quick-filter').forEach(button=>button.classList.toggle('active',(button.dataset.auditFilter||'all')===salesQuickFilter));
+  salesSearchInput.value=salesSearch;
+  salesSortSelect.value=salesSort;
+  document.querySelectorAll('.sales-quick-filter').forEach(button=>{
+    const filter=button.dataset.auditFilter||'all';
+    button.classList.toggle('active',filter===salesQuickFilter);
+    const countElement=button.querySelector('.quick-filter-count');
+    if(countElement)countElement.textContent=packingVisible.filter(product=>filter==='all'||salesQuickFilterMatches(product,filter)).length;
+  });
   const totalSlabs=dashboardVisible.reduce((sum,product)=>sum+(Number(product.pcs)||0),0);
   const knownArea=dashboardVisible.filter(product=>product.sqm!=null);
   const totalArea=knownArea.reduce((sum,product)=>sum+Number(product.sqm||0),0);
@@ -341,7 +362,7 @@ function renderSalesDashboard(visible){
   if(!showMissingPackingValue&&hiddenPacking)dashboardNotes.push(`${hiddenPacking} ${t('packingHiddenNote')}`);
   if(salesQuickFilter!=='all'&&hiddenQuick)dashboardNotes.push(`${hiddenQuick} ${t('quickFilterHiddenNote')}`);
   if(salesFollowupFilter!=='all'&&hiddenFollowup)dashboardNotes.push(`${hiddenFollowup} ${t('followupHiddenNote')}`);
-  salesFilterNote.textContent=dashboardNotes.join(' · ');
+  salesFilterNote.textContent=[`${t('showing')} ${dashboardVisible.length} ${dashboardVisible.length===1?t('bundleSingular'):t('bundles')}`,...dashboardNotes].join(' · ');
   salesRows.innerHTML=dashboardVisible.map(product=>{
     const packing=packingListSummary(product);
     const media=productMediaSummary(product);
@@ -646,6 +667,8 @@ clearPresentationCollectionButton.addEventListener('click',()=>{presentationSele
 advancedFiltersToggle.addEventListener('click',()=>{const open=document.body.classList.toggle('filters-open');advancedFiltersToggle.setAttribute('aria-expanded',String(open));advancedFiltersToggle.querySelector('[data-i18n]').textContent=t(open?'hideFilters':'moreFilters');advancedFiltersToggle.lastElementChild.textContent=open?'⌃':'⌄'});
 showMissingPacking.addEventListener('change',event=>{showMissingPackingValue=event.currentTarget.checked;try{localStorage.setItem('lucraShowMissingPacking',showMissingPackingValue?'1':'0')}catch(error){}render()});
 document.querySelectorAll('.sales-quick-filter').forEach(button=>button.addEventListener('click',()=>{salesQuickFilter=button.dataset.auditFilter||'all';render()}));
+salesSearchInput.addEventListener('input',event=>{salesSearch=event.currentTarget.value;render()});
+salesSortSelect.addEventListener('change',event=>{salesSort=event.currentTarget.value;render()});
 followupFilterSelect.addEventListener('change',event=>{salesFollowupFilter=event.currentTarget.value;render()});
 shortlistSelect.addEventListener('change',event=>switchShortlist(event.currentTarget.value));
 newShortlistButton.addEventListener('click',createShortlist);renameShortlistButton.addEventListener('click',renameShortlist);deleteShortlistButton.addEventListener('click',deleteShortlist);
