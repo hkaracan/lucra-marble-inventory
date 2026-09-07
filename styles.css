@@ -127,6 +127,10 @@ body.sales-mode .sales-dashboard{display:block}
 }
 @media(max-width:720px){.sales-list-head{top:72px}}
 
+/* Keep the sales column labels in normal flow. A sticky header inside the
+   horizontal list scroll container can be pushed below the first row. */
+.sales-list-head{position:relative;top:auto;z-index:1}
+
 /* Customer-first presentation layout */
 body:not(.sales-mode) .hero{min-height:250px;padding:46px 7vw 38px;gap:6vw}
 body:not(.sales-mode) .hero h1{font-size:clamp(36px,4.5vw,58px)}
