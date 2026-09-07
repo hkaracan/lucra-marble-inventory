@@ -98,7 +98,7 @@ let catalogColumns='2';
 try{const storedColumns=localStorage.getItem('lucraCatalogColumns');if(['2','3','4'].includes(storedColumns))catalogColumns=storedColumns}catch(error){}
 document.body.classList.add(`catalog-columns-${catalogColumns}`);
 const grid=document.querySelector('#productGrid'), search=document.querySelector('#searchInput'), count=document.querySelector('#resultCount'), empty=document.querySelector('#emptyState'), syncStatus=document.querySelector('#syncStatus'), syncFeedback=document.querySelector('#syncFeedback');
-const catalogViewButtons=document.querySelectorAll('.catalog-view-button');
+const catalogView=document.querySelector('.catalog-view'), catalogViewButtons=document.querySelectorAll('.catalog-view-button');
 const salesKpis=document.querySelector('#salesKpis'), salesRows=document.querySelector('#salesRows'), salesFilterNote=document.querySelector('#salesFilterNote'), salesSearchInput=document.querySelector('#salesSearchInput'), salesSortSelect=document.querySelector('#salesSortSelect');
 const sortSelect=document.querySelector('#sortSelect'), syncButton=document.querySelector('#syncButton');
 const minArea=document.querySelector('#minArea'), maxArea=document.querySelector('#maxArea'), minSlabs=document.querySelector('#minSlabs'), maxSlabs=document.querySelector('#maxSlabs'), dimensionFilter=document.querySelector('#dimensionFilter'), packingFilter=document.querySelector('#packingFilter'), mediaFilter=document.querySelector('#mediaFilter'), clearFiltersButton=document.querySelector('#clearFilters');
@@ -705,7 +705,7 @@ toggleAuditButton.addEventListener('click',()=>setAuditOpen(auditPanel.hidden));
 auditFilterSelect.addEventListener('change',event=>{auditFilter=event.currentTarget.value;renderSyncAudit()});
 exportAuditButton.addEventListener('click',downloadAudit);
 document.querySelector('#languageSwitch').addEventListener('click',()=>{language=language==='en'?'tr':'en';try{localStorage.setItem('lucraLanguage',language)}catch(error){}applyLanguage();render();if(currentProduct&&dialog.open)openProduct(productKey(currentProduct))});
-function setSalesMode(enabled){document.body.classList.toggle('sales-mode',enabled);document.querySelector('#modeLabel').textContent=enabled?t('salesMode'):t('presentationMode');render()}
+function setSalesMode(enabled){document.body.classList.toggle('sales-mode',enabled);catalogView.hidden=enabled;document.querySelector('#modeLabel').textContent=enabled?t('salesMode'):t('presentationMode');render()}
 let salesUnlocked=false;
 try{salesUnlocked=sessionStorage.getItem('lucraSalesUnlocked')==='1'}catch(error){}
 document.querySelector('#modeSwitch').addEventListener('click',()=>{
