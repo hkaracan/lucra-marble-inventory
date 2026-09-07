@@ -31,6 +31,8 @@ Object.assign(translations.en,{collectionTitleLabel:'Collection title',collectio
 Object.assign(translations.tr,{collectionTitleLabel:'Koleksiyon başlığı',collectionTitlePlaceholder:'İsteğe bağlı proje veya müşteri adı',whatsappCollection:'WhatsApp ile gönder',lastUpdated:'Son güncelleme',availabilityNote:'Uygunluk ve fiyat teyide tabidir.'});
 Object.assign(translations.en,{slabPhotos:'slab photos'});
 Object.assign(translations.tr,{slabPhotos:'plaka fotoğrafı'});
+Object.assign(translations.en,{photo:'Photo',of:'of',previousPhoto:'Previous photo',nextPhoto:'Next photo'});
+Object.assign(translations.tr,{photo:'Fotoğraf',of:'/',previousPhoto:'Önceki fotoğraf',nextPhoto:'Sonraki fotoğraf'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
 function applyLanguage(){
@@ -631,7 +633,12 @@ saveSalesNoteButton.addEventListener('click',()=>{if(!currentProduct)return;sale
 
 const dialog=document.querySelector('#productDialog');
 const galleryImage=document.querySelector('#dialogImage'), galleryHint=document.querySelector('#galleryHint'), galleryZoomButton=document.querySelector('#galleryZoom'), galleryExpandButton=document.querySelector('#galleryExpand');
-let galleryPanX=0, galleryPanY=0, galleryPanning=false, galleryPanStart=null;
+let galleryPanX=0, galleryPanY=0, galleryPanning=false, galleryPanStart=null, gallerySwipeStart=null;
+function moveGalleryImage(direction){
+  if(!currentProduct?.images.length)return;
+  imageIndex=(imageIndex+direction+currentProduct.images.length)%currentProduct.images.length;
+  updateGallery();
+}
 function openProduct(id){
   currentProduct=products.find(p=>productKey(p)===id); imageIndex=0;
   if(!currentProduct)return;
@@ -659,8 +666,10 @@ function updateGallery(){
   galleryPanX=0;galleryPanY=0;img.classList.remove('zoomed','panning');img.style.transform='';galleryZoomButton.textContent='＋ Zoom';
   galleryHint.hidden=currentProduct.images.length>0;galleryHint.textContent=currentProduct.images.length?'':'No image is available for this bundle.';
   if(currentProduct.images.length){img.src=selected.src;img.alt=`${currentProduct.name} ${selected.type==='slab'?`slab ${selected.label}`:selected.label}`;img.style.background=''}else{img.removeAttribute('src');img.alt='';img.style.background=currentProduct.stone}
-  document.querySelector('#galleryCount').textContent=currentProduct.images.length?`${selected.type==='slab'?`Slab ${slabLabel}`:selected.label} · ${imageIndex+1} / ${currentProduct.images.length}`:'Drive gallery';
-  document.querySelector('#prevImage').hidden=currentProduct.images.length<2;document.querySelector('#nextImage').hidden=currentProduct.images.length<2;
+  const galleryCount=document.querySelector('#galleryCount'),previousButton=document.querySelector('#prevImage'),nextButton=document.querySelector('#nextImage');
+  galleryCount.textContent=currentProduct.images.length?`${t('photo')} ${imageIndex+1} ${t('of')} ${currentProduct.images.length} · ${selected.type==='slab'?`Slab ${slabLabel}`:selected.label}`:'Drive gallery';
+  galleryCount.setAttribute('aria-live','polite');previousButton.setAttribute('aria-label',t('previousPhoto'));nextButton.setAttribute('aria-label',t('nextPhoto'));
+  previousButton.hidden=currentProduct.images.length<2;nextButton.hidden=currentProduct.images.length<2;
   const numbers=document.querySelector('#slabNumbers');
   const picker=document.querySelector('#slabPickerWrap');
   picker.hidden=currentProduct.images.length===0;
@@ -669,8 +678,8 @@ function updateGallery(){
   numbers.querySelectorAll('.slab-number').forEach(button=>button.addEventListener('click',()=>{imageIndex=Number(button.dataset.index);updateGallery()}));
   numbers.querySelector('.active')?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
 }
-document.querySelector('#prevImage').addEventListener('click',()=>{imageIndex=(imageIndex-1+currentProduct.images.length)%currentProduct.images.length;updateGallery()});
-document.querySelector('#nextImage').addEventListener('click',()=>{imageIndex=(imageIndex+1)%currentProduct.images.length;updateGallery()});
+document.querySelector('#prevImage').addEventListener('click',()=>moveGalleryImage(-1));
+document.querySelector('#nextImage').addEventListener('click',()=>moveGalleryImage(1));
 document.querySelector('#dialogClose').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
 galleryImage.addEventListener('error',()=>{galleryHint.hidden=false;galleryHint.textContent='This image is unavailable from the public Drive folder.'});
@@ -679,12 +688,30 @@ function toggleGalleryZoom(){if(!currentProduct?.images.length)return;const zoom
 galleryImage.addEventListener('dblclick',toggleGalleryZoom);
 galleryZoomButton.addEventListener('click',toggleGalleryZoom);
 galleryImage.addEventListener('dragstart',event=>event.preventDefault());
-galleryImage.addEventListener('pointerdown',event=>{if(!galleryImage.classList.contains('zoomed'))return;event.preventDefault();galleryPanning=true;galleryPanStart={x:event.clientX,y:event.clientY,panX:galleryPanX,panY:galleryPanY};galleryImage.classList.add('panning');galleryImage.setPointerCapture?.(event.pointerId)});
-galleryImage.addEventListener('pointermove',event=>{if(!galleryPanning||!galleryPanStart)return;galleryPanX=galleryPanStart.panX+event.clientX-galleryPanStart.x;galleryPanY=galleryPanStart.panY+event.clientY-galleryPanStart.y;applyGalleryTransform()});
+galleryImage.addEventListener('pointerdown',event=>{
+  if((event.pointerType==='mouse'&&event.button!==0)||!currentProduct?.images.length)return;
+  if(galleryImage.classList.contains('zoomed')){
+    event.preventDefault();galleryPanning=true;galleryPanStart={x:event.clientX,y:event.clientY,panX:galleryPanX,panY:galleryPanY};galleryImage.classList.add('panning');galleryImage.setPointerCapture?.(event.pointerId);return;
+  }
+  gallerySwipeStart={x:event.clientX,y:event.clientY,pointerId:event.pointerId};galleryImage.setPointerCapture?.(event.pointerId);
+});
+galleryImage.addEventListener('pointermove',event=>{
+  if(galleryPanning&&galleryPanStart){galleryPanX=galleryPanStart.panX+event.clientX-galleryPanStart.x;galleryPanY=galleryPanStart.panY+event.clientY-galleryPanStart.y;applyGalleryTransform();return;}
+  if(gallerySwipeStart&&Math.abs(event.clientX-gallerySwipeStart.x)>10)event.preventDefault();
+});
 function stopGalleryPan(){galleryPanning=false;galleryPanStart=null;galleryImage.classList.remove('panning')}
-galleryImage.addEventListener('pointerup',stopGalleryPan);galleryImage.addEventListener('pointercancel',stopGalleryPan);galleryImage.addEventListener('pointerleave',event=>{if(galleryPanning&&!galleryImage.hasPointerCapture?.(event.pointerId))stopGalleryPan()});
+function finishGalleryPointer(event){
+  if(galleryPanning){stopGalleryPan();return;}
+  if(!gallerySwipeStart)return;
+  const start=gallerySwipeStart;gallerySwipeStart=null;
+  const deltaX=event.clientX-start.x,deltaY=event.clientY-start.y;
+  if(Math.abs(deltaX)>=45&&Math.abs(deltaX)>Math.abs(deltaY)*1.2)moveGalleryImage(deltaX<0?1:-1);
+}
+galleryImage.addEventListener('pointerup',finishGalleryPointer);
+galleryImage.addEventListener('pointercancel',()=>{stopGalleryPan();gallerySwipeStart=null});
+galleryImage.addEventListener('pointerleave',event=>{if(galleryPanning&&!galleryImage.hasPointerCapture?.(event.pointerId))stopGalleryPan()});
 galleryExpandButton.addEventListener('click',()=>{dialog.classList.toggle('gallery-focus');galleryExpandButton.textContent=dialog.classList.contains('gallery-focus')?'⤡ Exit fullscreen':'⤢ Fullscreen'});
-dialog.addEventListener('keydown',event=>{if(!dialog.open||event.target.matches('input,textarea,select'))return;if(event.key==='ArrowLeft'&&currentProduct?.images.length){event.preventDefault();imageIndex=(imageIndex-1+currentProduct.images.length)%currentProduct.images.length;updateGallery()}if(event.key==='ArrowRight'&&currentProduct?.images.length){event.preventDefault();imageIndex=(imageIndex+1)%currentProduct.images.length;updateGallery()}if(event.key.toLowerCase()==='z'){event.preventDefault();toggleGalleryZoom()}});
+dialog.addEventListener('keydown',event=>{if(!dialog.open||event.target.matches('input,textarea,select'))return;if(event.key==='ArrowLeft'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(-1)}if(event.key==='ArrowRight'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(1)}if(event.key.toLowerCase()==='z'){event.preventDefault();toggleGalleryZoom()}});
 dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');galleryExpandButton.textContent='⤢ Fullscreen';galleryPanX=0;galleryPanY=0;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';galleryZoomButton.textContent='＋ Zoom'});
 document.querySelector('#copyLink').addEventListener('click',async(e)=>{const url=customerProductUrl(currentProduct);await navigator.clipboard.writeText(url);e.currentTarget.textContent='Link copied';setTimeout(()=>e.currentTarget.textContent='Copy bundle link',1400)});
 shareProductButton.addEventListener('click',shareCustomerProduct);
