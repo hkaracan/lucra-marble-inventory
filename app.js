@@ -33,6 +33,8 @@ Object.assign(translations.en,{slabPhotos:'slab photos'});
 Object.assign(translations.tr,{slabPhotos:'plaka fotoğrafı'});
 Object.assign(translations.en,{photo:'Photo',of:'of',previousPhoto:'Previous photo',nextPhoto:'Next photo'});
 Object.assign(translations.tr,{photo:'Fotoğraf',of:'/',previousPhoto:'Önceki fotoğraf',nextPhoto:'Sonraki fotoğraf'});
+Object.assign(translations.en,{zoom:'Zoom',resetZoom:'Reset zoom',fullscreen:'Fullscreen',exitFullscreen:'Exit fullscreen'});
+Object.assign(translations.tr,{zoom:'Yakınlaştır',resetZoom:'Yakınlaştırmayı sıfırla',fullscreen:'Tam ekran',exitFullscreen:'Tam ekrandan çık'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
 function applyLanguage(){
@@ -639,6 +641,19 @@ function moveGalleryImage(direction){
   imageIndex=(imageIndex+direction+currentProduct.images.length)%currentProduct.images.length;
   updateGallery();
 }
+function compactGalleryLabel(label){
+  return String(label??'').replace(/\bbookmatch(?:ed)?\b/ig,'BM').replace(/\blight\b/ig,'L').replace(/\bzoom\b/ig,'Z').replace(/[()]/g,'').replace(/\s+/g,' ').trim();
+}
+function updateGalleryJumpLabels(){
+  const compact=dialog.classList.contains('gallery-focus');
+  document.querySelectorAll('#slabNumbers .slab-number').forEach(button=>{button.textContent=compact?compactGalleryLabel(button.dataset.fullLabel):button.dataset.fullLabel});
+}
+function updateGalleryZoomControl(){
+  const zoomed=galleryImage.classList.contains('zoomed');
+  galleryZoomButton.textContent=zoomed?'↺':dialog.classList.contains('gallery-focus')?'Z':'＋ Zoom';
+  galleryZoomButton.title=zoomed?t('resetZoom'):t('zoom');
+  galleryZoomButton.setAttribute('aria-label',galleryZoomButton.title);
+}
 function openProduct(id){
   currentProduct=products.find(p=>productKey(p)===id); imageIndex=0;
   if(!currentProduct)return;
@@ -663,7 +678,7 @@ function updateGallery(){
   const img=galleryImage;
   const selected=currentProduct.images[imageIndex];
   const slabLabel=selected?.label??'';
-  galleryPanX=0;galleryPanY=0;img.classList.remove('zoomed','panning');img.style.transform='';galleryZoomButton.textContent='＋ Zoom';
+  galleryPanX=0;galleryPanY=0;img.classList.remove('zoomed','panning');img.style.transform='';updateGalleryZoomControl();
   galleryHint.hidden=currentProduct.images.length>0;galleryHint.textContent=currentProduct.images.length?'':'No image is available for this bundle.';
   if(currentProduct.images.length){img.src=selected.src;img.alt=`${currentProduct.name} ${selected.type==='slab'?`slab ${selected.label}`:selected.label}`;img.style.background=''}else{img.removeAttribute('src');img.alt='';img.style.background=currentProduct.stone}
   const galleryCount=document.querySelector('#galleryCount'),previousButton=document.querySelector('#prevImage'),nextButton=document.querySelector('#nextImage');
@@ -674,7 +689,8 @@ function updateGallery(){
   const picker=document.querySelector('#slabPickerWrap');
   picker.hidden=currentProduct.images.length===0;
   const jumpTargets=currentProduct.images.reduce((targets,image,i)=>{if(!targets.some(target=>target.label===image.label&&target.type===image.type))targets.push({label:image.label,type:image.type,index:i});return targets},[]);
-  numbers.innerHTML=jumpTargets.map(target=>`<button type="button" class="slab-number ${target.type==='extra'?'extra':''} ${currentProduct.images[imageIndex]?.label===target.label&&currentProduct.images[imageIndex]?.type===target.type?'active':''}" data-index="${target.index}" aria-label="View ${target.type==='slab'?`slab ${target.label}`:target.label}">${target.label}</button>`).join('');
+  const compact=dialog.classList.contains('gallery-focus');
+  numbers.innerHTML=jumpTargets.map(target=>`<button type="button" class="slab-number ${target.type==='extra'?'extra':''} ${currentProduct.images[imageIndex]?.label===target.label&&currentProduct.images[imageIndex]?.type===target.type?'active':''}" data-index="${target.index}" data-full-label="${escapeHtml(target.label)}" aria-label="View ${target.type==='slab'?`slab ${target.label}`:target.label}" title="${escapeHtml(target.label)}">${escapeHtml(compact?compactGalleryLabel(target.label):target.label)}</button>`).join('');
   numbers.querySelectorAll('.slab-number').forEach(button=>button.addEventListener('click',()=>{imageIndex=Number(button.dataset.index);updateGallery()}));
   numbers.querySelector('.active')?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
 }
@@ -684,7 +700,7 @@ document.querySelector('#dialogClose').addEventListener('click',()=>dialog.close
 dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
 galleryImage.addEventListener('error',()=>{galleryHint.hidden=false;galleryHint.textContent='This image is unavailable from the public Drive folder.'});
 function applyGalleryTransform(){galleryImage.style.transform=galleryImage.classList.contains('zoomed')?`translate(${galleryPanX}px, ${galleryPanY}px) scale(1.55)`:''}
-function toggleGalleryZoom(){if(!currentProduct?.images.length)return;const zoomed=galleryImage.classList.toggle('zoomed');if(!zoomed){galleryPanX=0;galleryPanY=0}galleryZoomButton.textContent=zoomed?'− Reset zoom':'＋ Zoom';applyGalleryTransform()}
+function toggleGalleryZoom(){if(!currentProduct?.images.length)return;const zoomed=galleryImage.classList.toggle('zoomed');if(!zoomed){galleryPanX=0;galleryPanY=0}updateGalleryZoomControl();applyGalleryTransform()}
 galleryImage.addEventListener('dblclick',toggleGalleryZoom);
 galleryZoomButton.addEventListener('click',toggleGalleryZoom);
 galleryImage.addEventListener('dragstart',event=>event.preventDefault());
@@ -710,9 +726,9 @@ function finishGalleryPointer(event){
 galleryImage.addEventListener('pointerup',finishGalleryPointer);
 galleryImage.addEventListener('pointercancel',()=>{stopGalleryPan();gallerySwipeStart=null});
 galleryImage.addEventListener('pointerleave',event=>{if(galleryPanning&&!galleryImage.hasPointerCapture?.(event.pointerId))stopGalleryPan()});
-galleryExpandButton.addEventListener('click',()=>{dialog.classList.toggle('gallery-focus');galleryExpandButton.textContent=dialog.classList.contains('gallery-focus')?'⤡ Exit fullscreen':'⤢ Fullscreen'});
+galleryExpandButton.addEventListener('click',()=>{const fullscreen=dialog.classList.toggle('gallery-focus');galleryExpandButton.textContent=fullscreen?'⤡ Exit':'⤢ Fullscreen';galleryExpandButton.title=fullscreen?t('exitFullscreen'):t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);updateGalleryZoomControl();updateGalleryJumpLabels()});
 dialog.addEventListener('keydown',event=>{if(!dialog.open||event.target.matches('input,textarea,select'))return;if(event.key==='ArrowLeft'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(-1)}if(event.key==='ArrowRight'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(1)}if(event.key.toLowerCase()==='z'){event.preventDefault();toggleGalleryZoom()}});
-dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');galleryExpandButton.textContent='⤢ Fullscreen';galleryPanX=0;galleryPanY=0;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';galleryZoomButton.textContent='＋ Zoom'});
+dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');galleryExpandButton.textContent='⤢ Fullscreen';galleryExpandButton.title=t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);galleryPanX=0;galleryPanY=0;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';updateGalleryZoomControl()});
 document.querySelector('#copyLink').addEventListener('click',async(e)=>{const url=customerProductUrl(currentProduct);await navigator.clipboard.writeText(url);e.currentTarget.textContent='Link copied';setTimeout(()=>e.currentTarget.textContent='Copy bundle link',1400)});
 shareProductButton.addEventListener('click',shareCustomerProduct);
 shareCollectionButton.addEventListener('click',shareCustomerCollection);
