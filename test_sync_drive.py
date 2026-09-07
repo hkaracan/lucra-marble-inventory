@@ -33,6 +33,12 @@ def workbook_bytes(rows: list[list]) -> bytes:
 
 
 class MockedSyncTest(unittest.TestCase):
+    def test_explicitly_ignored_no_packing_list_folders(self):
+        self.assertTrue(sync_drive.is_ignored_bundle_folder("Rosso Levanto K6222"))
+        self.assertTrue(sync_drive.is_ignored_bundle_folder("Vanilla Ice K5372"))
+        self.assertTrue(sync_drive.is_ignored_bundle_folder("Reserved - Vanilla Ice K5372"))
+        self.assertFalse(sync_drive.is_ignored_bundle_folder("Rosso Levanto L1014"))
+
     def test_code_only_excel_names_are_packing_lists_and_area_can_be_derived(self):
         parsed = sync_drive.parse_packing_list(
             workbook_bytes(

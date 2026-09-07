@@ -68,6 +68,8 @@ function assignBundleKeys(records){
   });
 }
 function productKey(product){return product.bundleKey||bundleBase(product);}
+const ignoredBundleFolderNames=new Set(['rosso levanto k6222','vanilla ice k5372']);
+function isIgnoredBundle(product){return ignoredBundleFolderNames.has(String(product.folderName||'').trim().toLowerCase());}
 
 let products=assignBundleKeys(fallbackProducts), currentFilter='all', currentProduct=null, imageIndex=0, syncedAt=null;
 const grid=document.querySelector('#productGrid'), search=document.querySelector('#searchInput'), count=document.querySelector('#resultCount'), empty=document.querySelector('#emptyState'), syncStatus=document.querySelector('#syncStatus'), syncFeedback=document.querySelector('#syncFeedback');
@@ -88,12 +90,13 @@ const compareDialog=document.querySelector('#compareDialog'), compareContent=doc
 const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved'), shareProductButton=document.querySelector('#shareProduct');
 let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, auditFilter='all', salesFollowupFilter='all', sharedCollectionActive=false, sharedCollectionTitle='', sharedCollectionKeys=new Set(), presentationSelection=new Set(), customerCollectionTitle='';
 function readSharedCollection(){
-  const url=new URL(location.href),value=url.searchParams.get('collection');
-  if(value===null)return;
+  const url=new URL(location.href),values=url.searchParams.getAll('collection');
+  if(!values.length)return;
   sharedCollectionActive=true;
   sharedCollectionTitle=(url.searchParams.get('title')||'').trim();
   document.body.classList.add('shared-collection-mode');
-  sharedCollectionKeys=new Set(value.split(',').map(key=>key.trim()).filter(Boolean));
+  const keys=values.length===1?values[0].split(','):values;
+  sharedCollectionKeys=new Set(keys.map(key=>key.trim()).filter(Boolean));
 }
 readSharedCollection();
 try{showMissingPackingValue=localStorage.getItem('lucraShowMissingPacking')!=='0'}catch(error){}
@@ -396,10 +399,11 @@ function updateShortlistControls(){
 function productDriveUrl(product){return product.folderId?`https://drive.google.com/drive/folders/${encodeURIComponent(product.folderId)}`:rootFolder}
 function basePageUrl(){const url=new URL(location.href);url.hash='';url.searchParams.delete('collection');url.searchParams.delete('title');url.searchParams.delete('v');return url.toString()}
 function customerProductUrl(product){return `${basePageUrl()}#bundle-${encodeURIComponent(productKey(product))}`}
-function customerCollectionUrl(records,title=''){const url=new URL(basePageUrl());url.searchParams.set('collection',records.map(product=>productKey(product)).join(','));if(title.trim())url.searchParams.set('title',title.trim());return url.toString()}
+function setCollectionParams(url,records){url.searchParams.delete('collection');records.forEach(product=>url.searchParams.append('collection',productKey(product)));return url}
+function customerCollectionUrl(records,title=''){const url=setCollectionParams(new URL(basePageUrl()),records);if(title.trim())url.searchParams.set('title',title.trim());return url.toString()}
 function publicBasePageUrl(){return isGithubPages?basePageUrl():publicSiteBase}
 function publicCustomerProductUrl(product){return `${publicBasePageUrl()}#bundle-${encodeURIComponent(productKey(product))}`}
-function publicCustomerCollectionUrl(records,title=''){const url=new URL(publicBasePageUrl());url.searchParams.set('collection',records.map(product=>productKey(product)).join(','));if(title.trim())url.searchParams.set('title',title.trim());return url.toString()}
+function publicCustomerCollectionUrl(records,title=''){const url=setCollectionParams(new URL(publicBasePageUrl()),records);if(title.trim())url.searchParams.set('title',title.trim());return url.toString()}
 function collectionStats(records){
   const slabs=records.reduce((sum,product)=>sum+(Number(product.pcs)||0),0),areas=records.filter(product=>product.sqm!=null&&Number.isFinite(Number(product.sqm))).reduce((sum,product)=>sum+Number(product.sqm),0);
   return [`${records.length} ${records.length===1?t('bundleSingular'):t('bundles')}`,slabs?`${slabs} ${t('slabs')}`:'',areas?`${areas.toFixed(2)} m²`:'' ].filter(Boolean).join(' · ');
@@ -740,7 +744,7 @@ async function loadInventory(){
       if(!response.ok)throw new Error('No synced inventory');
       data=await response.json();
     }
-    products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));pruneShortlist();prunePresentationSelection();inventoryReport=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products);syncedAt=data.syncedAt;
+    products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct).filter(product=>!isIgnoredBundle(product)));pruneShortlist();prunePresentationSelection();inventoryReport=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products);syncedAt=data.syncedAt;
     syncStatus.innerHTML=`<i></i> ${products.length} bundles · ${new Date(syncedAt).toLocaleDateString()}`;
     setSyncFeedback({...data,count:products.length},location.protocol==='file:'?'Local snapshot':isGithubPages?'Last published sync':'Last sync');
   }catch(error){syncStatus.innerHTML='<i></i> Preview data';syncStatus.title='';syncFeedback.textContent='';}
