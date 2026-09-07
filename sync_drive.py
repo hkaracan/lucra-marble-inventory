@@ -20,7 +20,6 @@ from openpyxl import load_workbook
 
 ROOT_FOLDER_ID = "17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z"
 ROOT_FOLDER_URL = f"https://drive.google.com/drive/folders/{ROOT_FOLDER_ID}"
-IGNORED_BUNDLE_FOLDER_NAMES = {"rosso levanto k6222", "vanilla ice k5372"}
 OUTPUT = Path(__file__).parent / "data" / "inventory.json"
 OVERFLOW_MANIFEST_PATH = Path(__file__).parent / "data" / "drive_overflow.json"
 USER_AGENT = "Mozilla/5.0 (compatible; LucraInventory/1.0)"
@@ -98,12 +97,6 @@ def is_bundle_folder(name: str) -> bool:
     """Recognize coded bundle folders even when their media listing is sparse."""
     clean_name = re.sub(r"^\s*reserved\b\s*(?:-\s*)?", "", name, flags=re.I).strip()
     return bool(re.search(r"\s[KLM]\d+\s*$", clean_name, re.I))
-
-
-def is_ignored_bundle_folder(name: str) -> bool:
-    """Exclude explicitly approved folders that have no public packing list."""
-    clean_name = re.sub(r"^\s*reserved\b\s*(?:-\s*)?", "", name, flags=re.I).strip().lower()
-    return clean_name in IGNORED_BUNDLE_FOLDER_NAMES
 
 
 def is_l1014_folder(name: str) -> bool:
@@ -685,8 +678,6 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
                     folders.extend(children)
                 else:
                     folders.append({**folder, "_items": children})
-    ignored_folders = [folder for folder in folders if is_ignored_bundle_folder(folder["name"])]
-    folders = [folder for folder in folders if not is_ignored_bundle_folder(folder["name"])]
     products = []
     errors = []
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
@@ -733,7 +724,6 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
         "errors": errors,
         "warnings": warnings,
     }
-    payload["ignoredBundles"] = [folder["name"] for folder in ignored_folders]
     OUTPUT.parent.mkdir(exist_ok=True)
     if errors and OUTPUT.exists():
         failed_names = {error["folder"] for error in errors}
@@ -802,8 +792,6 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
         "skippedPhotoFolders":skipped_photo_folders,
         "folderErrors":len(errors),
         "warningCount":len(warnings),
-        "ignoredBundles":len(ignored_folders),
-        "ignoredBundleFolders":[folder["name"] for folder in ignored_folders],
         "addedFolders":[product.get("folderName") for product in added],
         "updatedFolders":[product.get("folderName") for product in updated],
         "missingPackingListFolders":[product.get("folderName") for product in missing_packing],

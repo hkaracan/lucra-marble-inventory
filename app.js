@@ -35,6 +35,8 @@ Object.assign(translations.en,{photo:'Photo',of:'of',previousPhoto:'Previous pho
 Object.assign(translations.tr,{photo:'Fotoğraf',of:'/',previousPhoto:'Önceki fotoğraf',nextPhoto:'Sonraki fotoğraf'});
 Object.assign(translations.en,{zoom:'Zoom',resetZoom:'Reset zoom',fullscreen:'Fullscreen',exitFullscreen:'Exit fullscreen'});
 Object.assign(translations.tr,{zoom:'Yakınlaştır',resetZoom:'Yakınlaştırmayı sıfırla',fullscreen:'Tam ekran',exitFullscreen:'Tam ekrandan çık'});
+Object.assign(translations.en,{showMissingPacking:'Include bundles without packing lists'});
+Object.assign(translations.tr,{showMissingPacking:'Paket listesi olmayan demetleri dahil et'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
 function applyLanguage(){
@@ -72,9 +74,6 @@ function assignBundleKeys(records){
   });
 }
 function productKey(product){return product.bundleKey||bundleBase(product);}
-const ignoredBundleFolderNames=new Set(['rosso levanto k6222','vanilla ice k5372']);
-function isIgnoredBundle(product){return ignoredBundleFolderNames.has(String(product.folderName||'').trim().toLowerCase());}
-
 let products=assignBundleKeys(fallbackProducts), currentFilter='all', currentProduct=null, imageIndex=0, syncedAt=null;
 const grid=document.querySelector('#productGrid'), search=document.querySelector('#searchInput'), count=document.querySelector('#resultCount'), empty=document.querySelector('#emptyState'), syncStatus=document.querySelector('#syncStatus'), syncFeedback=document.querySelector('#syncFeedback');
 const salesKpis=document.querySelector('#salesKpis'), salesRows=document.querySelector('#salesRows'), salesFilterNote=document.querySelector('#salesFilterNote');
@@ -835,7 +834,7 @@ async function loadInventory(){
       if(!response.ok)throw new Error('No synced inventory');
       data=await response.json();
     }
-    products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct).filter(product=>!isIgnoredBundle(product)));pruneShortlist();prunePresentationSelection();inventoryReport=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products);syncedAt=data.syncedAt;
+    products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));pruneShortlist();prunePresentationSelection();inventoryReport=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products);syncedAt=data.syncedAt;
     syncStatus.innerHTML=`<i></i> ${products.length} bundles · ${new Date(syncedAt).toLocaleDateString()}`;
     setSyncFeedback({...data,count:products.length},location.protocol==='file:'?'Local snapshot':isGithubPages?'Last published sync':'Last sync');
   }catch(error){syncStatus.innerHTML='<i></i> Preview data';syncStatus.title='';syncFeedback.textContent='';}

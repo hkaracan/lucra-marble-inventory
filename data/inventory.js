@@ -1,7 +1,7 @@
 // Generated from inventory.json by sync_drive.py.
 window.LUCRA_INVENTORY = {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-07T07:37:51Z",
+  "syncedAt": "2026-09-07T10:04:37Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
@@ -11054,6 +11054,135 @@ window.LUCRA_INVENTORY = {
     },
     {
       "name": "Rosso Levanto",
+      "folderName": "Rosso Levanto K6222",
+      "folderId": "1SffR-LQV15XHGEwi5ilZHR8rsaSBk1KV",
+      "groupName": null,
+      "code": "K6222",
+      "reserved": false,
+      "finish": "Natural stone",
+      "pcs": 18,
+      "sqm": null,
+      "dimensions": [],
+      "lines": [],
+      "images": [
+        {
+          "number": 1,
+          "label": "1",
+          "fileId": "1zrxZYemHs9th4du0VoKneKxR77wgfGXu",
+          "name": "IMG_9053.HEIC"
+        },
+        {
+          "number": 2,
+          "label": "2",
+          "fileId": "1hpVubScAjhBd4SSiGxXs0wxRTKIlThcQ",
+          "name": "IMG_9055.HEIC"
+        },
+        {
+          "number": 3,
+          "label": "3",
+          "fileId": "1KtfMQBu7KyEjNH7KOPzx5BSPjzBkDwCM",
+          "name": "IMG_9058.HEIC"
+        },
+        {
+          "number": 4,
+          "label": "4",
+          "fileId": "1gVa9VpVmzq_Cyo6se7TJUglGwfb8coXW",
+          "name": "IMG_9061.HEIC"
+        },
+        {
+          "number": 5,
+          "label": "5",
+          "fileId": "1eYnlvTJlwf11oc9jJJ-0R6voWgIRpBuD",
+          "name": "IMG_9066.HEIC"
+        },
+        {
+          "number": 6,
+          "label": "6",
+          "fileId": "17YvcKywSG9clBK0k--UmOyVyQgmwb5fd",
+          "name": "IMG_9071.HEIC"
+        },
+        {
+          "number": 7,
+          "label": "7",
+          "fileId": "1jUrBkt3bwMbI0BENb_y8Nxv44TqIW2iy",
+          "name": "IMG_9078.HEIC"
+        },
+        {
+          "number": 8,
+          "label": "8",
+          "fileId": "1yBcmfuNhyEDoNe0w8fccCPTdHqFxBUw5",
+          "name": "IMG_9080.HEIC"
+        },
+        {
+          "number": 9,
+          "label": "9",
+          "fileId": "1d22RCVcceOsP_Fo_6yDuo0Ir2UAeG6g8",
+          "name": "IMG_9084.HEIC"
+        },
+        {
+          "number": 10,
+          "label": "10",
+          "fileId": "1H_rXxiIa2SQ18XQhuoIIVVYQDvxQn408",
+          "name": "IMG_9085.HEIC"
+        },
+        {
+          "number": 11,
+          "label": "11",
+          "fileId": "1kHoyZqbAzTVxTVaca3jNGv92lapQSWY2",
+          "name": "IMG_9087.HEIC"
+        },
+        {
+          "number": 12,
+          "label": "12",
+          "fileId": "1qCXu4gSKw-RsAY6FEz0GkHzTzOEnBMro",
+          "name": "IMG_9094.HEIC"
+        },
+        {
+          "number": 13,
+          "label": "13",
+          "fileId": "1Xw-AnpVZyo0Sb_2Jfn4h7mqdCeszMBCW",
+          "name": "IMG_9098.HEIC"
+        },
+        {
+          "number": 14,
+          "label": "14",
+          "fileId": "1Kfv3vqalGM8k9qcqc4zU1nVA4ecxf9YX",
+          "name": "IMG_9100.HEIC"
+        },
+        {
+          "number": 15,
+          "label": "15",
+          "fileId": "1hY33jhmvwWBIXRSg974VejtEGqgvwH27",
+          "name": "IMG_9107.HEIC"
+        },
+        {
+          "number": 16,
+          "label": "16",
+          "fileId": "1qV1x6_6ew2JU6VBWh-8nWlLvcDDZA7LL",
+          "name": "IMG_9110.HEIC"
+        },
+        {
+          "number": 17,
+          "label": "17",
+          "fileId": "1BhrAdo4SoI-EAC-HXPcWmtx_9D9XX2XS",
+          "name": "IMG_9111.HEIC"
+        },
+        {
+          "number": 18,
+          "label": "18",
+          "fileId": "1tLykJVA_9so0-9V1MTWUADk_jzMfHlc3",
+          "name": "IMG_9115.HEIC"
+        }
+      ],
+      "extraImages": [],
+      "videos": [],
+      "packingList": null,
+      "syncError": null,
+      "packingWarning": null,
+      "skippedPhotoFolders": []
+    },
+    {
+      "name": "Rosso Levanto",
       "folderName": "Rosso Levanto L1013",
       "folderId": "1OfFXBJYL93EM32IEb94oG0aT6lKx926-",
       "groupName": null,
@@ -16568,6 +16697,313 @@ window.LUCRA_INVENTORY = {
       "skippedPhotoFolders": []
     },
     {
+      "name": "Vanilla Ice",
+      "folderName": "Vanilla Ice K5372",
+      "folderId": "1a4ltWA_r6ZmRZw9vD-MdSC4s6blM4JYp",
+      "groupName": null,
+      "code": "K5372",
+      "reserved": false,
+      "finish": "Natural stone",
+      "pcs": 44,
+      "sqm": null,
+      "dimensions": [],
+      "lines": [],
+      "images": [
+        {
+          "number": 1,
+          "label": "1",
+          "fileId": "1ZR8hR85yQsg0ckjoiE1DrPl2c380tMqa",
+          "name": "1.jpg"
+        },
+        {
+          "number": 2,
+          "label": "2",
+          "fileId": "1keCAnntqrgZ_gDrk4eJKEZox7AMpd0Ap",
+          "name": "2.jpg"
+        },
+        {
+          "number": 3,
+          "label": "3",
+          "fileId": "1Aan9N0nu9Q2Dzb9efxugnbC44_JhBAU7",
+          "name": "3.jpg"
+        },
+        {
+          "number": 4,
+          "label": "4",
+          "fileId": "1yKhO1JDOAY_Wzm6AgHKAJjjmWvLADxfV",
+          "name": "4.jpg"
+        },
+        {
+          "number": 5,
+          "label": "5",
+          "fileId": "193MkHFxkKr0edg3EzPBnWuRDmlUAFLj4",
+          "name": "5.jpg"
+        },
+        {
+          "number": 6,
+          "label": "6",
+          "fileId": "1b4LHz4xeMZnHNgAH46yv0X2FQVCjIfR3",
+          "name": "6.jpg"
+        },
+        {
+          "number": 7,
+          "label": "7",
+          "fileId": "1LxQyQjuydWsx8Sa5uu-g65Lc63g08XMU",
+          "name": "7.jpg"
+        },
+        {
+          "number": 8,
+          "label": "8",
+          "fileId": "1DPSxZoQHistKVc4YEjDl32_ZFHVpMXed",
+          "name": "8.jpg"
+        },
+        {
+          "number": 9,
+          "label": "9",
+          "fileId": "1otqjuC8nb5KolMbmNY6LmqMbftCAQhaD",
+          "name": "9.jpg"
+        },
+        {
+          "number": 10,
+          "label": "10",
+          "fileId": "1nhvZBHOVXPbRtTTUYsiAt_Wtzs5jCFD0",
+          "name": "10.jpg"
+        },
+        {
+          "number": 11,
+          "label": "11",
+          "fileId": "1LzbE84IZsd6iEzVY51utbSLkR_KbH-FR",
+          "name": "11.jpg"
+        },
+        {
+          "number": 12,
+          "label": "12",
+          "fileId": "1GZSneKEYjCz1_ddU-surSylBpicHn1EB",
+          "name": "12.jpg"
+        },
+        {
+          "number": 13,
+          "label": "13",
+          "fileId": "17flJ_XTRnzHXkqUFlfAeS6gzyH8FpUKu",
+          "name": "13.jpg"
+        },
+        {
+          "number": 14,
+          "label": "14",
+          "fileId": "1ovEAcpEteZagQpE4Y2gAyUp3gQ97oS4O",
+          "name": "14.jpg"
+        },
+        {
+          "number": 15,
+          "label": "15",
+          "fileId": "1OFCt6zfIaP_umSVEnyub3PdLURN85mKv",
+          "name": "15.jpg"
+        },
+        {
+          "number": 16,
+          "label": "16",
+          "fileId": "1_kPXGMDyeGgoM11t74B1M7DMJssepSxT",
+          "name": "16.jpg"
+        },
+        {
+          "number": 17,
+          "label": "17",
+          "fileId": "16LorC3jma61-1cgYCCo8LwSSokrJBPPD",
+          "name": "17.jpg"
+        },
+        {
+          "number": 18,
+          "label": "18",
+          "fileId": "1F8VIMXR7mNeIrtc9wZv1CKPl-Z59Rj7_",
+          "name": "18.jpg"
+        },
+        {
+          "number": 19,
+          "label": "19",
+          "fileId": "1TbvufU6B7moU6bI4XN43jlt_uUDVyqqq",
+          "name": "19.jpg"
+        },
+        {
+          "number": 20,
+          "label": "20",
+          "fileId": "1T52UWZYOBVQOfOlLS1lXWKkPrIfSBo_S",
+          "name": "20.jpg"
+        },
+        {
+          "number": 21,
+          "label": "21",
+          "fileId": "1wt5AKE9CfmCYxEhmGLYR76ETCjLLkjph",
+          "name": "21.jpg"
+        },
+        {
+          "number": 22,
+          "label": "22",
+          "fileId": "12wb-GYO7eZmw51gZfo3ege0MCqWySFW3",
+          "name": "22.jpg"
+        },
+        {
+          "number": 23,
+          "label": "23",
+          "fileId": "1_7lfuQEvniYzianePeGgRa3yU97jR0VB",
+          "name": "23.jpg"
+        },
+        {
+          "number": 24,
+          "label": "24",
+          "fileId": "1zsM6qIONk0LJom1HVDmxiob_yI8JRhEQ",
+          "name": "24.jpg"
+        },
+        {
+          "number": 25,
+          "label": "25",
+          "fileId": "1F-FmOzw5wE9kgWM9jI5hwvYyeeDTKqlq",
+          "name": "25.jpg"
+        },
+        {
+          "number": 26,
+          "label": "26",
+          "fileId": "1UoGHdCarHo0fJ2Z6XqtsTU1hc-4aAl2Y",
+          "name": "26.jpg"
+        },
+        {
+          "number": 27,
+          "label": "27",
+          "fileId": "1yUstVTjWbr8bYitN2_b3MsZnNorEcYSX",
+          "name": "27.jpg"
+        },
+        {
+          "number": 28,
+          "label": "28",
+          "fileId": "1S8dRwuhQ_VaCYqQpZc9ha0q264uRuVe7",
+          "name": "28.jpg"
+        },
+        {
+          "number": 29,
+          "label": "29",
+          "fileId": "1B0bqwnva2V8BX1QeRqZW3d7AUrxY_o3y",
+          "name": "29.jpg"
+        },
+        {
+          "number": 30,
+          "label": "30",
+          "fileId": "1jdKQ058Q7ISBK_UDUf2sYaE0jghPsYFC",
+          "name": "30.jpg"
+        },
+        {
+          "number": 31,
+          "label": "31",
+          "fileId": "1UfrKOXpYdUVRsvCh4EONMmS62J9Bmn90",
+          "name": "31.jpg"
+        },
+        {
+          "number": 32,
+          "label": "32",
+          "fileId": "1BLzY77Ex4hK1cFmHpq1zBp4A0loA2g_x",
+          "name": "32.jpg"
+        },
+        {
+          "number": 33,
+          "label": "33",
+          "fileId": "1e8Ibvzid1aeEpucjDi3exByvh2ArT5WF",
+          "name": "33.jpg"
+        },
+        {
+          "number": 35,
+          "label": "35",
+          "fileId": "1gydL3TMdN1jF9NVx0lF1hYzHxcPAmu5u",
+          "name": "35.jpg"
+        },
+        {
+          "number": 36,
+          "label": "36",
+          "fileId": "1UcyuI-_oDnpZpR25LLa0yhaJmsiRwTfS",
+          "name": "36.jpg"
+        },
+        {
+          "number": 37,
+          "label": "37",
+          "fileId": "1dizB102CFpTzOp8-J00A0BliN6jPEHi0",
+          "name": "37.jpg"
+        },
+        {
+          "number": 38,
+          "label": "38",
+          "fileId": "1xtkp_wRHY-u2RDc4YrUpfDmzxQbK_ktq",
+          "name": "38.jpg"
+        },
+        {
+          "number": 39,
+          "label": "39",
+          "fileId": "1WsvkzDi6rA4NkB5Az9-JDNoMfu0EqcCs",
+          "name": "39.jpg"
+        },
+        {
+          "number": 40,
+          "label": "40",
+          "fileId": "1D1UAa-kbFY_Ep8v8xjH1l_lCNWyzFTgy",
+          "name": "40.jpg"
+        },
+        {
+          "number": 41,
+          "label": "41",
+          "fileId": "1eiEMZLfKTYAh6KSE19lId6uSQs6qBwiG",
+          "name": "41.jpg"
+        },
+        {
+          "number": 42,
+          "label": "42",
+          "fileId": "1rYyVodu74xte_3lDekZ8yzEwyt_j-hbd",
+          "name": "42.jpg"
+        },
+        {
+          "number": 43,
+          "label": "43",
+          "fileId": "1XCVArFjSN58ltm-Av5z0QFWfYFtu8aBq",
+          "name": "43.jpg"
+        },
+        {
+          "number": 44,
+          "label": "44",
+          "fileId": "1--N_mI2VVJHw2COIbyEcW99iHlRBL4In",
+          "name": "44.jpg"
+        },
+        {
+          "number": 45,
+          "label": "45",
+          "fileId": "1ARmtpqJYckverglSGgvX9tuEn_dhi42w",
+          "name": "45.jpg"
+        }
+      ],
+      "extraImages": [
+        {
+          "label": "Bookmatched 1",
+          "fileId": "1VRL5V-aM46yvW2QndwyC_7v3XmLX7qv2",
+          "name": "Bookmatched 1.jpg"
+        },
+        {
+          "label": "Bookmatched 2",
+          "fileId": "14ZzBB6lyh95VvYv90r2wfALGYai3khUY",
+          "name": "Bookmatched 2.jpg"
+        }
+      ],
+      "videos": [
+        {
+          "label": "Bookmatched 1 Video",
+          "fileId": "1AnTvqaidntVpCA3PgEu5XlBTeFEG4gsm",
+          "name": "Bookmatched 1 Video.mp4"
+        },
+        {
+          "label": "Bookmatched 2 Video",
+          "fileId": "1i8dbid-pWG_apBNQQIlr-2JTdGeElozd",
+          "name": "Bookmatched 2 Video.mp4"
+        }
+      ],
+      "packingList": null,
+      "syncError": null,
+      "packingWarning": null,
+      "skippedPhotoFolders": []
+    },
+    {
       "name": "Velluto Onyx",
       "folderName": "Reserved Velluto Onyx K3947",
       "folderId": "13gayZf02Y2GL9Qi4z0UYzrEri-ArPJMB",
@@ -17117,34 +17553,37 @@ window.LUCRA_INVENTORY = {
   ],
   "errors": [],
   "warnings": [],
-  "ignoredBundles": [
-    "Rosso Levanto K6222",
-    "Vanilla Ice K5372"
-  ],
   "report": {
-    "bundles": 51,
-    "added": 0,
+    "bundles": 53,
+    "added": 2,
     "updated": 0,
     "unchanged": 51,
-    "missingPackingLists": 0,
+    "missingPackingLists": 2,
     "unreadablePackingLists": 0,
     "missingImages": 0,
-    "missingAreas": 0,
-    "missingDimensions": 0,
+    "missingAreas": 2,
+    "missingDimensions": 2,
     "skippedPhotoFolders": 0,
     "folderErrors": 0,
     "warningCount": 0,
-    "ignoredBundles": 2,
-    "ignoredBundleFolders": [
+    "addedFolders": [
       "Rosso Levanto K6222",
       "Vanilla Ice K5372"
     ],
-    "addedFolders": [],
     "updatedFolders": [],
-    "missingPackingListFolders": [],
+    "missingPackingListFolders": [
+      "Rosso Levanto K6222",
+      "Vanilla Ice K5372"
+    ],
     "unreadablePackingListFolders": [],
     "missingImageFolders": [],
-    "missingAreaFolders": [],
-    "missingDimensionFolders": []
+    "missingAreaFolders": [
+      "Rosso Levanto K6222",
+      "Vanilla Ice K5372"
+    ],
+    "missingDimensionFolders": [
+      "Rosso Levanto K6222",
+      "Vanilla Ice K5372"
+    ]
   }
 };

@@ -33,11 +33,11 @@ def workbook_bytes(rows: list[list]) -> bytes:
 
 
 class MockedSyncTest(unittest.TestCase):
-    def test_explicitly_ignored_no_packing_list_folders(self):
-        self.assertTrue(sync_drive.is_ignored_bundle_folder("Rosso Levanto K6222"))
-        self.assertTrue(sync_drive.is_ignored_bundle_folder("Vanilla Ice K5372"))
-        self.assertTrue(sync_drive.is_ignored_bundle_folder("Reserved - Vanilla Ice K5372"))
-        self.assertFalse(sync_drive.is_ignored_bundle_folder("Rosso Levanto L1014"))
+    def test_no_packing_list_bundle_folders_are_valid_bundle_folders(self):
+        self.assertTrue(sync_drive.is_bundle_folder("Rosso Levanto K6222"))
+        self.assertTrue(sync_drive.is_bundle_folder("Vanilla Ice K5372"))
+        self.assertTrue(sync_drive.is_bundle_folder("Reserved - Vanilla Ice K5372"))
+        self.assertTrue(sync_drive.is_bundle_folder("Rosso Levanto L1014"))
 
     def test_code_only_excel_names_are_packing_lists_and_area_can_be_derived(self):
         parsed = sync_drive.parse_packing_list(
@@ -168,6 +168,8 @@ class MockedSyncTest(unittest.TestCase):
             "root": [
                 {"id": "l1014", "name": "Rosso Levanto L1014"},
                 {"id": "tundra-group", "name": "Tundra Grey"},
+                {"id": "rosso-k6222", "name": "Rosso Levanto K6222"},
+                {"id": "vanilla-k5372", "name": "Vanilla Ice K5372"},
             ],
             "l1014": [
                 {"id": "l1014-direct-photo-3", "name": "3", "kind": "image"},
@@ -177,7 +179,12 @@ class MockedSyncTest(unittest.TestCase):
             ],
             "working-photo-folder": [{"id": "l1014-photo-2", "name": "IMG_0002.HEIC"}],
             "tundra-group": [{"id": "reserved-tundra", "name": "Reserved - Tundra Light K6138"}],
-            "reserved-tundra": [{"id": "tundra-photo", "name": "1.jpg"}],
+            "reserved-tundra": [
+                {"id": "tundra-photo", "name": "1.jpg"},
+                {"id": "reserved-packing", "name": "Packing List K6138.xlsx"},
+            ],
+            "rosso-k6222": [{"id": "rosso-photo", "name": "IMG_9053.HEIC"}],
+            "vanilla-k5372": [{"id": "vanilla-photo", "name": "1.jpg"}],
         }
         calls = []
 
@@ -200,6 +207,8 @@ class MockedSyncTest(unittest.TestCase):
 
         l1014 = next(product for product in payload["products"] if product["code"] == "L1014")
         reserved = next(product for product in payload["products"] if product["code"] == "K6138")
+        rosso = next(product for product in payload["products"] if product["code"] == "K6222")
+        vanilla = next(product for product in payload["products"] if product["code"] == "K5372")
         self.assertEqual(l1014["folderName"], "Rosso Levanto L1014")
         self.assertEqual(l1014["packingList"], "Packing List L1014.xlsx")
         self.assertEqual(l1014["pcs"], 4)
@@ -209,11 +218,17 @@ class MockedSyncTest(unittest.TestCase):
         self.assertEqual(reserved["name"], "Tundra Light")
         self.assertTrue(reserved["reserved"])
         self.assertEqual(reserved["groupName"], "Tundra Grey")
+        self.assertIsNone(rosso["packingList"])
+        self.assertEqual(rosso["pcs"], 1)
+        self.assertEqual([image["label"] for image in rosso["images"]], ["1"])
+        self.assertIsNone(vanilla["packingList"])
+        self.assertEqual(vanilla["pcs"], 1)
+        self.assertEqual(payload["report"]["missingPackingLists"], 2)
         self.assertIn(("slow-photo-folder", sync_drive.NESTED_FOLDER_TIMEOUT, sync_drive.NESTED_FOLDER_ATTEMPTS), calls)
         self.assertIn("window.LUCRA_INVENTORY", script_content)
         self.assertIn("Rosso Levanto L1014", script_content)
-        self.assertEqual(payload["report"]["bundles"], 2)
-        self.assertEqual(payload["report"]["added"], 2)
+        self.assertEqual(payload["report"]["bundles"], 4)
+        self.assertEqual(payload["report"]["added"], 4)
         self.assertEqual(payload["report"]["skippedPhotoFolders"], 1)
 
     def test_failed_l1014_refresh_keeps_previous_catalogue(self):
