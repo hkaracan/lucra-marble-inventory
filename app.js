@@ -27,8 +27,8 @@ Object.assign(translations.en,{customerCollection:'CUSTOMER COLLECTION',customer
 Object.assign(translations.tr,{customerCollection:'MÜŞTERİ KOLEKSİYONU',customerCollectionHint:'Müşteriyle paylaşmak veya yazdırmak için kısa bir seçim oluşturun.',selectedBundles:'demet seçildi',addToCollection:'Koleksiyona ekle',removeFromCollection:'Koleksiyondan çıkar',printCollection:'Koleksiyonu yazdır',collectionSheet:'Müşteri koleksiyonu',collectionIntro:'Lucra Marble’dan seçilmiş ürünler.',onlineGallery:'Çevrim içi galeri'});
 Object.assign(translations.en,{scanToView:'Scan to view online'});
 Object.assign(translations.tr,{scanToView:'Çevrim içi görüntülemek için tarayın'});
-Object.assign(translations.en,{collectionTitleLabel:'Collection title',collectionTitlePlaceholder:'Optional project or customer name',whatsappCollection:'WhatsApp collection',lastUpdated:'Last updated',availabilityNote:'Availability and pricing are subject to confirmation.'});
-Object.assign(translations.tr,{collectionTitleLabel:'Koleksiyon başlığı',collectionTitlePlaceholder:'İsteğe bağlı proje veya müşteri adı',whatsappCollection:'Koleksiyonu WhatsApp ile gönder',lastUpdated:'Son güncelleme',availabilityNote:'Uygunluk ve fiyat teyide tabidir.'});
+Object.assign(translations.en,{collectionTitleLabel:'Collection title',collectionTitlePlaceholder:'Optional project or customer name',whatsappCollection:'Send via WhatsApp',lastUpdated:'Last updated',availabilityNote:'Availability and pricing are subject to confirmation.'});
+Object.assign(translations.tr,{collectionTitleLabel:'Koleksiyon başlığı',collectionTitlePlaceholder:'İsteğe bağlı proje veya müşteri adı',whatsappCollection:'WhatsApp ile gönder',lastUpdated:'Son güncelleme',availabilityNote:'Uygunluk ve fiyat teyide tabidir.'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
 function applyLanguage(){
