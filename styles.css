@@ -108,6 +108,7 @@ body.shared-collection-mode .collection-banner{top:104px}
 .gallery-focus .gallery-nav.next{right:max(18px,env(safe-area-inset-right))}
 .gallery-focus .gallery-count{font-weight:700;letter-spacing:.02em}
 .gallery>img{touch-action:pan-y}
+.gallery-focus .gallery>img{touch-action:none}
 
 @media(max-width:720px){
   body:not(.sales-mode) .hero{min-height:220px;padding:34px 22px 28px;gap:20px}
