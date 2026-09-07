@@ -51,10 +51,13 @@ Object.assign(translations.en,{salesSearchPlaceholder:'Search dashboard list',sa
 Object.assign(translations.tr,{salesSearchPlaceholder:'Panel listesini ara',salesSort:'Listeyi sırala',showing:'Gösterilen',imageChecks:'Fotoğraf notları',imageMismatchDetail:'fotoğraf sayısı plaka sayısından farklı; eksik plakalar üretim kaybı nedeniyle normal olabilir',auditImageCheck:'Fotoğraf numarası notları',reviewImages:'Fotoğraf kapsamını kontrol edin'});
 Object.assign(translations.en,{staleCatalogue:'Catalogue may be out of date.',lastSynced:'Last synced',dayAgo:'day ago',daysAgo:'days ago',copyCollectionSummary:'Copy list summary',collectionSummaryCopied:'List summary copied',listLink:'List link'});
 Object.assign(translations.tr,{staleCatalogue:'Katalog güncelliğini yitirmiş olabilir.',lastSynced:'Son senkronizasyon',dayAgo:'gün önce',daysAgo:'gün önce',copyCollectionSummary:'Liste özetini kopyala',collectionSummaryCopied:'Liste özeti kopyalandı',listLink:'Liste bağlantısı'});
+Object.assign(translations.en,{sharedListStatus:'{available} of {requested} bundles available',sharedListMissing:'{missing} bundles are not currently in the catalogue',returnToCatalogue:'Return to full catalogue'});
+Object.assign(translations.tr,{sharedListStatus:'{requested} demetten {available} demet mevcut',sharedListMissing:'{missing} demet güncel katalogda bulunmuyor',returnToCatalogue:'Kataloğun tamamına dön'});
 Object.assign(translations.en,{reviewSelection:'Review selected bundles'});
 Object.assign(translations.tr,{reviewSelection:'Seçilen demetleri incele'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
+function message(key,values){return Object.entries(values).reduce((text,[name,value])=>text.replaceAll(`{${name}}`,String(value)),t(key))}
 function applyLanguage(){
   document.documentElement.lang=language;
   document.querySelectorAll('[data-i18n]').forEach(element=>{element.textContent=t(element.dataset.i18n)});
@@ -491,9 +494,11 @@ function qrCodeMarkup(url,label=t('scanToView'),className=''){
 function renderCollectionBanner(){
   if(!sharedCollectionActive){collectionBanner.hidden=true;return}
   const available=products.filter(product=>sharedCollectionKeys.has(productKey(product)));
+  const requested=sharedCollectionKeys.size,missing=Math.max(0,requested-available.length);
   collectionBanner.hidden=false;
-  collectionTitle.textContent=available.length?(sharedCollectionTitle||collectionStats(available)):t('sharedCollectionEmpty');
-  collectionSummary.textContent=available.length?[collectionStats(available),collectionUpdatedLabel(),t('sharedSelectionHint'),t('availabilityNote')].filter(Boolean).join(' · '):'';
+  collectionBanner.classList.toggle('partial',missing>0);
+  collectionTitle.textContent=sharedCollectionTitle||(available.length?collectionStats(available):t('sharedCollectionEmpty'));
+  collectionSummary.textContent=[message('sharedListStatus',{available:available.length,requested}),missing?message('sharedListMissing',{missing}):'',available.length?collectionStats(available):'',collectionUpdatedLabel(),t('sharedSelectionHint'),t('availabilityNote')].filter(Boolean).join(' · ');
 }
 function clearSharedCollection(){
   sharedCollectionActive=false;sharedCollectionTitle='';sharedCollectionKeys.clear();document.body.classList.remove('shared-collection-mode');
