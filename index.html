@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260907-39" />
+  <link rel="stylesheet" href="styles.css?v=20260907-40" />
 </head>
 <body>
   <header class="site-header">
@@ -52,7 +52,7 @@
         </div>
       </div>
       <div class="collection-banner" id="collectionBanner" hidden>
-        <div class="collection-banner-copy"><p class="eyebrow" data-i18n="sharedSelection">SHARED SELECTION</p><strong id="collectionTitle"></strong><span id="collectionSummary"></span></div>
+        <div class="collection-banner-copy"><p class="eyebrow" data-i18n="sharedSelection">SHARED LIST</p><strong id="collectionTitle"></strong><span id="collectionSummary"></span></div>
         <button id="clearCollection" class="quiet-button" type="button" data-i18n="showAllBundles">Show all bundles</button>
       </div>
 
@@ -83,8 +83,8 @@
 
       <section class="presentation-collection" id="presentationCollection" hidden aria-labelledby="presentationCollectionTitle">
         <div class="presentation-collection-copy">
-          <p class="eyebrow" data-i18n="customerCollection">CUSTOMER COLLECTION</p>
-          <label class="collection-title-field"><span data-i18n="collectionTitleLabel">Collection title</span><input id="presentationCollectionName" type="text" maxlength="80" data-i18n-placeholder="collectionTitlePlaceholder" placeholder="Optional project or customer name" /></label>
+          <p class="eyebrow" data-i18n="customerCollection">YOUR LIST</p>
+          <label class="collection-title-field"><span data-i18n="collectionTitleLabel">List title</span><input id="presentationCollectionName" type="text" maxlength="80" data-i18n-placeholder="collectionTitlePlaceholder" placeholder="Optional project or customer name" /></label>
           <strong id="presentationCollectionTitle">0 bundles selected</strong>
           <span id="presentationCollectionSummary"></span>
           <details class="collection-review">
@@ -94,9 +94,9 @@
           <span data-i18n="customerCollectionHint">Create a short list to share or print for a customer.</span>
         </div>
         <div class="presentation-collection-actions">
-          <button id="sharePresentationCollection" class="secondary" type="button" disabled data-i18n="copyCollectionLink">Copy collection link</button>
-          <button id="printPresentationCollection" class="primary" type="button" disabled data-i18n="printCollection">Print collection</button>
-          <button id="whatsappPresentationCollection" class="secondary" type="button" disabled data-i18n="whatsappCollection">Send via WhatsApp</button>
+          <button id="sharePresentationCollection" class="secondary" type="button" disabled data-i18n="copyCollectionLink">Copy list link</button>
+          <button id="printPresentationCollection" class="primary" type="button" disabled data-i18n="printCollection">Print list</button>
+          <button id="whatsappPresentationCollection" class="secondary" type="button" disabled data-i18n="whatsappCollection">Send list via WhatsApp</button>
           <button id="clearPresentationCollection" class="quiet-button" type="button" disabled data-i18n="clear">Clear</button>
         </div>
       </section>
@@ -155,7 +155,7 @@
           <div class="shortlist-actions">
             <button id="compareSelected" class="secondary" type="button" disabled data-i18n="compareSelected">Compare selected</button>
             <button id="copyShortlist" class="secondary" type="button" disabled data-i18n="copySummary">Copy summary</button>
-            <button id="shareCollection" class="secondary" type="button" disabled data-i18n="shareSelection">Share selection link</button>
+            <button id="shareCollection" class="secondary" type="button" disabled data-i18n="shareSelection">Share list link</button>
             <button id="whatsappShortlist" class="secondary" type="button" disabled data-i18n="whatsappCustomer">WhatsApp customer</button>
             <button id="exportShortlist" class="secondary" type="button" disabled data-i18n="exportCsv">Export CSV</button>
             <button id="exportVisible" class="secondary" type="button" disabled data-i18n="exportVisible">Export visible CSV</button>
@@ -269,6 +269,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260907-39"></script>
+  <script src="app.js?v=20260907-40"></script>
 </body>
 </html>
