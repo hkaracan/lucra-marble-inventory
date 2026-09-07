@@ -66,17 +66,20 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         parsed = urlparse(self.path)
         if parsed.path == "/api/media":
-            file_id = parse_qs(parsed.query).get("id", [""])[0]
+            query = parse_qs(parsed.query)
+            file_id = query.get("id", [""])[0]
             if not file_id or not all(char.isalnum() or char in "-_" for char in file_id):
                 self.send_error(400)
                 return
+            requested_size = query.get("size", ["1400"])[0]
+            size = requested_size if requested_size in {"700", "1400"} else "1400"
             try:
-                cache_file = CACHE / f"v2-{file_id}.jpg"
+                cache_file = CACHE / f"v3-{size}-{file_id}.jpg"
                 if cache_file.exists() and cache_file.stat().st_size:
                     content = cache_file.read_bytes()
                 else:
                     with MEDIA_SEMAPHORE:
-                        content = fetch(f"https://drive.google.com/thumbnail?id={file_id}&sz=w1400", timeout=45)
+                        content = fetch(f"https://drive.google.com/thumbnail?id={file_id}&sz=w{size}", timeout=45)
                     temporary = cache_file.with_suffix(".tmp")
                     temporary.write_bytes(content)
                     temporary.replace(cache_file)

@@ -577,8 +577,8 @@ function render(){
   count.textContent=`${visible.length} ${visible.length===1?t('bundleSingular'):t('bundles')}`;
   empty.hidden=visible.length>0;
   renderSalesDashboard(visible);
-  grid.innerHTML=visible.map((p,index)=>{const selected=presentationSelection.has(productKey(p));return `<article class="card" tabindex="0" data-product-id="${escapeHtml(productKey(p))}">
-    <div class="card-image"><div class="stone-placeholder" style="--stone:${p.stone}"></div>${p.images.length?`<img src="${escapeHtml(p.images[0].src)}" alt="${escapeHtml(p.name)} slab" loading="${index<2?'eager':'lazy'}" fetchpriority="${index<2?'high':'low'}" decoding="async" onload="this.classList.add('loaded')" onerror="this.remove();this.closest('.card-image').classList.add('image-error')"><span class="image-error-badge">${escapeHtml(t('imageLoadFailed'))}</span>`:''}
+  grid.innerHTML=visible.map((p,index)=>{const selected=presentationSelection.has(productKey(p));const image=p.images[0];const cardSrc=image?.thumbSrc||image?.src;return `<article class="card" tabindex="0" data-product-id="${escapeHtml(productKey(p))}">
+    <div class="card-image"><div class="stone-placeholder" style="--stone:${p.stone}"></div>${image?.src?`<img src="${escapeHtml(cardSrc)}" ${image.thumbSrc?`srcset="${escapeHtml(image.thumbSrc)} 700w, ${escapeHtml(image.src)} 1400w" sizes="(max-width:580px) calc(100vw - 40px), (max-width:900px) calc(50vw - 26px), calc(50vw - 26px)"`:''} alt="${escapeHtml(p.name)} slab" loading="${index<2?'eager':'lazy'}" fetchpriority="${index<2?'high':'low'}" decoding="async" onload="this.classList.add('loaded');const ratio=this.naturalWidth/this.naturalHeight;this.closest('.card-image').classList.toggle('image-contained',ratio<1.38||ratio>1.78)" onerror="this.remove();this.closest('.card-image').classList.add('image-error')"><span class="image-error-badge">${escapeHtml(t('imageLoadFailed'))}</span>`:''}
       <span class="status-badge ${p.reserved?'reserved':''}">${escapeHtml(p.reserved?t('reserved'):t('available'))}</span>${sharedCollectionActive?'':`<button type="button" class="card-collection-toggle ${selected?'selected':''}" data-product-id="${escapeHtml(productKey(p))}" aria-pressed="${selected}" aria-label="${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))} ${escapeHtml(p.name)}"><span aria-hidden="true">${selected?'✓':'+'}</span><span>${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))}</span></button>`}${p.media?`<span class="media-badge">${escapeHtml(p.media)}</span>`:''}</div>
     <div class="card-info"><div><h3>${escapeHtml(p.name)}</h3><p class="card-meta">${p.pcs?escapeHtml(productStock(p)):p.packingList?escapeHtml(t('seePackingList')):escapeHtml(t('galleryAvailable'))}</p></div><span class="card-code">${escapeHtml(p.code)}</span></div>
   </article>`}).join('');
@@ -787,9 +787,10 @@ document.querySelector('#copyCompare').addEventListener('click',()=>copyText(sho
 compareDialog.addEventListener('click',event=>{if(event.target===compareDialog)compareDialog.close()});
 
 function normalizeLiveProduct(p,i){
-  const mediaUrl=fileId=>location.protocol==='file:'||isGithubPages?`https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w1400`:`/api/media?id=${encodeURIComponent(fileId)}`;
-  const slabImages=(p.images||[]).map(image=>({src:mediaUrl(image.fileId),label:String(image.label??image.number),type:'slab'}));
-  const extras=(p.extraImages||[]).map(image=>({src:mediaUrl(image.fileId),label:image.label||'Detail',type:'extra'}));
+  const mediaUrl=(fileId,size=1400)=>location.protocol==='file:'||isGithubPages?`https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w${size}`:`/api/media?id=${encodeURIComponent(fileId)}&size=${size}`;
+  const imageSources=fileId=>({src:mediaUrl(fileId),thumbSrc:mediaUrl(fileId,700)});
+  const slabImages=(p.images||[]).map(image=>({...imageSources(image.fileId),label:String(image.label??image.number),type:'slab'}));
+  const extras=(p.extraImages||[]).map(image=>({...imageSources(image.fileId),label:image.label||'Detail',type:'extra'}));
   return {...p,size:p.dimensions?.length?(p.dimensions.length===1?p.dimensions[0]:`${p.dimensions[0]} + ${p.dimensions.length-1} sizes`):'See packing list',images:[...slabImages,...extras],slabImageCount:slabImages.length,extraImageCount:extras.length,stone:stones[i%stones.length],media:[slabImages.length?`${slabImages.length} ${t('slabPhotos')}`:null,extras.length?`${extras.length} extra views`:null,p.videos?.length?`${p.videos.length} video`:null].filter(Boolean).join(' · ')};
 }
 
