@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260907-31" />
+  <link rel="stylesheet" href="styles.css?v=20260907-32" />
 </head>
 <body>
   <header class="site-header">
@@ -44,7 +44,7 @@
         <p class="result-count" id="resultCount"></p>
       </div>
       <div class="collection-banner" id="collectionBanner" hidden>
-        <div><p class="eyebrow" data-i18n="sharedSelection">SHARED SELECTION</p><strong id="collectionTitle"></strong><span id="collectionSummary"></span></div>
+        <div class="collection-banner-copy"><p class="eyebrow" data-i18n="sharedSelection">SHARED SELECTION</p><strong id="collectionTitle"></strong><span id="collectionSummary"></span></div>
         <button id="clearCollection" class="quiet-button" type="button" data-i18n="showAllBundles">Show all bundles</button>
       </div>
 
@@ -82,7 +82,7 @@
           <span data-i18n="customerCollectionHint">Create a short list to share or print for a customer.</span>
         </div>
         <div class="presentation-collection-actions">
-          <button id="sharePresentationCollection" class="secondary" type="button" disabled data-i18n="shareSelection">Share selection link</button>
+          <button id="sharePresentationCollection" class="secondary" type="button" disabled data-i18n="copyCollectionLink">Copy collection link</button>
           <button id="printPresentationCollection" class="primary" type="button" disabled data-i18n="printCollection">Print collection</button>
           <button id="whatsappPresentationCollection" class="secondary" type="button" disabled data-i18n="whatsappCollection">Send via WhatsApp</button>
           <button id="clearPresentationCollection" class="quiet-button" type="button" disabled data-i18n="clear">Clear</button>
@@ -242,6 +242,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260907-31"></script>
+  <script src="app.js?v=20260907-32"></script>
 </body>
 </html>
