@@ -31,6 +31,8 @@ Object.assign(translations.en,{collectionTitleLabel:'Collection title',collectio
 Object.assign(translations.tr,{collectionTitleLabel:'Koleksiyon başlığı',collectionTitlePlaceholder:'İsteğe bağlı proje veya müşteri adı',whatsappCollection:'WhatsApp ile gönder',lastUpdated:'Son güncelleme',availabilityNote:'Uygunluk ve fiyat teyide tabidir.'});
 Object.assign(translations.en,{copyCollectionLink:'Copy collection link',collectionLinkCopied:'Collection link copied'});
 Object.assign(translations.tr,{copyCollectionLink:'Koleksiyon bağlantısını kopyala',collectionLinkCopied:'Koleksiyon bağlantısı kopyalandı'});
+Object.assign(translations.en,{approxWeight:'Approx. weight',weightNotAvailable:'Not available'});
+Object.assign(translations.tr,{approxWeight:'Yaklaşık ağırlık',weightNotAvailable:'Belirtilmedi'});
 Object.assign(translations.en,{whatsappCustomer:'Send via WhatsApp'});
 Object.assign(translations.tr,{whatsappCustomer:'WhatsApp ile gönder'});
 Object.assign(translations.en,{slabPhotos:'slab photos'});
@@ -148,6 +150,14 @@ function packingListSummary(product){
 function productStock(product){
   const slabs=product.pcs!=null?`${Number(product.pcs)} ${t('slabs')}`:t('countUnavailable');
   return `${slabs}${product.sqm!=null?` · ${Number(product.sqm).toFixed(2)} m²`:''}`;
+}
+function productApproxWeight(product){
+  const area=Number(product.sqm);
+  return Number.isFinite(area)?area*58:null;
+}
+function productWeightLabel(product){
+  const weight=productApproxWeight(product);
+  return weight==null?t('weightNotAvailable'):`${Math.round(weight)} kg`;
 }
 
 function productDimensions(product){
@@ -413,7 +423,7 @@ function publicCustomerProductUrl(product){return `${publicBasePageUrl()}#bundle
 function publicCustomerCollectionUrl(records,title=''){const url=setCollectionParams(new URL(publicBasePageUrl()),records);if(title.trim())url.searchParams.set('title',title.trim());return url.toString()}
 function collectionStats(records){
   const slabs=records.reduce((sum,product)=>sum+(Number(product.pcs)||0),0),areas=records.filter(product=>product.sqm!=null&&Number.isFinite(Number(product.sqm))).reduce((sum,product)=>sum+Number(product.sqm),0);
-  return [`${records.length} ${records.length===1?t('bundleSingular'):t('bundles')}`,slabs?`${slabs} ${t('slabs')}`:'',areas?`${areas.toFixed(2)} m²`:'' ].filter(Boolean).join(' · ');
+  return [`${records.length} ${records.length===1?t('bundleSingular'):t('bundles')}`,slabs?`${slabs} ${t('slabs')}`:'',areas?`${areas.toFixed(2)} m²`:'',areas?`${t('approxWeight')}: ${Math.round(areas*58)} kg`:'' ].filter(Boolean).join(' · ');
 }
 function collectionUpdatedLabel(){return syncedAt?`${t('lastUpdated')}: ${new Date(syncedAt).toLocaleDateString()}`:''}
 function qrCodeMarkup(url,label=t('scanToView'),className=''){
@@ -433,7 +443,7 @@ function clearSharedCollection(){
 }
 function productSummary(product){
   const packing=packingListSummary(product),media=productMediaSummary(product);
-  return `${product.name} ${product.code} — ${product.reserved?'Reserved':'Available'}\nStock: ${productStock(product)}\nSizes: ${productDimensions(product)}\nPacking list: ${packing.label} (${packing.detail})\nMedia: ${media.label} (${media.detail})\nDrive: ${productDriveUrl(product)}`;
+  return `${product.name} ${product.code} — ${product.reserved?'Reserved':'Available'}\nStock: ${productStock(product)}\nApprox. weight: ${productWeightLabel(product)}\nSizes: ${productDimensions(product)}\nPacking list: ${packing.label} (${packing.detail})\nMedia: ${media.label} (${media.detail})\nDrive: ${productDriveUrl(product)}`;
 }
 function shortlistSummary(title='Lucra Marble shortlist'){
   return [title,...selectedProducts().map((product,index)=>`${index+1}. ${productSummary(product)}`)].join('\n\n');
@@ -447,6 +457,7 @@ function customerProductSummary(product,usePublicLink=false){
     `Lucra Marble · ${product.name}${code}`,
     product.reserved?'Currently reserved':'Available',
     `Stock: ${stock}${area}`,
+    `Approx. weight: ${productWeightLabel(product)}`,
     dimensions,
     'Location: Denizli, Türkiye',
     `Photos & details: ${usePublicLink?publicCustomerProductUrl(product):customerProductUrl(product)}`,
@@ -492,9 +503,9 @@ function renderCompare(){
 }
 function csvCell(value){return `"${String(value??'').replace(/"/g,'""')}"`}
 function downloadProducts(records,filePrefix){
-  const rows=[['Product','Code','Status','Stock','Dimensions','Packing list','Packing detail','Media','Media detail','Drive URL'],...records.map(product=>{
+  const rows=[['Product','Code','Status','Stock','Approx. weight','Dimensions','Packing list','Packing detail','Media','Media detail','Drive URL'],...records.map(product=>{
     const packing=packingListSummary(product),media=productMediaSummary(product);
-    return [product.name,product.code,product.reserved?'Reserved':'Available',productStock(product),productDimensions(product),packing.label,packing.detail,media.label,media.detail,productDriveUrl(product)];
+    return [product.name,product.code,product.reserved?'Reserved':'Available',productStock(product),productWeightLabel(product),productDimensions(product),packing.label,packing.detail,media.label,media.detail,productDriveUrl(product)];
   })];
   const csv=`\ufeff${rows.map(row=>row.map(csvCell).join(',')).join('\n')}`;
   const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
@@ -535,7 +546,7 @@ function printSheetMarkup(product){
   const images=(product.images||[]).slice(0,6),onlineUrl=publicCustomerProductUrl(product),driveUrl=productDriveUrl(product);
   const imageGrid=images.length?`<section class="print-sheet-views"><h2>${escapeHtml(t('selectedViews'))}</h2><div class="print-sheet-image-grid">${images.map((image,index)=>`<figure><img src="${escapeHtml(image.src)}" alt="${escapeHtml(product.name)} ${escapeHtml(image.type==='slab'?`slab ${image.label}`:image.label)}"><figcaption>${escapeHtml(image.type==='slab'?`Slab ${image.label}`:image.label||`${t('selectedViews')} ${index+1}`)}</figcaption></figure>`).join('')}</div>${product.images.length>images.length?`<p class="print-sheet-muted">${escapeHtml(`${product.images.length-images.length} ${t('views')} · `)}<a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('fullGallery'))}</a></p>`:''}</section>`:'<p class="print-sheet-muted">No images found</p>';
   const dimensions=product.dimensions?.length?productDimensions(product):t('sizeDetailsNotListed');
-  return `<div class="print-sheet-page"><header class="print-sheet-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(product.name)}</h1><p>${escapeHtml(product.code)} · <span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></p></div><div class="print-sheet-header-side"><div class="print-sheet-label">${escapeHtml(t('bundleSheet'))}</div>${qrCodeMarkup(onlineUrl)}</div></header>${images[0]?.src?`<img class="print-sheet-hero" src="${escapeHtml(images[0].src)}" alt="${escapeHtml(product.name)}">`:''}<dl class="print-sheet-specs"><div><dt>${escapeHtml(t('totalSlabs'))}</dt><dd>${escapeHtml(product.pcs!=null?String(product.pcs):t('countUnavailable'))}</dd></div><div><dt>${escapeHtml(t('totalArea'))}</dt><dd>${escapeHtml(product.sqm!=null?`${Number(product.sqm).toFixed(2)} m²`:'—')}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl>${imageGrid}<div class="print-sheet-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('fullGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div><p class="print-sheet-footer">${escapeHtml(t('contactForPricing'))}</p></div>`;
+  return `<div class="print-sheet-page"><header class="print-sheet-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(product.name)}</h1><p>${escapeHtml(product.code)} · <span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></p></div><div class="print-sheet-header-side"><div class="print-sheet-label">${escapeHtml(t('bundleSheet'))}</div>${qrCodeMarkup(onlineUrl)}</div></header>${images[0]?.src?`<img class="print-sheet-hero" src="${escapeHtml(images[0].src)}" alt="${escapeHtml(product.name)}">`:''}<dl class="print-sheet-specs"><div><dt>${escapeHtml(t('totalSlabs'))}</dt><dd>${escapeHtml(product.pcs!=null?String(product.pcs):t('countUnavailable'))}</dd></div><div><dt>${escapeHtml(t('totalArea'))}</dt><dd>${escapeHtml(product.sqm!=null?`${Number(product.sqm).toFixed(2)} m²`:'—')}</dd></div><div><dt>${escapeHtml(t('approxWeight'))}</dt><dd>${escapeHtml(productWeightLabel(product))}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl>${imageGrid}<div class="print-sheet-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('fullGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div><p class="print-sheet-footer">${escapeHtml(t('contactForPricing'))}</p></div>`;
 }
 
 function printProductSheet(){
@@ -556,9 +567,10 @@ function printCollectionMarkup(records){
     const image=product.images?.[0],code=product.code&&product.code!=='—'?` · ${product.code}`:'';
     const stock=product.pcs!=null?`${Number(product.pcs)} ${t('slabs')}`:t('countUnavailable');
     const area=product.sqm!=null?` · ${Number(product.sqm).toFixed(2)} m²`:'';
+    const weight=productApproxWeight(product)!=null?` · ${t('approxWeight')}: ${Math.round(productApproxWeight(product))} kg`:'';
     const dimensions=product.dimensions?.length?productDimensions(product):t('sizeDetailsNotListed');
     const onlineUrl=publicCustomerProductUrl(product),driveUrl=productDriveUrl(product);
-    return `<article class="print-collection-card"><div class="print-collection-card-head"><div><h2>${escapeHtml(product.name)}</h2><p>${escapeHtml(code.replace(/^ · /,''))}</p></div><span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></div>${image?.src?`<img class="print-collection-image" src="${escapeHtml(image.src)}" alt="${escapeHtml(product.name)}">`:'<div class="print-collection-image print-collection-no-image">No image</div>'}<dl class="print-collection-specs"><div><dt>${escapeHtml(t('stock'))}</dt><dd>${escapeHtml(`${stock}${area}`)}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl><div class="print-collection-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('onlineGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div>${qrCodeMarkup(onlineUrl,t('scanToView'),'print-collection-qr')}</article>`;
+    return `<article class="print-collection-card"><div class="print-collection-card-head"><div><h2>${escapeHtml(product.name)}</h2><p>${escapeHtml(code.replace(/^ · /,''))}</p></div><span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></div>${image?.src?`<img class="print-collection-image" src="${escapeHtml(image.src)}" alt="${escapeHtml(product.name)}">`:'<div class="print-collection-image print-collection-no-image">No image</div>'}<dl class="print-collection-specs"><div><dt>${escapeHtml(t('stock'))}</dt><dd>${escapeHtml(`${stock}${area}${weight}`)}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl><div class="print-collection-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('onlineGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div>${qrCodeMarkup(onlineUrl,t('scanToView'),'print-collection-qr')}</article>`;
   }).join('');
   return `<div class="print-collection-page"><header class="print-collection-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(customerCollectionTitle||t('collectionSheet'))}</h1><p>${escapeHtml(t('collectionIntro'))}</p></div><div class="print-collection-header-side"><div class="print-sheet-label">${escapeHtml(`${records.length} ${t('selectedBundles')}`)}</div>${qrCodeMarkup(collectionUrl)}</div></header><section class="print-collection-grid">${cards}</section><p class="print-collection-footer">${escapeHtml(`${t('availabilityNote')} ${t('contactForPricing')}`)}</p></div>`;
 }
@@ -674,6 +686,7 @@ function openProduct(id){
   const hasPackingList=Boolean(currentProduct.packingList);
   document.querySelector('#dialogPcs').textContent=currentProduct.pcs!=null?currentProduct.pcs:(hasPackingList?'Not listed':'No packing list');
   document.querySelector('#dialogSqm').textContent=currentProduct.sqm!=null?`${Number(currentProduct.sqm).toFixed(2)} m² · ${(Number(currentProduct.sqm)*10.7639).toFixed(0)} ft²`:(hasPackingList?'Not listed':'No packing list');
+  document.querySelector('#dialogWeight').textContent=productWeightLabel(currentProduct);
   document.querySelector('#dialogSize').textContent=currentProduct.dimensions?.length?productDimensions(currentProduct):(hasPackingList?'Not listed':'No packing list');
   const status=document.querySelector('#dialogStatus');status.className=`status-badge ${currentProduct.reserved?'reserved':''}`;status.textContent=currentProduct.reserved?'Reserved':'Available';
   const packingSummary=packingListSummary(currentProduct);
