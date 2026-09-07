@@ -29,6 +29,8 @@ Object.assign(translations.en,{scanToView:'Scan to view online'});
 Object.assign(translations.tr,{scanToView:'Çevrim içi görüntülemek için tarayın'});
 Object.assign(translations.en,{collectionTitleLabel:'Collection title',collectionTitlePlaceholder:'Optional project or customer name',whatsappCollection:'Send via WhatsApp',lastUpdated:'Last updated',availabilityNote:'Availability and pricing are subject to confirmation.'});
 Object.assign(translations.tr,{collectionTitleLabel:'Koleksiyon başlığı',collectionTitlePlaceholder:'İsteğe bağlı proje veya müşteri adı',whatsappCollection:'WhatsApp ile gönder',lastUpdated:'Son güncelleme',availabilityNote:'Uygunluk ve fiyat teyide tabidir.'});
+Object.assign(translations.en,{whatsappCustomer:'Send via WhatsApp'});
+Object.assign(translations.tr,{whatsappCustomer:'WhatsApp ile gönder'});
 Object.assign(translations.en,{slabPhotos:'slab photos'});
 Object.assign(translations.tr,{slabPhotos:'plaka fotoğrafı'});
 Object.assign(translations.en,{photo:'Photo',of:'of',previousPhoto:'Previous photo',nextPhoto:'Next photo'});
