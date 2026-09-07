@@ -29,6 +29,8 @@ Object.assign(translations.en,{scanToView:'Scan to view online'});
 Object.assign(translations.tr,{scanToView:'Çevrim içi görüntülemek için tarayın'});
 Object.assign(translations.en,{collectionTitleLabel:'Collection title',collectionTitlePlaceholder:'Optional project or customer name',whatsappCollection:'Send via WhatsApp',lastUpdated:'Last updated',availabilityNote:'Availability and pricing are subject to confirmation.'});
 Object.assign(translations.tr,{collectionTitleLabel:'Koleksiyon başlığı',collectionTitlePlaceholder:'İsteğe bağlı proje veya müşteri adı',whatsappCollection:'WhatsApp ile gönder',lastUpdated:'Son güncelleme',availabilityNote:'Uygunluk ve fiyat teyide tabidir.'});
+Object.assign(translations.en,{slabPhotos:'slab photos'});
+Object.assign(translations.tr,{slabPhotos:'plaka fotoğrafı'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
 function applyLanguage(){
@@ -694,7 +696,7 @@ function normalizeLiveProduct(p,i){
   const mediaUrl=fileId=>location.protocol==='file:'||isGithubPages?`https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w1400`:`/api/media?id=${encodeURIComponent(fileId)}`;
   const slabImages=(p.images||[]).map(image=>({src:mediaUrl(image.fileId),label:String(image.label??image.number),type:'slab'}));
   const extras=(p.extraImages||[]).map(image=>({src:mediaUrl(image.fileId),label:image.label||'Detail',type:'extra'}));
-  return {...p,size:p.dimensions?.length?(p.dimensions.length===1?p.dimensions[0]:`${p.dimensions[0]} + ${p.dimensions.length-1} sizes`):'See packing list',images:[...slabImages,...extras],slabImageCount:slabImages.length,extraImageCount:extras.length,stone:stones[i%stones.length],media:[slabImages.length?`${slabImages.length} slabs`:null,extras.length?`${extras.length} extra views`:null,p.videos?.length?`${p.videos.length} video`:null].filter(Boolean).join(' · ')};
+  return {...p,size:p.dimensions?.length?(p.dimensions.length===1?p.dimensions[0]:`${p.dimensions[0]} + ${p.dimensions.length-1} sizes`):'See packing list',images:[...slabImages,...extras],slabImageCount:slabImages.length,extraImageCount:extras.length,stone:stones[i%stones.length],media:[slabImages.length?`${slabImages.length} ${t('slabPhotos')}`:null,extras.length?`${extras.length} extra views`:null,p.videos?.length?`${p.videos.length} video`:null].filter(Boolean).join(' · ')};
 }
 
 function syncSummary(data){
