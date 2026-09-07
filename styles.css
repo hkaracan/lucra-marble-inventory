@@ -107,6 +107,8 @@ body.sales-mode .sales-dashboard{display:block}
   body.catalog-columns-3 .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   body.catalog-columns-4 .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
+body.sales-mode .catalog-view{display:none}
+@media(max-width:900px){.catalog-view{display:none}}
 .sales-quick-filters{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 0 20px;padding:12px;background:var(--mist);border:1px solid var(--line)}
 .sales-quick-filters>span{margin-right:4px;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
 .sales-quick-filter{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:white;color:var(--navy);padding:8px 10px;border-radius:3px;font:600 11px "DM Sans";cursor:pointer}
