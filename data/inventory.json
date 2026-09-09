@@ -1,6 +1,6 @@
 {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-09T07:46:36Z",
+  "syncedAt": "2026-09-09T08:09:18Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
@@ -8300,11 +8300,153 @@
       "groupName": null,
       "code": "K6170",
       "reserved": false,
-      "finish": "Natural stone",
-      "pcs": 50,
-      "sqm": null,
-      "dimensions": [],
-      "lines": [],
+      "finish": "Bookmatched/Honed",
+      "pcs": 71,
+      "sqm": 330.87,
+      "dimensions": [
+        "145 × 295 cm",
+        "155 × 298 cm",
+        "157 × 290 cm",
+        "157 × 297 cm",
+        "157 × 298 cm"
+      ],
+      "lines": [
+        {
+          "block": "K61700102",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 145,
+          "heightCm": 295,
+          "pcs": 1,
+          "sqm": 4.28
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 157,
+          "heightCm": 297,
+          "pcs": 11,
+          "sqm": 51.29
+        },
+        {
+          "block": "K61700202",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 157,
+          "heightCm": 297,
+          "pcs": 10,
+          "sqm": 46.63
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 157,
+          "heightCm": 298,
+          "pcs": 1,
+          "sqm": 4.68
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 157,
+          "heightCm": 298,
+          "pcs": 1,
+          "sqm": 4.68
+        },
+        {
+          "block": "K61700302",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 157,
+          "heightCm": 297,
+          "pcs": 11,
+          "sqm": 51.29
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 157,
+          "heightCm": 298,
+          "pcs": 1,
+          "sqm": 4.68
+        },
+        {
+          "block": "K61700402",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 157,
+          "heightCm": 297,
+          "pcs": 7,
+          "sqm": 32.64
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 157,
+          "heightCm": 298,
+          "pcs": 4,
+          "sqm": 18.71
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 155,
+          "heightCm": 298,
+          "pcs": 1,
+          "sqm": 4.62
+        },
+        {
+          "block": "K61700502",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 157,
+          "heightCm": 298,
+          "pcs": 10,
+          "sqm": 46.79
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 155,
+          "heightCm": 298,
+          "pcs": 2,
+          "sqm": 9.24
+        },
+        {
+          "block": "K61700602",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 157,
+          "heightCm": 298,
+          "pcs": 9,
+          "sqm": 42.11
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 157,
+          "heightCm": 298,
+          "pcs": 1,
+          "sqm": 4.68
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Nimbus White",
+          "widthCm": 157,
+          "heightCm": 290,
+          "pcs": 1,
+          "sqm": 4.55
+        }
+      ],
       "images": [
         {
           "number": 1,
@@ -8609,7 +8751,7 @@
       ],
       "extraImages": [],
       "videos": [],
-      "packingList": null,
+      "packingList": "K6170 Packing List.xlsx",
       "syncError": null,
       "packingWarning": null,
       "skippedPhotoFolders": []
@@ -17875,35 +18017,32 @@
   "warnings": [],
   "report": {
     "bundles": 54,
-    "added": 1,
-    "updated": 0,
+    "added": 0,
+    "updated": 1,
     "unchanged": 53,
-    "missingPackingLists": 3,
+    "missingPackingLists": 2,
     "unreadablePackingLists": 0,
     "missingImages": 0,
-    "missingAreas": 3,
-    "missingDimensions": 3,
+    "missingAreas": 2,
+    "missingDimensions": 2,
     "skippedPhotoFolders": 0,
     "folderErrors": 0,
     "warningCount": 0,
-    "addedFolders": [
+    "addedFolders": [],
+    "updatedFolders": [
       "Nimbus White K6170"
     ],
-    "updatedFolders": [],
     "missingPackingListFolders": [
-      "Nimbus White K6170",
       "Rosso Levanto K6222",
       "Vanilla Ice K5372"
     ],
     "unreadablePackingListFolders": [],
     "missingImageFolders": [],
     "missingAreaFolders": [
-      "Nimbus White K6170",
       "Rosso Levanto K6222",
       "Vanilla Ice K5372"
     ],
     "missingDimensionFolders": [
-      "Nimbus White K6170",
       "Rosso Levanto K6222",
       "Vanilla Ice K5372"
     ]

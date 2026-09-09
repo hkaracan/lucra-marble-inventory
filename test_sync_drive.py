@@ -38,6 +38,38 @@ class MockedSyncTest(unittest.TestCase):
         self.assertTrue(sync_drive.is_bundle_folder("Vanilla Ice K5372"))
         self.assertTrue(sync_drive.is_bundle_folder("Reserved - Vanilla Ice K5372"))
         self.assertTrue(sync_drive.is_bundle_folder("Rosso Levanto L1014"))
+        self.assertTrue(sync_drive.is_bundle_folder("K6170"))
+
+    def test_code_only_bundle_folder_is_named_from_its_packing_list(self):
+        tree = {
+            "root": [{"id": "k6170", "name": "K6170"}],
+            "k6170": [
+                {"id": "packing", "name": "K6170 Packing List.xlsx"},
+                {"id": "photo-1", "name": "1.jpg"},
+            ],
+        }
+
+        def fake_folder_items(folder_id, timeout=35, attempts=3):
+            return tree.get(folder_id, [])
+
+        fake_folder_items.cache_clear = lambda: None
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "data" / "inventory.json"
+            with patch.object(sync_drive, "OUTPUT", output), patch.object(sync_drive, "folder_items", fake_folder_items), patch.object(
+                sync_drive, "download_file", return_value=workbook_bytes(
+                    [
+                        ["Block Number", "Material", "Width", "Height", "Pcs"],
+                        ["K617001", "Nimbus", 170, 300, 2],
+                    ]
+                )
+            ):
+                payload = sync_drive.sync_inventory("root")
+
+        product = payload["products"][0]
+        self.assertEqual(product["code"], "K6170")
+        self.assertEqual(product["name"], "Nimbus")
+        self.assertEqual(product["pcs"], 2)
+        self.assertEqual(product["folderName"], "K6170")
 
     def test_code_only_excel_names_are_packing_lists_and_area_can_be_derived(self):
         parsed = sync_drive.parse_packing_list(

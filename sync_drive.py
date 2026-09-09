@@ -36,6 +36,7 @@ VIDEO_PATTERN = re.compile(r"\.(mp4|mov|webm)$", re.I)
 FILE_PATTERN = re.compile(r"\.(jpe?g|png|webp|heic|heif|mp4|mov|webm|xlsx?)$", re.I)
 CAMERA_IMAGE_PATTERN = re.compile(r"^(?:IMG|DSC|PXL)[ _-]?\d+\.(?:jpe?g|png|webp|heic|heif)$", re.I)
 PACKING_LIST_PATTERN = re.compile(r"\bpacking\s+list\b", re.I)
+BUNDLE_CODE_PATTERN = re.compile(r"(?:^|\s)([KLM]\d+)\s*$", re.I)
 REQUEST_LOCK = threading.Lock()
 LAST_REQUEST_AT = 0.0
 MIN_REQUEST_GAP = 0.35
@@ -96,7 +97,11 @@ def is_packing_list_item(item: dict[str, str]) -> bool:
 def is_bundle_folder(name: str) -> bool:
     """Recognize coded bundle folders even when their media listing is sparse."""
     clean_name = re.sub(r"^\s*reserved\b\s*(?:-\s*)?", "", name, flags=re.I).strip()
-    return bool(re.search(r"\s[KLM]\d+\s*$", clean_name, re.I))
+    # A few Drive bundles use only the stock code as their folder name
+    # (for example ``K6170``). Keep these as bundles even when their child
+    # images have no file extension and therefore look like folders to the
+    # anonymous Drive HTML parser.
+    return bool(BUNDLE_CODE_PATTERN.search(clean_name))
 
 
 def is_l1014_folder(name: str) -> bool:
@@ -596,7 +601,7 @@ def normalize_folder(folder: dict[str, str]) -> dict:
     folder_name = folder["name"]
     reserved = bool(re.match(r"^\s*reserved\b", folder_name, re.I))
     clean_name = re.sub(r"^\s*reserved\b\s*(?:-\s*)?", "", folder_name, flags=re.I).strip()
-    code_match = re.search(r"\s([KLM]\d+)\s*$", clean_name, re.I)
+    code_match = BUNDLE_CODE_PATTERN.search(clean_name)
     code = code_match.group(1).upper() if code_match else "—"
     display_name = clean_name[: code_match.start()].strip() if code_match else clean_name
     if "_items" in folder:
@@ -614,6 +619,14 @@ def normalize_folder(folder: dict[str, str]) -> dict:
         nested_code = next((match.group(1).upper() for source in code_sources if (match := re.search(r"\b([KLM]\d+)\b", source, re.I))), None)
         if nested_code:
             code = nested_code
+    if not display_name:
+        # Code-only folders still need a useful customer-facing name. Packing
+        # list material is authoritative and is a safe fallback when Drive
+        # provides no material name in the folder title.
+        display_name = next(
+            (str(line.get("material") or "").strip() for line in packing.get("lines", []) if str(line.get("material") or "").strip()),
+            code if code != "—" else clean_name,
+        )
     finishes = sorted({line["finish"] for line in packing["lines"] if line.get("finish")})
     dimensions = sorted({f'{line["widthCm"]} × {line["heightCm"]} cm' for line in packing["lines"] if line.get("widthCm") and line.get("heightCm")})
     return {
