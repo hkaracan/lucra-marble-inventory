@@ -1,7 +1,7 @@
 // Generated from inventory.json by sync_drive.py.
 window.LUCRA_INVENTORY = {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-09T08:09:18Z",
+  "syncedAt": "2026-09-09T08:30:53Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
@@ -8748,9 +8748,146 @@ window.LUCRA_INVENTORY = {
           "label": "50",
           "fileId": "1I44dI6Cs3tUDG5uojFDqI42QvaU_v0Q7",
           "name": "50.jpg"
+        },
+        {
+          "number": 51,
+          "label": "51",
+          "fileId": "1pGaogQcijKi6X0tWqBaT2A0BK_-2sIl_",
+          "name": "51.jpg"
+        },
+        {
+          "number": 52,
+          "label": "52",
+          "fileId": "1f13oreu5iY2pNTQcozFz1DMN8e-3WB0-",
+          "name": "52.jpg"
+        },
+        {
+          "number": 53,
+          "label": "53",
+          "fileId": "17O-BX7MmjSZye8hulMysgFq4YsSzb5wl",
+          "name": "53.jpg"
+        },
+        {
+          "number": 54,
+          "label": "54",
+          "fileId": "1uj8rVeCvK1xtGk4Y7kkgCCpFHCeLVebA",
+          "name": "54.jpg"
+        },
+        {
+          "number": 55,
+          "label": "55",
+          "fileId": "1qh0YHdkdhxT0V5gIa2GT5119LXhJNMkS",
+          "name": "55.jpg"
+        },
+        {
+          "number": 56,
+          "label": "56",
+          "fileId": "1MHMNYm0BQ3U7bSJOHQ62gqc6vDg0lHli",
+          "name": "56.jpg"
+        },
+        {
+          "number": 57,
+          "label": "57",
+          "fileId": "1bk7po4U0MijjCKrrbRribGBC1qK5zWh6",
+          "name": "57.jpg"
+        },
+        {
+          "number": 58,
+          "label": "58",
+          "fileId": "1aHW2DgK-Zh-PheKfh9DOdWOc6ePND1OC",
+          "name": "58.jpg"
+        },
+        {
+          "number": 59,
+          "label": "59",
+          "fileId": "1MaRBdI3KCys8lj1zotyiGtiQeIGkuIez",
+          "name": "59.jpg"
+        },
+        {
+          "number": 60,
+          "label": "60",
+          "fileId": "156x1i4TUX7QUblTH2WfI-MXMpD_CNndJ",
+          "name": "60.jpg"
+        },
+        {
+          "number": 61,
+          "label": "61",
+          "fileId": "1vMZu17ZzG5oLHLib-Tlnw7XGOHF6IHsU",
+          "name": "61.jpg"
+        },
+        {
+          "number": 62,
+          "label": "62",
+          "fileId": "1sYQdiDo5MH47HPOp7X37ebAqR201Jac3",
+          "name": "62.jpg"
+        },
+        {
+          "number": 63,
+          "label": "63",
+          "fileId": "1nrakAOmi04YzKZj7amgGiVITKzX7MQMw",
+          "name": "63.jpg"
+        },
+        {
+          "number": 64,
+          "label": "64",
+          "fileId": "1PW9HVpewogFaFSLchhioLwxFfl6nHKxi",
+          "name": "64.jpg"
+        },
+        {
+          "number": 65,
+          "label": "65",
+          "fileId": "1sqRw3K2HbXhEGR4zGNde01_PYj0hPelR",
+          "name": "65.jpg"
+        },
+        {
+          "number": 66,
+          "label": "66",
+          "fileId": "1TnR4tLOAoxQdUVMu2GjbgfqDTE8QEkg8",
+          "name": "66.jpg"
+        },
+        {
+          "number": 67,
+          "label": "67",
+          "fileId": "1_XBptBwlKOPjzIupjj3vubTZD5xWLake",
+          "name": "67.jpg"
+        },
+        {
+          "number": 68,
+          "label": "68",
+          "fileId": "1jwAxTNHiRuZciLf-uRU7liy3BqUGNiM8",
+          "name": "68.jpg"
+        },
+        {
+          "number": 69,
+          "label": "69",
+          "fileId": "1p9jeGmkZ-1raXjNcU_lNJKfB3WcyB8cs",
+          "name": "69.jpg"
+        },
+        {
+          "number": 70,
+          "label": "70",
+          "fileId": "16DddtmL9hUVacfrHE4YxtwQksD_iT38f",
+          "name": "70.jpg"
+        },
+        {
+          "number": 71,
+          "label": "71",
+          "fileId": "1_ENjpBrWw56E6xMdz-8AN481Bd8kWPU0",
+          "name": "71.jpg"
         }
       ],
-      "extraImages": [],
+      "extraImages": [
+        {
+          "label": "Bookmacthed1",
+          "fileId": "1EY8rZOSR88O4CtLaUDQyGuDDxT09rgGA",
+          "name": "Bookmacthed1.jpg"
+        },
+        {
+          "label": "Bookmatched2",
+          "fileId": "1D4EF50fBh6J0pzSwqsyMafZTZ9YzqbhY",
+          "name": "Bookmatched2.jpg"
+        }
+      ],
       "videos": [],
       "packingList": "K6170 Packing List.xlsx",
       "syncError": null,
