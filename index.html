@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260907-46" />
+  <link rel="stylesheet" href="styles.css?v=20260907-47" />
 </head>
 <body>
   <header class="site-header">
@@ -62,9 +62,9 @@
           <input id="searchInput" type="search" placeholder="Search material or bundle ID" data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
         </label>
         <div class="filters" role="group" aria-label="Inventory filters">
-          <button class="filter active" data-filter="all" data-i18n="allBundles" type="button">All bundles</button>
-          <button class="filter" data-filter="available" data-i18n="available" type="button">Available</button>
-          <button class="filter" data-filter="reserved" data-i18n="reserved" type="button">Reserved</button>
+          <button class="filter active" data-filter="all" data-i18n="allBundles" type="button" aria-pressed="true">All bundles</button>
+          <button class="filter" data-filter="available" data-i18n="available" type="button" aria-pressed="false">Available</button>
+          <button class="filter" data-filter="reserved" data-i18n="reserved" type="button" aria-pressed="false">Reserved</button>
         </div>
       </div>
       <button id="advancedFiltersToggle" class="advanced-filters-toggle" type="button" aria-expanded="false"><span data-i18n="moreFilters">More filters</span><span aria-hidden="true">⌄</span></button>
@@ -115,13 +115,13 @@
         <div class="sales-kpis" id="salesKpis"></div>
         <div class="sales-quick-filters" role="group" aria-label="Quick data filters">
           <span data-i18n="quickFilters">Quick filters</span>
-          <button type="button" class="sales-quick-filter active" data-audit-filter="all"><span data-i18n="auditAll">All products</span><b class="quick-filter-count">0</b></button>
-          <button type="button" class="sales-quick-filter" data-audit-filter="attention"><span data-i18n="auditAttention">Needs attention</span><b class="quick-filter-count">0</b></button>
-          <button type="button" class="sales-quick-filter" data-audit-filter="no-packing"><span data-i18n="auditNoPacking">No packing list</span><b class="quick-filter-count">0</b></button>
-          <button type="button" class="sales-quick-filter" data-audit-filter="size"><span data-i18n="auditSize">Missing area / size</span><b class="quick-filter-count">0</b></button>
-          <button type="button" class="sales-quick-filter" data-audit-filter="images"><span data-i18n="auditImages">Missing images</span><b class="quick-filter-count">0</b></button>
-          <button type="button" class="sales-quick-filter" data-audit-filter="warnings"><span data-i18n="auditWarnings">Sync warnings</span><b class="quick-filter-count">0</b></button>
-          <button type="button" class="sales-quick-filter" data-audit-filter="reserved"><span data-i18n="reserved">Reserved</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter active" data-audit-filter="all" aria-pressed="true"><span data-i18n="auditAll">All products</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="attention" aria-pressed="false"><span data-i18n="auditAttention">Needs attention</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="no-packing" aria-pressed="false"><span data-i18n="auditNoPacking">No packing list</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="size" aria-pressed="false"><span data-i18n="auditSize">Missing area / size</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="images" aria-pressed="false"><span data-i18n="auditImages">Missing images</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="warnings" aria-pressed="false"><span data-i18n="auditWarnings">Sync warnings</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="reserved" aria-pressed="false"><span data-i18n="reserved">Reserved</span><b class="quick-filter-count">0</b></button>
         </div>
         <section class="inventory-health" aria-labelledby="inventoryHealthTitle">
           <div class="inventory-health-head"><div><p class="eyebrow" data-i18n="dataQuality">DATA QUALITY</p><h4 id="inventoryHealthTitle" data-i18n="inventoryHealth">Inventory health</h4></div><button id="toggleHealth" class="quiet-button" type="button" aria-expanded="false" data-i18n="showDetails">Show details</button></div>
@@ -205,7 +205,8 @@
           <button class="gallery-tool" id="galleryExpand" type="button">⤢ Fullscreen</button>
         </div>
         <div class="gallery-count" id="galleryCount"></div>
-        <p class="gallery-hint" id="galleryHint" hidden></p>
+        <p class="gallery-hint" id="galleryHint" role="status" aria-live="polite" hidden></p>
+        <span class="gallery-loading-label" id="galleryLoadingLabel" role="status" aria-live="polite" hidden data-i18n="imageLoading">Loading image…</span>
         <button class="gallery-retry" id="galleryRetry" type="button" hidden data-i18n="retryImage">Retry image</button>
       </div>
         <div class="dialog-info">
@@ -272,6 +273,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260907-46"></script>
+  <script src="app.js?v=20260907-47"></script>
 </body>
 </html>
