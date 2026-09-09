@@ -236,8 +236,8 @@ body.shared-collection-mode .hero{display:none}body.shared-collection-mode .mode
 .gallery-retry{position:absolute;left:50%;top:calc(50% + 48px);transform:translateX(-50%);z-index:3;border:1px solid var(--line);border-radius:3px;background:white;color:var(--navy);padding:9px 12px;font:600 11px "DM Sans";cursor:pointer}.gallery-retry:hover,.gallery-retry:focus-visible{border-color:var(--aqua);outline:0}.gallery-retry[hidden]{display:none}.gallery-focus .gallery-retry{background:rgba(10,19,26,.9);border-color:rgba(255,255,255,.35);color:white}
 
 /* Recent bundle labels */
-.freshness-badge{position:absolute;left:14px;top:48px;z-index:3;padding:7px 10px;border:1px solid rgba(255,255,255,.55);border-radius:3px;background:var(--navy);color:white;font:700 10px "DM Sans";letter-spacing:.08em;text-transform:uppercase;box-shadow:0 2px 8px rgba(23,34,44,.12)}
+.freshness-badge{position:absolute;left:14px;bottom:14px;z-index:3;padding:7px 10px;border:1px solid rgba(255,255,255,.55);border-radius:3px;background:var(--navy);color:white;font:700 10px "DM Sans";letter-spacing:.08em;text-transform:uppercase;box-shadow:0 2px 8px rgba(23,34,44,.12)}
 .freshness-badge.just-in{background:var(--aqua);border-color:var(--aqua)}
 .freshness-badge.new{background:#eaf7fa;border-color:#9fd8e3;color:#24788c}
 .sales-freshness-badge{position:static;display:inline-flex;align-items:center;flex:0 0 auto;padding:4px 6px;border-radius:3px;box-shadow:none;font-size:9px;letter-spacing:.06em;white-space:nowrap}
-@media(max-width:580px){.freshness-badge{left:10px;top:44px;padding:6px 8px;font-size:9px}.sales-freshness-badge{font-size:8px;padding:3px 5px}}
+@media(max-width:580px){.freshness-badge{left:10px;bottom:10px;padding:6px 8px;font-size:9px}.sales-freshness-badge{font-size:8px;padding:3px 5px}}
