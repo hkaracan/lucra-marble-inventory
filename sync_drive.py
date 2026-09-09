@@ -729,9 +729,10 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
                     "error": product["packingWarning"],
                 }
             )
+    sync_timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     payload = {
         "source": ROOT_FOLDER_URL,
-        "syncedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "syncedAt": sync_timestamp,
         "location": "Denizli, Türkiye",
         "products": products,
         "errors": errors,
@@ -775,6 +776,16 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
     if not products:
         raise RuntimeError("Sync returned no products; the previous catalogue was preserved.")
     previous_by_id={product.get("folderId"):product for product in previous_payload.get("products",[]) if product.get("folderId")}
+    # Keep the first-seen date stable so the UI can identify recent additions
+    # without Drive credentials or a non-read-only metadata API. Existing
+    # catalogues from before this field was introduced simply receive no
+    # badge until they are replaced by a newly discovered bundle.
+    for product in products:
+        previous = previous_by_id.get(product.get("folderId"))
+        if previous and previous.get("addedAt"):
+            product["addedAt"] = previous["addedAt"]
+        elif previous is None:
+            product["addedAt"] = sync_timestamp
     added=[product for product in products if product.get("folderId") not in previous_by_id]
     updated=[]
     unchanged=0

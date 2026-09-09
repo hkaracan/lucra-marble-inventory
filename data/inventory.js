@@ -8298,6 +8298,7 @@ window.LUCRA_INVENTORY = {
       "name": "Nimbus White",
       "folderName": "Nimbus White K6170",
       "folderId": "17qpGHeKolKtBbmwxKgloN5SzzpIFrxzn",
+      "addedAt": "2026-09-09T08:30:53Z",
       "groupName": null,
       "code": "K6170",
       "reserved": false,

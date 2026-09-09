@@ -87,6 +87,48 @@ class MockedSyncTest(unittest.TestCase):
         self.assertEqual(parsed["totalSqm"], 31.21)
         self.assertEqual(parsed["lines"][0]["sqm"], 20.48)
 
+    def test_added_at_is_preserved_and_new_bundles_receive_a_first_seen_date(self):
+        tree = {
+            "root": [
+                {"id": "old", "name": "Old Stone K1000"},
+                {"id": "new", "name": "New Stone K2000"},
+            ],
+            "old": [{"id": "old-packing", "name": "Packing List K1000.xlsx"}],
+            "new": [{"id": "new-packing", "name": "Packing List K2000.xlsx"}],
+        }
+
+        def fake_folder_items(folder_id, timeout=35, attempts=3):
+            return tree.get(folder_id, [])
+
+        fake_folder_items.cache_clear = lambda: None
+        previous = {
+            "products": [
+                {
+                    "folderId": "old",
+                    "folderName": "Old Stone K1000",
+                    "name": "Old Stone",
+                    "code": "K1000",
+                    "addedAt": "2026-09-01T12:00:00Z",
+                }
+            ],
+            "errors": [],
+            "warnings": [],
+        }
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "data" / "inventory.json"
+            output.parent.mkdir(parents=True)
+            output.write_text(json.dumps(previous), encoding="utf-8")
+            with patch.object(sync_drive, "OUTPUT", output), patch.object(sync_drive, "folder_items", fake_folder_items), patch.object(
+                sync_drive, "download_file", return_value=packing_list_bytes()
+            ):
+                payload = sync_drive.sync_inventory("root")
+
+        old = next(product for product in payload["products"] if product["code"] == "K1000")
+        new = next(product for product in payload["products"] if product["code"] == "K2000")
+        self.assertEqual(old["addedAt"], "2026-09-01T12:00:00Z")
+        self.assertRegex(new["addedAt"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
+
     def test_packing_list_variants_provide_totals_and_dimensions(self):
         bruno = sync_drive.parse_packing_list(
             workbook_bytes(
