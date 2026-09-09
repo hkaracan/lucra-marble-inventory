@@ -1,6 +1,6 @@
 {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-07T10:04:37Z",
+  "syncedAt": "2026-09-09T07:46:36Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
@@ -8289,6 +8289,327 @@
         }
       ],
       "packingList": "Packing List L1009.xlsx",
+      "syncError": null,
+      "packingWarning": null,
+      "skippedPhotoFolders": []
+    },
+    {
+      "name": "Nimbus White",
+      "folderName": "Nimbus White K6170",
+      "folderId": "17qpGHeKolKtBbmwxKgloN5SzzpIFrxzn",
+      "groupName": null,
+      "code": "K6170",
+      "reserved": false,
+      "finish": "Natural stone",
+      "pcs": 50,
+      "sqm": null,
+      "dimensions": [],
+      "lines": [],
+      "images": [
+        {
+          "number": 1,
+          "label": "1",
+          "fileId": "1iH-iL9kTA5KdEdBZuJcStNC9_Ms24Foe",
+          "name": "1.jpg"
+        },
+        {
+          "number": 2,
+          "label": "2",
+          "fileId": "1tYqxoCPD3R-1IV7g8yyZPYC-kLdO45Ov",
+          "name": "2.jpg"
+        },
+        {
+          "number": 3,
+          "label": "3",
+          "fileId": "1liYGMtTQqWVsZvkRZ6SVvRbFUkika7bi",
+          "name": "3.jpg"
+        },
+        {
+          "number": 4,
+          "label": "4",
+          "fileId": "1cvmXYKAUwYhP40SgrLjUOZb8nAAqgt9v",
+          "name": "4.jpg"
+        },
+        {
+          "number": 5,
+          "label": "5",
+          "fileId": "1eqqKJk-XyFvV7h4RIh6r8QUyW1vpbtZU",
+          "name": "5.jpg"
+        },
+        {
+          "number": 6,
+          "label": "6",
+          "fileId": "1b1XiqWVIekveLbkeVA3SIQrCfs1NLzMB",
+          "name": "6.jpg"
+        },
+        {
+          "number": 7,
+          "label": "7",
+          "fileId": "1-12ttLYRSyfz31-P8v0hh36tVfYTeHou",
+          "name": "7.jpg"
+        },
+        {
+          "number": 8,
+          "label": "8",
+          "fileId": "1s_f2k_1upvwbQtna_9QiGm8DtXQCt8WL",
+          "name": "8.jpg"
+        },
+        {
+          "number": 9,
+          "label": "9",
+          "fileId": "1oVJn0b26Bm2Yd8522KtO0asgxQYecWih",
+          "name": "9.jpg"
+        },
+        {
+          "number": 10,
+          "label": "10",
+          "fileId": "1mp5vUSDIdpxVPleh3Dq69S1YfQEW3tq7",
+          "name": "10.jpg"
+        },
+        {
+          "number": 11,
+          "label": "11",
+          "fileId": "1c2vnPG03U5jhYm5S-42PQtmGVRJjDWFd",
+          "name": "11.jpg"
+        },
+        {
+          "number": 12,
+          "label": "12",
+          "fileId": "1N71biWBzofLTbEh7V-MZinNdSXg4747B",
+          "name": "12.jpg"
+        },
+        {
+          "number": 13,
+          "label": "13",
+          "fileId": "1GIiReE_DEpLV-oOYKQq9J8mBSgbHgvPo",
+          "name": "13.jpg"
+        },
+        {
+          "number": 14,
+          "label": "14",
+          "fileId": "1Jhp8EQif0DWVbyZKZp882rbY21MuF9tJ",
+          "name": "14.jpg"
+        },
+        {
+          "number": 15,
+          "label": "15",
+          "fileId": "1cNQu-UNzkvtpAQ2dpk5eP5idf3LlAgKT",
+          "name": "15.jpg"
+        },
+        {
+          "number": 16,
+          "label": "16",
+          "fileId": "1pv6X0mcEhMfea0xNAGHrz4GPOVfcHQW4",
+          "name": "16.jpg"
+        },
+        {
+          "number": 17,
+          "label": "17",
+          "fileId": "18QTdAWY-RQYUN38DDfDCOg8LwiBGHrny",
+          "name": "17.jpg"
+        },
+        {
+          "number": 18,
+          "label": "18",
+          "fileId": "1dBxf66OKHiQ6cgLk9dJz8rxtcTaan-IY",
+          "name": "18.jpg"
+        },
+        {
+          "number": 19,
+          "label": "19",
+          "fileId": "1-PVyHXjvygnwG671zUdzk2A0i3b4Vm2A",
+          "name": "19.jpg"
+        },
+        {
+          "number": 20,
+          "label": "20",
+          "fileId": "1l1P3fR9Plq5eCqhpKPqKaxLfNkb4sDz7",
+          "name": "20.jpg"
+        },
+        {
+          "number": 21,
+          "label": "21",
+          "fileId": "1kZZDv_qmRN1rTDZ-a3OynqK1g8232Zc-",
+          "name": "21.jpg"
+        },
+        {
+          "number": 22,
+          "label": "22",
+          "fileId": "17znSeZAwcCkDJWl8n1wvfN8ipIks64cj",
+          "name": "22.jpg"
+        },
+        {
+          "number": 23,
+          "label": "23",
+          "fileId": "1Gi3W4w081aKYqcNUb1NWYzzalrAMCwV1",
+          "name": "23.jpg"
+        },
+        {
+          "number": 24,
+          "label": "24",
+          "fileId": "1xE5fB1UptEjnMtsdQLl-MuIi-oNTCgaJ",
+          "name": "24.jpg"
+        },
+        {
+          "number": 25,
+          "label": "25",
+          "fileId": "1IiHu9fuYGMyqtBWNh2y4d2n28Z6K8u-Q",
+          "name": "25.jpg"
+        },
+        {
+          "number": 26,
+          "label": "26",
+          "fileId": "1EG38-pOuwOb5sOkL9rZvqIwIXSENhFSN",
+          "name": "26.jpg"
+        },
+        {
+          "number": 27,
+          "label": "27",
+          "fileId": "1_fVYvvS5MJbzAHij5Cs_kme7MQBlhV3e",
+          "name": "27.jpg"
+        },
+        {
+          "number": 28,
+          "label": "28",
+          "fileId": "1ahTsFr8hWcWZcPJq474bxn_hgiHJjYif",
+          "name": "28.jpg"
+        },
+        {
+          "number": 29,
+          "label": "29",
+          "fileId": "1KQo6Xce043wHJ_4dr0X1l9QAtwPB97bM",
+          "name": "29.jpg"
+        },
+        {
+          "number": 30,
+          "label": "30",
+          "fileId": "1vRqYDOxWBTCQrA05jbVHfkzBAu_ZCcYg",
+          "name": "30.jpg"
+        },
+        {
+          "number": 31,
+          "label": "31",
+          "fileId": "16-bQZQq5ycLgA1izI76vmLTRlBW3zO3S",
+          "name": "31.jpg"
+        },
+        {
+          "number": 32,
+          "label": "32",
+          "fileId": "1oB2CRo4ZTXTSB86IyXV27_8wbLkiJrcF",
+          "name": "32.jpg"
+        },
+        {
+          "number": 33,
+          "label": "33",
+          "fileId": "13hhafy3s8RhXYlVM1JOUA3mcQkI_9a9g",
+          "name": "33.jpg"
+        },
+        {
+          "number": 34,
+          "label": "34",
+          "fileId": "1BqXKUHyno4GkwY3_NfGFtvT3y_QasO_2",
+          "name": "34.jpg"
+        },
+        {
+          "number": 35,
+          "label": "35",
+          "fileId": "1IiiNujgaic15mglrJKTOcCcYvJOEYcmS",
+          "name": "35.jpg"
+        },
+        {
+          "number": 36,
+          "label": "36",
+          "fileId": "1pd8O4VFGyAgh1KA2qJfS2Me1ZWwTZTSn",
+          "name": "36"
+        },
+        {
+          "number": 37,
+          "label": "37",
+          "fileId": "1y1yvkLHAhVgd8lBnc1Y8x02Hx4l13yxh",
+          "name": "37.jpg"
+        },
+        {
+          "number": 38,
+          "label": "38",
+          "fileId": "1RSI9oqJ9a041Xefzx74vv52j9YK6r7TS",
+          "name": "38.jpg"
+        },
+        {
+          "number": 39,
+          "label": "39",
+          "fileId": "1EZ_5l0p9QEJPGf1O6ulu13OX6SGLMOnc",
+          "name": "39.jpg"
+        },
+        {
+          "number": 40,
+          "label": "40",
+          "fileId": "1uU0mMukblRWrDhIqAVbJL4baRxnTK08U",
+          "name": "40.jpg"
+        },
+        {
+          "number": 41,
+          "label": "41",
+          "fileId": "1W55sF9GyUQREm3Z8O6tibQ3t2ZchxIyD",
+          "name": "41.jpg"
+        },
+        {
+          "number": 42,
+          "label": "42",
+          "fileId": "1f-snjKcPGqiGXzeBZyrd_UodnPK4Y7Ph",
+          "name": "42.jpg"
+        },
+        {
+          "number": 43,
+          "label": "43",
+          "fileId": "1bCxI7SOvW_xrSPLoNKK70y6L-RD6gKcL",
+          "name": "43.jpg"
+        },
+        {
+          "number": 44,
+          "label": "44",
+          "fileId": "1X9k66-K-a23nLMeNWNwIJ4JHHyk0-nSw",
+          "name": "44.jpg"
+        },
+        {
+          "number": 45,
+          "label": "45",
+          "fileId": "1FAqKehhT-K9Ter2l83IV-gV3OWHefZP4",
+          "name": "45.jpg"
+        },
+        {
+          "number": 46,
+          "label": "46",
+          "fileId": "1WhRc1qgKf_V8xGCAja0luS_urWJhhXeA",
+          "name": "46.jpg"
+        },
+        {
+          "number": 47,
+          "label": "47",
+          "fileId": "1BGmXziI_1JRJDpWIVTbM13Jur7H8Rlsa",
+          "name": "47.jpg"
+        },
+        {
+          "number": 48,
+          "label": "48",
+          "fileId": "1oTM2d-41u_dmsg0tNXJyHxhlA6dYDuis",
+          "name": "48.jpg"
+        },
+        {
+          "number": 49,
+          "label": "49",
+          "fileId": "1zQpXzKX7DBvZqlvOJ9__cPUF0qSXpWlc",
+          "name": "49.jpg"
+        },
+        {
+          "number": 50,
+          "label": "50",
+          "fileId": "1I44dI6Cs3tUDG5uojFDqI42QvaU_v0Q7",
+          "name": "50.jpg"
+        }
+      ],
+      "extraImages": [],
+      "videos": [],
+      "packingList": null,
       "syncError": null,
       "packingWarning": null,
       "skippedPhotoFolders": []
@@ -17553,34 +17874,36 @@
   "errors": [],
   "warnings": [],
   "report": {
-    "bundles": 53,
-    "added": 2,
+    "bundles": 54,
+    "added": 1,
     "updated": 0,
-    "unchanged": 51,
-    "missingPackingLists": 2,
+    "unchanged": 53,
+    "missingPackingLists": 3,
     "unreadablePackingLists": 0,
     "missingImages": 0,
-    "missingAreas": 2,
-    "missingDimensions": 2,
+    "missingAreas": 3,
+    "missingDimensions": 3,
     "skippedPhotoFolders": 0,
     "folderErrors": 0,
     "warningCount": 0,
     "addedFolders": [
-      "Rosso Levanto K6222",
-      "Vanilla Ice K5372"
+      "Nimbus White K6170"
     ],
     "updatedFolders": [],
     "missingPackingListFolders": [
+      "Nimbus White K6170",
       "Rosso Levanto K6222",
       "Vanilla Ice K5372"
     ],
     "unreadablePackingListFolders": [],
     "missingImageFolders": [],
     "missingAreaFolders": [
+      "Nimbus White K6170",
       "Rosso Levanto K6222",
       "Vanilla Ice K5372"
     ],
     "missingDimensionFolders": [
+      "Nimbus White K6170",
       "Rosso Levanto K6222",
       "Vanilla Ice K5372"
     ]
