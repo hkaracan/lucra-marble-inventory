@@ -61,6 +61,8 @@ Object.assign(translations.en,{reviewSelection:'Review selected bundles'});
 Object.assign(translations.tr,{reviewSelection:'Seçilen demetleri incele'});
 Object.assign(translations.en,{syncHistory:'Recent syncs',syncSuccess:'Success',syncFailed:'Failed',latestSyncFailed:'Latest sync failed',previousCatalogueKept:'The previous catalogue remains published.',viewWorkflow:'View workflow',noSyncHistory:'No sync history available'});
 Object.assign(translations.tr,{syncHistory:'Son senkronizasyonlar',syncSuccess:'Başarılı',syncFailed:'Başarısız',latestSyncFailed:'Son senkronizasyon başarısız',previousCatalogueKept:'Önceki katalog yayımlanmaya devam ediyor.',viewWorkflow:'İş akışını görüntüle',noSyncHistory:'Senkronizasyon geçmişi yok'});
+Object.assign(translations.en,{photoCheck:'Photo check',auditPhotoCheck:'Photo check',photoCheckDetail:'bundles with no photos, broken images, skipped folders, or slab/photo count differences',brokenImages:'broken images',driveFolder:'Drive folder',excelSource:'Excel source',openExcel:'Open Excel source'});
+Object.assign(translations.tr,{photoCheck:'Fotoğraf kontrolü',auditPhotoCheck:'Fotoğraf kontrolü',photoCheckDetail:'fotoğrafı olmayan, bozuk fotoğraflı, klasörü atlanan veya plaka/fotoğraf sayısı farklı demet',brokenImages:'bozuk fotoğraf',driveFolder:'Drive klasörü',excelSource:'Excel kaynağı',openExcel:'Excel kaynağını aç'});
 Object.assign(translations.en,{latestSync:'LATEST SYNC',syncBundlesChecked:'bundles checked',publicDriveSource:'Public Drive · read-only'});
 Object.assign(translations.tr,{latestSync:'SON SENKRONİZASYON',syncBundlesChecked:'demet kontrol edildi',publicDriveSource:'Herkese açık Drive · salt okunur'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
@@ -137,6 +139,7 @@ const salesGate=document.querySelector('#salesGate'), salesGateForm=document.que
 const compareDialog=document.querySelector('#compareDialog'), compareContent=document.querySelector('#compareContent'), copyCompareButton=document.querySelector('#copyCompare');
 const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved'), shareProductButton=document.querySelector('#shareProduct');
 let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, syncHistory=[], syncState=null, auditFilter='all', salesQuickFilter='all', salesFollowupFilter='all', salesSearch='', salesSort='name', sharedCollectionActive=false, sharedCollectionTitle='', sharedCollectionKeys=new Set(), presentationSelection=new Set(), customerCollectionTitle='';
+const brokenPhotoIdsByProduct=new Map();
 function readSharedCollection(){
   const url=new URL(location.href),values=url.searchParams.getAll('collection');
   if(!values.length)return;
@@ -222,13 +225,29 @@ function imageCoverageDetail(check){
   if(check.missingNumbers.length)return `${coverage} · ${t('missingPhotoNumbers')}: ${check.missingNumbers.slice(0,12).join(', ')}${check.missingNumbers.length>12?'…':''}`;
   return check.mismatch?`${coverage} · ${t('reviewImages')}`:coverage;
 }
+function photoCheck(product){
+  const imageCheck=imageAudit(product),imageCount=product.images?.length||0;
+  const storedBroken=Array.isArray(product.photoCheck?.brokenImages)?product.photoCheck.brokenImages.length:0;
+  const runtimeBroken=brokenPhotoIdsByProduct.get(productKey(product))?.size||0;
+  const brokenCount=Math.max(storedBroken,runtimeBroken),skippedCount=product.skippedPhotoFolders?.length||0;
+  const issues=[];
+  if(!imageCount)issues.push(t('noImageAvailable'));
+  if(brokenCount)issues.push(`${brokenCount} ${t('brokenImages')}`);
+  if(skippedCount)issues.push(`${skippedCount} ${t('photoFoldersSkipped')}`);
+  if(imageCheck.mismatch)issues.push(imageCoverageDetail(imageCheck));
+  const className=!imageCount||brokenCount?'missing':skippedCount?'partial':imageCheck.mismatch?'info':'connected';
+  return {imageCheck,imageCount,brokenCount,skippedCount,hasIssue:issues.length>0,label:imageCount?`${imageCount} ${t('views')}`:t('missing'),detail:issues.length?`${t('photoCheck')}: ${issues.join(' · ')}`:`${t('photoCheck')}: ${t('galleryReady')}`,className};
+}
+function markPhotoBroken(productId,fileId){
+  if(!productId||!fileId)return;
+  const key=String(productId),broken=brokenPhotoIdsByProduct.get(key)||new Set();
+  if(broken.has(String(fileId)))return;
+  broken.add(String(fileId));brokenPhotoIdsByProduct.set(key,broken);
+  if(document.body.classList.contains('sales-mode')){renderInventoryHealth();if(auditPanel&&!auditPanel.hidden)renderSyncAudit()}
+}
 function productMediaSummary(product){
-  const images=product.images?.length||0;
-  if(!images)return {label:t('missing'),detail:t('noImageAvailable'),className:'missing'};
-  const skipped=product.skippedPhotoFolders?.length||0;
-  const check=imageAudit(product);
-  if(check.mismatch)return {label:`${images} ${t('views')}`,detail:imageCoverageDetail(check),className:'info'};
-  return {label:`${images} ${t('views')}`,detail:skipped?`${skipped} ${t('photoFoldersSkipped')}`:t('galleryReady'),className:skipped?'partial':'connected'};
+  const check=photoCheck(product);
+  return {label:check.label,detail:check.detail,className:check.className};
 }
 
 function deriveInventoryReport(records){
@@ -263,19 +282,18 @@ function deriveInventoryReport(records){
 function followupLabel(status){return t({new:'new',sent:'sent',waiting:'waiting',quoted:'quoted',closed:'closed'}[status]||'new')}
 function followupFor(product){const saved=salesNotes[productKey(product)]||{};return {status:saved.status||'new',note:saved.note||'',updatedAt:saved.updatedAt||null}}
 function renderInventoryHealth(){
-  const missingPacking=products.filter(product=>!product.packingList),unreadablePacking=products.filter(product=>product.packingList&&!product.lines?.length),missingImages=products.filter(product=>!product.images?.length),imageChecks=products.filter(product=>imageAudit(product).mismatch),skippedFolders=products.filter(product=>product.skippedPhotoFolders?.length),syncErrors=products.filter(product=>product.syncError),incompleteSizes=products.filter(product=>product.sqm==null||!product.dimensions?.length);
+  const missingPacking=products.filter(product=>!product.packingList),unreadablePacking=products.filter(product=>product.packingList&&!product.lines?.length),missingImages=products.filter(product=>!product.images?.length),imageChecks=products.filter(product=>imageAudit(product).mismatch),photoIssues=products.filter(product=>photoCheck(product).hasIssue),skippedFolders=products.filter(product=>product.skippedPhotoFolders?.length),syncErrors=products.filter(product=>product.syncError),incompleteSizes=products.filter(product=>product.sqm==null||!product.dimensions?.length);
   const checks=[
     {label:t('packingList'),value:missingPacking.length,detail:t('missingPackingDetail'),className:missingPacking.length?'warning':'healthy',filter:'no-packing'},
     {label:t('packingRows'),value:unreadablePacking.length,detail:t('missingPackingRowsDetail'),className:unreadablePacking.length?'warning':'healthy',filter:'attention'},
     {label:t('sizeData'),value:incompleteSizes.length,detail:t('missingSizeDetail'),className:incompleteSizes.length?'warning':'healthy',filter:'size'},
-    {label:t('photos'),value:missingImages.length,detail:t('missingImageDetail'),className:missingImages.length?'warning':'healthy',filter:'images'},
-    {label:t('imageChecks'),value:imageChecks.length,detail:t('imageMismatchDetail'),className:imageChecks.length?'info':'healthy',filter:'image-check'},
+    {label:t('photoCheck'),value:photoIssues.length,detail:t('photoCheckDetail'),className:photoIssues.length?'warning':'healthy',filter:'photo-check'},
     {label:t('syncIssues'),value:syncErrors.length+skippedFolders.length,detail:t('syncErrorDetail'),className:syncErrors.length||skippedFolders.length?'warning':'healthy',filter:'warnings'},
   ];
-  healthSummary.innerHTML=checks.map(check=>`<button type="button" class="health-card ${check.className}" data-audit-filter="${escapeHtml(check.filter)}"><strong>${escapeHtml(check.value)}</strong><span>${escapeHtml(check.label)}</span><small>${escapeHtml(check.value===0?t('noIssues'):check.detail)}</small></button>`).join('');
+  healthSummary.innerHTML=checks.map(check=>`<button type="button" class="health-card ${check.className}" data-audit-filter="${escapeHtml(check.filter)}" aria-label="${escapeHtml(`${check.label}: ${check.value}. ${t('viewRows')}`)}"><strong>${escapeHtml(check.value)}</strong><span>${escapeHtml(check.label)}</span><small>${escapeHtml(check.value===0?t('noIssues'):check.detail)}</small></button>`).join('');
   const issueList=(title,items,detail)=>items.length?`<section><h5>${escapeHtml(title)} <span>${items.length}</span></h5><p>${items.slice(0,8).map(product=>`<span>${escapeHtml(`${product.name}${product.code&&product.code!=='—'?` · ${product.code}`:''}`)}</span>`).join('')}${items.length>8?`<small>+ ${items.length-8} more</small>`:''}</p></section>`:`<section class="health-clear"><h5>${escapeHtml(title)}</h5><p>${escapeHtml(t('noIssues'))}</p></section>`;
   const reportLine=inventoryReport.added||inventoryReport.updated||inventoryReport.unchanged?`<section class="health-report"><h5>${escapeHtml(t('lastSync'))}</h5><p>${escapeHtml(`${t('added')}: ${inventoryReport.added||0} · ${t('updated')}: ${inventoryReport.updated||0} · ${t('unchanged')}: ${inventoryReport.unchanged||0}`)}</p></section>`:'';
-  healthDetails.innerHTML=`${reportLine}${issueList(t('packingList'),missingPacking,t('missing'))}${issueList(t('packingRows'),unreadablePacking,t('missing'))}${issueList(t('sizeData'),incompleteSizes,t('missing'))}${issueList(t('photos'),missingImages,t('missing'))}${issueList(t('imageChecks'),imageChecks,t('missing'))}${issueList(t('skippedFolders'),skippedFolders,t('missing'))}${issueList(t('syncIssues'),syncErrors,t('missing'))}`;
+  healthDetails.innerHTML=`${reportLine}${issueList(t('packingList'),missingPacking,t('missing'))}${issueList(t('packingRows'),unreadablePacking,t('missing'))}${issueList(t('sizeData'),incompleteSizes,t('missing'))}${issueList(t('photoCheck'),photoIssues,t('missing'))}${issueList(t('photos'),missingImages,t('missing'))}${issueList(t('imageChecks'),imageChecks,t('missing'))}${issueList(t('skippedFolders'),skippedFolders,t('missing'))}${issueList(t('syncIssues'),syncErrors,t('missing'))}`;
 }
 
 function auditInfo(product){
@@ -290,16 +308,16 @@ function auditInfo(product){
   const area=hasArea?`${Number(product.sqm).toFixed(2)} m²`:t('missing');
   const dimensions=hasDimensions?productDimensions(product):t('missing');
   const size=!hasArea&&!hasDimensions?{label:t('missing'),detail:`${t('areaData')}: ${area} · ${t('dimensions')}: ${dimensions}`,className:'missing'}:!hasArea||!hasDimensions?{label:t('partial'),detail:`${t('areaData')}: ${area} · ${t('dimensions')}: ${dimensions}`,className:'partial'}:{label:t('complete'),detail:`${area} · ${dimensions}`,className:'connected'};
-  const imageCheck=imageAudit(product);
-  const media=!imageCount?{label:t('missing'),detail:t('noImageAvailable'),className:'missing'}:imageCheck.mismatch?{label:`${imageCount} ${t('views')}`,detail:imageCoverageDetail(imageCheck),className:'info'}:skippedCount?{label:`${imageCount} ${t('views')}`,detail:`${skippedCount} ${t('photoFoldersSkipped')}`,className:'partial'}:{label:`${imageCount} ${t('views')}`,detail:t('galleryReady'),className:'connected'};
+  const check=photoCheck(product),imageCheck=check.imageCheck;
+  const media={label:check.label,detail:check.detail,className:check.className};
   const sync=product.syncError?{label:t('readError'),detail:product.syncError,className:'missing'}:skippedCount?{label:t('partial'),detail:`${skippedCount} ${t('photoFoldersSkipped')}`,className:'partial'}:{label:t('clean'),detail:t('noIssues'),className:'connected'};
-  const attention=packingUnreadable||!hasArea||!hasDimensions||!imageCount||syncWarning;
-  return {packing,size,media,sync,overall:{label:attention?t('auditAttention'):t('ready'),detail:attention?t('auditAttention'):t('clean'),className:attention?'warning':'connected'},packingMissing,packingUnreadable,sizeMissing:!hasArea||!hasDimensions,imageMissing:!imageCount,imageCheck:imageCheck.mismatch,syncWarning};
+  const attention=packingUnreadable||!hasArea||!hasDimensions||check.hasIssue||syncWarning;
+  return {packing,size,media,sync,overall:{label:attention?t('auditAttention'):t('ready'),detail:attention?t('auditAttention'):t('clean'),className:attention?'warning':'connected'},packingMissing,packingUnreadable,sizeMissing:!hasArea||!hasDimensions,imageMissing:!imageCount,imageCheck:imageCheck.mismatch,photoCheck:check.hasIssue,syncWarning};
 }
 function auditStatusMarkup(status){return `<span class="audit-status ${escapeHtml(status.className)}"><b>${escapeHtml(status.label)}</b><small>${escapeHtml(status.detail)}</small></span>`}
 function auditMatchesFilter(product,filter){
   const info=auditInfo(product);
-  return filter==='attention'?info.overall.className==='warning':filter==='no-packing'?info.packingMissing:filter==='size'?info.sizeMissing:filter==='images'?info.imageMissing:filter==='image-check'?info.imageCheck:filter==='warnings'?info.syncWarning:true;
+  return filter==='attention'?info.overall.className==='warning':filter==='no-packing'?info.packingMissing:filter==='size'?info.sizeMissing:filter==='images'?info.imageMissing:filter==='image-check'?info.imageCheck:filter==='photo-check'?info.photoCheck:filter==='warnings'?info.syncWarning:true;
 }
 function auditMatches(product){
   return auditMatchesFilter(product,auditFilter);
@@ -310,14 +328,14 @@ function renderSyncAudit(){
   auditEmpty.hidden=records.length>0;
   exportAuditButton.disabled=records.length===0;
   auditRows.innerHTML=records.map(product=>{
-    const info=auditInfo(product),driveUrl=productDriveUrl(product);
+    const info=auditInfo(product),driveUrl=productDriveUrl(product),excelUrl=product.packingListId?packingListUrl(product):'';
     return `<div class="audit-row" role="row" tabindex="0" data-product-id="${escapeHtml(productKey(product))}">
       <span class="audit-product" data-label="${escapeHtml(t('productSelect'))}" role="cell"><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.code)}</small><span class="audit-overall ${escapeHtml(info.overall.className)}">${escapeHtml(info.overall.label)}</span></span>
       <span data-label="${escapeHtml(t('packingList'))}" role="cell">${auditStatusMarkup(info.packing)}</span>
       <span data-label="${escapeHtml(t('auditAreaSize'))}" role="cell">${auditStatusMarkup(info.size)}</span>
       <span data-label="${escapeHtml(t('media'))}" role="cell">${auditStatusMarkup(info.media)}</span>
       <span data-label="${escapeHtml(t('auditSync'))}" role="cell">${auditStatusMarkup(info.sync)}</span>
-      <a class="audit-source" data-label="${escapeHtml(t('source'))}" role="cell" href="${escapeHtml(driveUrl)}" target="_blank" rel="noreferrer">${escapeHtml(t('source'))} ↗</a>
+      <span class="audit-source-links" data-label="${escapeHtml(t('source'))}" role="cell"><a class="audit-source" href="${escapeHtml(driveUrl)}" target="_blank" rel="noreferrer">${escapeHtml(t('driveFolder'))} ↗</a>${excelUrl?`<a class="audit-source audit-excel" href="${escapeHtml(excelUrl)}" target="_blank" rel="noreferrer">${escapeHtml(t('excelSource'))} ↗</a>`:''}</span>
     </div>`;
   }).join('');
   auditRows.querySelectorAll('.audit-row').forEach(row=>{
@@ -489,6 +507,7 @@ function updateShortlistControls(){
   clearShortlistButton.disabled=selected.length===0;
 }
 function productDriveUrl(product){return product.folderId?`https://drive.google.com/drive/folders/${encodeURIComponent(product.folderId)}`:rootFolder}
+function packingListUrl(product){return product.packingListId?`https://drive.google.com/file/d/${encodeURIComponent(product.packingListId)}/view`:productDriveUrl(product)}
 function basePageUrl(){const url=new URL(location.href);url.hash='';url.searchParams.delete('collection');url.searchParams.delete('title');url.searchParams.delete('v');return url.toString()}
 function customerProductUrl(product){return `${basePageUrl()}#bundle-${encodeURIComponent(productKey(product))}`}
 function setCollectionParams(url,records){url.searchParams.delete('collection');records.forEach(product=>url.searchParams.append('collection',productKey(product)));return url}
@@ -749,10 +768,11 @@ function render(){
   empty.hidden=visible.length>0;
   renderSalesDashboard(visible);
   grid.innerHTML=visible.map((p,index)=>{const selected=presentationSelection.has(productKey(p));const image=p.images[0];const cardSrc=image?.thumbSrc||image?.src;return `<article class="card" tabindex="0" data-product-id="${escapeHtml(productKey(p))}">
-    <div class="card-image ${image?.src?'is-loading':''}"><div class="stone-placeholder" style="--stone:${p.stone}"></div>${image?.src?`<span class="image-loading-badge">${escapeHtml(t('imageLoading'))}</span><img src="${escapeHtml(cardSrc)}" ${image.thumbSrc?`srcset="${escapeHtml(image.thumbSrc)} 700w, ${escapeHtml(image.src)} 1400w" sizes="(max-width:580px) calc(100vw - 40px), (max-width:900px) calc(50vw - 26px), calc(50vw - 26px)"`:''} alt="${escapeHtml(p.name)} slab" loading="${index<2?'eager':'lazy'}" fetchpriority="${index<2?'high':'low'}" decoding="async" onload="this.classList.add('loaded');const container=this.closest('.card-image');container.classList.remove('is-loading');const ratio=this.naturalWidth/this.naturalHeight;container.classList.toggle('image-contained',ratio<1.38||ratio>1.78)" onerror="this.remove();const container=this.closest('.card-image');container.classList.remove('is-loading');container.classList.add('image-error')"><span class="image-error-badge">${escapeHtml(t('imageUnavailableShort'))}</span>`:''}
+    <div class="card-image ${image?.src?'is-loading':''}"><div class="stone-placeholder" style="--stone:${p.stone}"></div>${image?.src?`<span class="image-loading-badge">${escapeHtml(t('imageLoading'))}</span><img data-product-id="${escapeHtml(productKey(p))}" data-photo-file-id="${escapeHtml(image.fileId||'')}" src="${escapeHtml(cardSrc)}" ${image.thumbSrc?`srcset="${escapeHtml(image.thumbSrc)} 700w, ${escapeHtml(image.src)} 1400w" sizes="(max-width:580px) calc(100vw - 40px), (max-width:900px) calc(50vw - 26px), calc(50vw - 26px)"`:''} alt="${escapeHtml(p.name)} slab" loading="${index<2?'eager':'lazy'}" fetchpriority="${index<2?'high':'low'}" decoding="async" onload="this.classList.add('loaded');const container=this.closest('.card-image');container.classList.remove('is-loading');const ratio=this.naturalWidth/this.naturalHeight;container.classList.toggle('image-contained',ratio<1.38||ratio>1.78)" onerror="this.remove();const container=this.closest('.card-image');container.classList.remove('is-loading');container.classList.add('image-error')"><span class="image-error-badge">${escapeHtml(t('imageUnavailableShort'))}</span>`:''}
       <span class="status-badge ${p.reserved?'reserved':''}">${escapeHtml(p.reserved?t('reserved'):t('available'))}</span>${freshnessBadgeMarkup(p)}${sharedCollectionActive?'':`<button type="button" class="card-collection-toggle ${selected?'selected':''}" data-product-id="${escapeHtml(productKey(p))}" aria-pressed="${selected}" aria-label="${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))} ${escapeHtml(p.name)}"><span aria-hidden="true">${selected?'✓':'+'}</span><span>${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))}</span></button>`}</div>
     <div class="card-info"><div><h3>${escapeHtml(p.name)}</h3><p class="card-meta">${p.pcs?escapeHtml(productStock(p)):p.packingList?escapeHtml(t('seePackingList')):escapeHtml(t('galleryAvailable'))}</p>${p.media?`<p class="card-media-meta">${escapeHtml(p.media)}</p>`:''}</div><span class="card-code">${escapeHtml(p.code)}</span></div>
   </article>`}).join('');
+  grid.querySelectorAll('img[data-photo-file-id]').forEach(image=>image.addEventListener('error',()=>markPhotoBroken(image.dataset.productId,image.dataset.photoFileId),{once:true}));
   grid.querySelectorAll('.card').forEach(card=>{const toggle=card.querySelector('.card-collection-toggle');toggle?.addEventListener('click',event=>{event.stopPropagation();togglePresentationSelection(card.dataset.productId,!presentationSelection.has(card.dataset.productId))});card.addEventListener('click',event=>{if(!event.target.closest('button'))openProduct(card.dataset.productId)});card.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.target.closest('button'))openProduct(card.dataset.productId)})});
 }
 
@@ -841,7 +861,7 @@ function preloadGalleryNeighbors(){
     const image=images[(imageIndex+offset+images.length)%images.length];
     if(!image?.src)return;
     if(galleryPreloadCache.has(image.src))return;
-    const preloader=new Image();preloader.decoding='async';preloader.fetchPriority='low';preloader.src=image.src;galleryPreloadCache.set(image.src,preloader);
+    const preloader=new Image();preloader.decoding='async';preloader.fetchPriority='low';preloader.addEventListener('error',()=>markPhotoBroken(productKey(currentProduct),image.fileId||image.src),{once:true});preloader.src=image.src;galleryPreloadCache.set(image.src,preloader);
   });
 }
 function openProduct(id){
@@ -897,7 +917,7 @@ function retryGalleryImage(){
   requestAnimationFrame(()=>{if(currentProduct?.images?.[imageIndex]!==selected)return;galleryImage.src=selected.src;preloadGalleryNeighbors()});
 }
 galleryRetryButton.addEventListener('click',retryGalleryImage);
-galleryImage.addEventListener('error',()=>{setGalleryLoading(false);galleryImage.classList.add('image-failed');galleryHint.hidden=false;galleryHint.textContent=t('imageUnavailable');galleryRetryButton.hidden=false});
+galleryImage.addEventListener('error',()=>{const image=currentProduct?.images?.[imageIndex];markPhotoBroken(currentProduct&&productKey(currentProduct),image?.fileId||image?.src);setGalleryLoading(false);galleryImage.classList.add('image-failed');galleryHint.hidden=false;galleryHint.textContent=t('imageUnavailable');galleryRetryButton.hidden=false});
 function galleryContainedSize(){
   const gallery=galleryImage.parentElement;
   const width=gallery?.clientWidth||0, height=gallery?.clientHeight||0;
@@ -993,6 +1013,7 @@ function syncSummary(data){
   if(report.missingPackingLists)summary.push(`${report.missingPackingLists} without packing list`);
   if(report.unreadablePackingLists)summary.push(`${report.unreadablePackingLists} unreadable packing file${report.unreadablePackingLists===1?'':'s'}`);
   if(report.missingAreas)summary.push(`${report.missingAreas} without area`);
+  if(report.photoCheckIssues)summary.push(`${report.photoCheckIssues} photo check issue${report.photoCheckIssues===1?'':'s'}`);
   if(warnings.length)summary.push(`${warnings.length} sync warning${warnings.length===1?'':'s'}`);
   if(errors.length)summary.push(`${errors.length} bundle error${errors.length===1?'':'s'}`);
   return summary.join(' · ');
@@ -1036,6 +1057,7 @@ function setSyncFeedback(data,prefix='Last sync'){
         const historyRuns=Array.isArray(historyData)?historyData:historyData&&Array.isArray(historyData.runs)?historyData.runs:data.syncHistory;
         syncHistory=Array.isArray(historyRuns)?historyRuns:[];
         syncState=statusData||data.syncStatus||null;
+        brokenPhotoIdsByProduct.clear();
         products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));pruneShortlist();prunePresentationSelection();inventoryReport=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products);syncedAt=data.syncedAt;
         syncStatus.innerHTML=`<i></i> ${products.length} bundles · ${new Date(syncedAt).toLocaleDateString()}`;
         setSyncFeedback({...data,count:products.length},location.protocol==='file:'?'Local snapshot':isGithubPages?'Last published sync':'Last sync');

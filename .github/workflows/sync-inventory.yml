@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '17 * * * *'
-      timezone: 'Europe/Istanbul'
 
 permissions:
   contents: write
@@ -55,6 +54,7 @@ jobs:
               f"- Without readable area: {report.get('missingAreas', 0)}",
               f"- Without readable dimensions: {report.get('missingDimensions', 0)}",
               f"- Without images: {report.get('missingImages', 0)}",
+              f"- Photo-check issues: {report.get('photoCheckIssues', 0)}",
               f"- Skipped optional photo folders: {report.get('skippedPhotoFolders', 0)}",
               f"- Folder errors: {report.get('folderErrors', len(payload.get('errors', [])))}",
           ]

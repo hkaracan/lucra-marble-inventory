@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260915-01" />
+  <link rel="stylesheet" href="styles.css?v=20260915-02" />
 </head>
 <body>
   <header class="site-header">
@@ -132,7 +132,7 @@
           <button type="button" class="sales-quick-filter" data-audit-filter="attention" aria-pressed="false"><span data-i18n="auditAttention">Needs attention</span><b class="quick-filter-count">0</b></button>
           <button type="button" class="sales-quick-filter" data-audit-filter="no-packing" aria-pressed="false"><span data-i18n="auditNoPacking">No packing list</span><b class="quick-filter-count">0</b></button>
           <button type="button" class="sales-quick-filter" data-audit-filter="size" aria-pressed="false"><span data-i18n="auditSize">Missing area / size</span><b class="quick-filter-count">0</b></button>
-          <button type="button" class="sales-quick-filter" data-audit-filter="images" aria-pressed="false"><span data-i18n="auditImages">Missing images</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="photo-check" aria-pressed="false"><span data-i18n="auditPhotoCheck">Photo check</span><b class="quick-filter-count">0</b></button>
           <button type="button" class="sales-quick-filter" data-audit-filter="warnings" aria-pressed="false"><span data-i18n="auditWarnings">Sync warnings</span><b class="quick-filter-count">0</b></button>
           <button type="button" class="sales-quick-filter" data-audit-filter="reserved" aria-pressed="false"><span data-i18n="reserved">Reserved</span><b class="quick-filter-count">0</b></button>
         </div>
@@ -148,7 +148,7 @@
           </div>
           <div id="auditPanel" hidden>
             <div class="audit-toolbar">
-              <label><span data-i18n="auditFilter">Show</span><select id="auditFilter"><option value="all" data-i18n="auditAll">All products</option><option value="attention" data-i18n="auditAttention">Needs attention</option><option value="no-packing" data-i18n="auditNoPacking">No packing list</option><option value="size" data-i18n="auditSize">Missing area / size</option><option value="images" data-i18n="auditImages">Missing images</option><option value="image-check" data-i18n="auditImageCheck">Image count mismatch</option><option value="warnings" data-i18n="auditWarnings">Sync warnings</option></select></label>
+              <label><span data-i18n="auditFilter">Show</span><select id="auditFilter"><option value="all" data-i18n="auditAll">All products</option><option value="attention" data-i18n="auditAttention">Needs attention</option><option value="no-packing" data-i18n="auditNoPacking">No packing list</option><option value="size" data-i18n="auditSize">Missing area / size</option><option value="images" data-i18n="auditImages">Missing images</option><option value="photo-check" data-i18n="auditPhotoCheck">Photo check</option><option value="image-check" data-i18n="auditImageCheck">Image count mismatch</option><option value="warnings" data-i18n="auditWarnings">Sync warnings</option></select></label>
               <span class="audit-count" id="auditCount"></span>
               <button id="exportAudit" class="secondary" type="button" data-i18n="exportAudit">Export audit CSV</button>
             </div>
@@ -286,6 +286,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260915-01"></script>
+  <script src="app.js?v=20260915-02"></script>
 </body>
 </html>

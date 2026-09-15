@@ -472,19 +472,21 @@ def parse_packing_list(content: bytes) -> dict:
     return result
 
 
-def collect_media(items: list[dict[str, str]]) -> tuple[list, list, list, dict | None, str | None, list[dict[str, str]]]:
+def collect_media(items: list[dict[str, str]]) -> tuple[list, list, list, dict | None, str | None, str | None, list[dict[str, str]]]:
     slab_images, extra_images, videos = [], [], []
     camera_images = []
     nested_folders = []
     skipped_photo_folders = []
     packing = None
     packing_name = None
+    packing_file_id = None
 
     def read_packing(item):
-        nonlocal packing, packing_name
+        nonlocal packing, packing_name, packing_file_id
         if packing_name:
             return
         packing_name = item["name"]
+        packing_file_id = item["id"]
         try:
             packing = parse_packing_list(download_file(item["id"]))
         except Exception as exc:
@@ -641,7 +643,7 @@ def collect_media(items: list[dict[str, str]]) -> tuple[list, list, list, dict |
         )
     )
     skipped_photo_folders.sort(key=lambda folder: (folder["name"].lower(), folder["folderId"]))
-    return slab_images, extra_images, videos, packing, packing_name, skipped_photo_folders
+    return slab_images, extra_images, videos, packing, packing_name, packing_file_id, skipped_photo_folders
 
 
 def normalize_folder(folder: dict[str, str]) -> dict:
@@ -658,7 +660,7 @@ def normalize_folder(folder: dict[str, str]) -> dict:
         # important for L1014: its bundle must not disappear just because the
         # first folder listing was temporarily slow.
         items = folder_items(folder["id"], timeout=35, attempts=3)
-    slab_images, extra_images, videos, packing, packing_name, skipped_photo_folders = collect_media(items)
+    slab_images, extra_images, videos, packing, packing_name, packing_file_id, skipped_photo_folders = collect_media(items)
     slab_images.sort(key=lambda image: (image["number"], image.get("view", 0)))
     packing = packing or {"lines": [], "totalPcs": len(slab_images) or None, "totalSqm": None}
     if code == "—":
@@ -676,6 +678,21 @@ def normalize_folder(folder: dict[str, str]) -> dict:
         )
     finishes = sorted({line["finish"] for line in packing["lines"] if line.get("finish")})
     dimensions = sorted({f'{line["widthCm"]} × {line["heightCm"]} cm' for line in packing["lines"] if line.get("widthCm") and line.get("heightCm")})
+    labels = sorted({int(image["label"]) for image in slab_images if str(image.get("label", "")).isdigit()})
+    missing_numbers = []
+    if labels:
+        missing_numbers = [number for number in range(min(labels), max(labels) + 1) if number not in labels]
+    expected_slabs = packing.get("totalPcs")
+    photo_check = {
+        "listedImages": len(slab_images) + len(extra_images),
+        "slabImages": len(slab_images),
+        "extraImages": len(extra_images),
+        "expectedSlabs": expected_slabs,
+        "missingNumbers": missing_numbers,
+        "countMismatch": expected_slabs is not None and len(slab_images) != expected_slabs,
+        "skippedFolders": skipped_photo_folders,
+        "brokenImages": [],
+    }
     return {
         "name": display_name,
         "folderName": folder_name,
@@ -692,9 +709,11 @@ def normalize_folder(folder: dict[str, str]) -> dict:
         "extraImages": extra_images,
         "videos": videos,
         "packingList": packing_name,
+        "packingListId": packing_file_id,
         "syncError": packing.get("error"),
         "packingWarning": packing.get("parseWarning"),
         "skippedPhotoFolders": skipped_photo_folders,
+        "photoCheck": photo_check,
     }
 
 
@@ -850,6 +869,21 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
     missing_area=[product for product in products if product.get("sqm") is None]
     missing_dimensions=[product for product in products if not product.get("dimensions")]
     skipped_photo_folders=sum(len(product.get("skippedPhotoFolders",[])) for product in products)
+    photo_check_issues=[
+        product
+        for product in products
+        if (
+            not product.get("images")
+            and not product.get("extraImages")
+        )
+        or product.get("photoCheck", {}).get("countMismatch")
+        or product.get("skippedPhotoFolders")
+    ]
+    image_mismatch_folders=[
+        product.get("folderName")
+        for product in products
+        if product.get("photoCheck", {}).get("countMismatch")
+    ]
     payload["report"]={
         "bundles":len(products),
         "added":len(added),
@@ -861,6 +895,7 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
         "missingAreas":len(missing_area),
         "missingDimensions":len(missing_dimensions),
         "skippedPhotoFolders":skipped_photo_folders,
+        "photoCheckIssues":len(photo_check_issues),
         "folderErrors":len(errors),
         "warningCount":len(warnings),
         "addedFolders":[product.get("folderName") for product in added],
@@ -870,6 +905,8 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
         "missingImageFolders":[product.get("folderName") for product in missing_images],
         "missingAreaFolders":[product.get("folderName") for product in missing_area],
         "missingDimensionFolders":[product.get("folderName") for product in missing_dimensions],
+        "photoCheckIssueFolders":[product.get("folderName") for product in photo_check_issues],
+        "imageMismatchFolders":image_mismatch_folders,
     }
     sync_run = sync_run_record(payload)
     history = [sync_run] + [run for run in read_sync_history() if run.get("attemptedAt") != sync_run["attemptedAt"]]

@@ -305,10 +305,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
 .sync-failure-note{flex:1 0 100%;margin:0;padding:8px 10px;border-left:3px solid var(--reserved);background:var(--reserved-bg);color:#7d4a21;font-size:10px;line-height:1.45}
 .sync-failure-note[hidden]{display:none}
 .sync-failure-note a{color:inherit;font-weight:700}
+.audit-source-links{display:flex;flex-direction:column;gap:6px!important}
+.audit-source-links a{color:#24788c;text-decoration:none;font-size:10px;font-weight:700;white-space:nowrap}
+.audit-source-links a:hover,.audit-source-links a:focus-visible{text-decoration:underline}
 @media(max-width:720px){
   #latestSyncHistoryRows{left:0;right:auto;width:min(430px,calc(100vw - 40px))}
   .latest-sync-history{align-self:flex-start}
   .sync-failure-note{width:100%}
+  .audit-source-links{align-items:flex-start}
 }
 
 /* Presentation cards use a single, quiet add-to-list affordance. */

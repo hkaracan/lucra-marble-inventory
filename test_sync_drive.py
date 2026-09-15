@@ -237,11 +237,12 @@ class MockedSyncTest(unittest.TestCase):
         with patch.object(sync_drive, "folder_items", fake_folder_items), patch.object(
             sync_drive, "download_file", return_value=packing_list_bytes()
         ):
-            slabs, extras, _, packing, packing_name, skipped = sync_drive.collect_media(
+            slabs, extras, _, packing, packing_name, packing_file_id, skipped = sync_drive.collect_media(
                 [{"id": "nested", "name": "Tundra Grey K900"}]
             )
 
         self.assertEqual(packing_name, "Packing List K900 Tundra Grey.xlsx")
+        self.assertEqual(packing_file_id, "packing")
         self.assertEqual(packing["totalPcs"], 4)
         self.assertEqual(extras, [])
         self.assertEqual([image["label"] for image in slabs], ["1", "2"])
@@ -296,9 +297,12 @@ class MockedSyncTest(unittest.TestCase):
         vanilla = next(product for product in payload["products"] if product["code"] == "K5372")
         self.assertEqual(l1014["folderName"], "Rosso Levanto L1014")
         self.assertEqual(l1014["packingList"], "Packing List L1014.xlsx")
+        self.assertEqual(l1014["packingListId"], "packing")
         self.assertEqual(l1014["pcs"], 4)
         self.assertEqual([image["number"] for image in l1014["images"]], [2, 3])
         self.assertEqual(l1014["skippedPhotoFolders"][0]["name"], "1")
+        self.assertTrue(l1014["photoCheck"]["countMismatch"])
+        self.assertEqual(l1014["photoCheck"]["missingNumbers"], [])
         self.assertTrue(any(warning["photoFolder"] == "1" for warning in payload["warnings"]))
         self.assertEqual(reserved["name"], "Tundra Light")
         self.assertTrue(reserved["reserved"])
