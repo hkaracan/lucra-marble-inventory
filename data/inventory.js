@@ -1,7 +1,7 @@
 // Generated from inventory.json by sync_drive.py.
 window.LUCRA_INVENTORY = {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-09T08:30:53Z",
+  "syncedAt": "2026-09-15T08:19:41Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
@@ -8298,7 +8298,6 @@ window.LUCRA_INVENTORY = {
       "name": "Nimbus White",
       "folderName": "Nimbus White K6170",
       "folderId": "17qpGHeKolKtBbmwxKgloN5SzzpIFrxzn",
-      "addedAt": "2026-09-09T08:30:53Z",
       "groupName": null,
       "code": "K6170",
       "reserved": false,
@@ -8893,7 +8892,8 @@ window.LUCRA_INVENTORY = {
       "packingList": "K6170 Packing List.xlsx",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "addedAt": "2026-09-09T08:30:53Z"
     },
     {
       "name": "Nimbus White Veincut",
@@ -18157,8 +18157,8 @@ window.LUCRA_INVENTORY = {
   "report": {
     "bundles": 54,
     "added": 0,
-    "updated": 1,
-    "unchanged": 53,
+    "updated": 0,
+    "unchanged": 54,
     "missingPackingLists": 2,
     "unreadablePackingLists": 0,
     "missingImages": 0,
@@ -18168,9 +18168,7 @@ window.LUCRA_INVENTORY = {
     "folderErrors": 0,
     "warningCount": 0,
     "addedFolders": [],
-    "updatedFolders": [
-      "Nimbus White K6170"
-    ],
+    "updatedFolders": [],
     "missingPackingListFolders": [
       "Rosso Levanto K6222",
       "Vanilla Ice K5372"
