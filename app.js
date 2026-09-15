@@ -55,8 +55,8 @@ Object.assign(translations.en,{salesSearchPlaceholder:'Search dashboard list',sa
 Object.assign(translations.tr,{salesSearchPlaceholder:'Panel listesini ara',salesSort:'Listeyi sırala',showing:'Gösterilen',imageChecks:'Fotoğraf/plaka notları',imageMismatchDetail:'fotoğraf sayısı plaka sayısından farklı; bu normal üretim kaybını gösterebilir, fotoğraf eksikliğini değil',auditImageCheck:'Fotoğraf/plaka sayısı notları',auditImages:'Fotoğraf bulunamadı',reviewImages:'Fotoğraf kapsamını kontrol edin',missingPhotoNumbers:'Eksik fotoğraf numaraları',missingImageDetail:'fotoğrafı bulunmayan demet',missingImages:'Fotoğraf bulunamadı',noImageAvailable:'Fotoğraf bulunamadı'});
 Object.assign(translations.en,{staleCatalogue:'Catalogue may be out of date.',lastSynced:'Last synced',dayAgo:'day ago',daysAgo:'days ago',copyCollectionSummary:'Copy list summary',collectionSummaryCopied:'List summary copied',listLink:'List link'});
 Object.assign(translations.tr,{staleCatalogue:'Katalog güncelliğini yitirmiş olabilir.',lastSynced:'Son senkronizasyon',dayAgo:'gün önce',daysAgo:'gün önce',copyCollectionSummary:'Liste özetini kopyala',collectionSummaryCopied:'Liste özeti kopyalandı',listLink:'Liste bağlantısı'});
-Object.assign(translations.en,{sharedListStatus:'{available} of {requested} bundles available',sharedListMissing:'{missing} bundles are not currently in the catalogue',returnToCatalogue:'Return to full catalogue'});
-Object.assign(translations.tr,{sharedListStatus:'{requested} demetten {available} demet mevcut',sharedListMissing:'{missing} demet güncel katalogda bulunmuyor',returnToCatalogue:'Kataloğun tamamına dön'});
+Object.assign(translations.en,{sharedListStatus:'{availableLabel} of {requestedLabel} available',sharedListMissing:'{missingLabel} not currently in the catalogue',returnToCatalogue:'Return to full catalogue'});
+Object.assign(translations.tr,{sharedListStatus:'{requestedLabel} içinden {availableLabel} mevcut',sharedListMissing:'{missingLabel} güncel katalogda bulunmuyor',returnToCatalogue:'Kataloğun tamamına dön'});
 Object.assign(translations.en,{reviewSelection:'Review selected bundles'});
 Object.assign(translations.tr,{reviewSelection:'Seçilen demetleri incele'});
 Object.assign(translations.en,{syncHistory:'Recent syncs',syncSuccess:'Success',syncFailed:'Failed',latestSyncFailed:'Latest sync failed',previousCatalogueKept:'The previous catalogue remains published.',viewWorkflow:'View workflow',noSyncHistory:'No sync history available'});
@@ -67,9 +67,23 @@ Object.assign(translations.en,{scanSharedList:'Scan to open this list',galleryLa
 Object.assign(translations.tr,{scanSharedList:'Bu listeyi açmak için tarayın',galleryLabel:'Ürün galerisi',closeGallery:'Galeriyi kapat'});
 Object.assign(translations.en,{latestSync:'LATEST SYNC',syncBundlesChecked:'bundles checked',publicDriveSource:'Public Drive · read-only'});
 Object.assign(translations.tr,{latestSync:'SON SENKRONİZASYON',syncBundlesChecked:'demet kontrol edildi',publicDriveSource:'Herkese açık Drive · salt okunur'});
+Object.assign(translations.en,{skipToCatalogue:'Skip to catalogue',searchLabel:'Search material or bundle ID',inventoryFiltersLabel:'Inventory filters',catalogViewLabel:'Catalog layout',updatedAt:'Updated {date}',copyListLink:'Copy list link',listLinkCopied:'List link copied',openGallery:'Open product gallery',areaNotProvided:'Area not provided',sizeNotProvided:'Size not provided',slab:'slab',slabPhoto:'slab photo',extraView:'extra view',extraViews:'extra views',video:'video',videos:'videos'});
+Object.assign(translations.tr,{skipToCatalogue:'Kataloğa geç',searchLabel:'Malzeme veya paket kodu ara',inventoryFiltersLabel:'Envanter filtreleri',catalogViewLabel:'Katalog düzeni',updatedAt:'Güncelleme: {date}',copyListLink:'Liste bağlantısını kopyala',listLinkCopied:'Liste bağlantısı kopyalandı',openGallery:'Ürün galerisini aç',areaNotProvided:'Alan belirtilmedi',sizeNotProvided:'Ölçü belirtilmedi',slab:'plaka',slabPhoto:'plaka fotoğrafı',extraView:'ek görünüm',extraViews:'ek görünüm',video:'video',videos:'video'});
+Object.assign(translations.en,{sharedListMetaTitle:'Shared slab list',sharedListMetaDescription:'View a shared Lucra Marble slab list from Denizli, Türkiye.'});
+Object.assign(translations.tr,{sharedListMetaTitle:'Paylaşılan plaka listesi',sharedListMetaDescription:'Denizli, Türkiye’den paylaşılan Lucra Marble plaka listesini görüntüleyin.'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
 function message(key,values){return Object.entries(values).reduce((text,[name,value])=>text.replaceAll(`{${name}}`,String(value)),t(key))}
+function countLabel(count,singularKey,pluralKey=singularKey){const value=Number(count)||0;return `${value} ${value===1?t(singularKey):t(pluralKey)}`}
+function setMetaContent(selector,content){const element=document.querySelector(selector);if(element)element.setAttribute('content',content)}
+function updateShareMetadata(product=null){
+  const productTitle=product?`Lucra Marble · ${product.name}${product.code&&product.code!=='—'?` · ${product.code}`:''}`:'';
+  const title=productTitle||(sharedCollectionActive?`Lucra Marble · ${sharedCollectionTitle||t('sharedListMetaTitle')}`:'Lucra Marble — Slab Inventory');
+  const description=product?`${product.name} · ${product.reserved?t('reserved'):t('available')} · Denizli, Türkiye`:sharedCollectionActive?t('sharedListMetaDescription'):'Browse Lucra Marble’s current natural-stone slab inventory from Denizli, Türkiye.';
+  const url=product?publicCustomerProductUrl(product):sharedCollectionActive?publicSharedCollectionUrl():'https://hkaracan.github.io/lucra-marble-inventory/';
+  const image=product?.images?.[0]?.src||'https://hkaracan.github.io/lucra-marble-inventory/public/lucra-logo.png';
+  document.title=title;setMetaContent('meta[name="description"]',description);setMetaContent('meta[property="og:title"]',title);setMetaContent('meta[property="og:description"]',description);setMetaContent('meta[property="og:url"]',url);setMetaContent('meta[property="og:image"]',image);setMetaContent('meta[name="twitter:title"]',title);setMetaContent('meta[name="twitter:description"]',description);setMetaContent('meta[name="twitter:image"]',image);
+}
 function applyLanguage(){
   document.documentElement.lang=language;
   document.querySelectorAll('[data-i18n]').forEach(element=>{element.textContent=t(element.dataset.i18n)});
@@ -82,6 +96,10 @@ function applyLanguage(){
   if(filterToggle){const open=document.body.classList.contains('filters-open');const label=filterToggle.querySelector('[data-i18n]');if(label)label.textContent=t(open?'hideFilters':'moreFilters');filterToggle.lastElementChild.textContent=open?'⌃':'⌄';filterToggle.setAttribute('aria-expanded',String(open))}
   const auditToggle=document.querySelector('#toggleAudit');
   if(auditToggle){const open=!document.querySelector('#auditPanel')?.hidden; auditToggle.textContent=t(open?'hideAudit':'openAudit');auditToggle.setAttribute('aria-expanded',String(open))}
+  document.querySelector('#searchInput')?.setAttribute('aria-label',t('searchLabel'));
+  document.querySelector('#inventoryFilters')?.setAttribute('aria-label',t('inventoryFiltersLabel'));
+  document.querySelector('#catalogView')?.setAttribute('aria-label',t('catalogViewLabel'));
+  updateShareMetadata();
 }
 const fallbackProducts = names.map((label,i)=>{
   const reserved = label.startsWith('Reserved ');
@@ -134,9 +152,9 @@ const shortlistSelect=document.querySelector('#shortlistSelect'), newShortlistBu
 const healthSummary=document.querySelector('#healthSummary'), healthDetails=document.querySelector('#healthDetails'), toggleHealthButton=document.querySelector('#toggleHealth');
 const auditSection=document.querySelector('.sync-audit'), auditPanel=document.querySelector('#auditPanel'), auditRows=document.querySelector('#auditRows'), auditEmpty=document.querySelector('#auditEmpty'), auditCount=document.querySelector('#auditCount'), auditFilterSelect=document.querySelector('#auditFilter'), toggleAuditButton=document.querySelector('#toggleAudit'), exportAuditButton=document.querySelector('#exportAudit');
 const followupFilterSelect=document.querySelector('#followupFilter');
-const collectionBanner=document.querySelector('#collectionBanner'), collectionTitle=document.querySelector('#collectionTitle'), collectionSummary=document.querySelector('#collectionSummary'), collectionQr=document.querySelector('#collectionQr'), collectionUpdated=document.querySelector('#collectionUpdated'), clearCollectionButton=document.querySelector('#clearCollection'), shareCollectionButton=document.querySelector('#shareCollection');
+const collectionBanner=document.querySelector('#collectionBanner'), collectionTitle=document.querySelector('#collectionTitle'), collectionSummary=document.querySelector('#collectionSummary'), collectionQr=document.querySelector('#collectionQr'), collectionUpdated=document.querySelector('#collectionUpdated'), copySharedCollectionLink=document.querySelector('#copySharedCollectionLink'), clearCollectionButton=document.querySelector('#clearCollection'), shareCollectionButton=document.querySelector('#shareCollection');
 const presentationCollection=document.querySelector('#presentationCollection'), presentationCollectionName=document.querySelector('#presentationCollectionName'), presentationCollectionTitle=document.querySelector('#presentationCollectionTitle'), presentationCollectionSummary=document.querySelector('#presentationCollectionSummary'), presentationCollectionItems=document.querySelector('#presentationCollectionItems'), sharePresentationCollectionButton=document.querySelector('#sharePresentationCollection'), copyPresentationCollectionSummaryButton=document.querySelector('#copyPresentationCollectionSummary'), printPresentationCollectionButton=document.querySelector('#printPresentationCollection'), whatsappPresentationCollectionButton=document.querySelector('#whatsappPresentationCollection'), clearPresentationCollectionButton=document.querySelector('#clearPresentationCollection');
-const catalogueFreshness=document.querySelector('#catalogueFreshness'), latestSyncTitle=document.querySelector('#latestSyncTitle'), latestSyncSource=document.querySelector('#latestSyncSource'), latestSyncStats=document.querySelector('#latestSyncStats'), latestSyncHistoryRows=document.querySelector('#latestSyncHistoryRows'), syncFailureNote=document.querySelector('#syncFailureNote');
+const catalogueFreshness=document.querySelector('#catalogueFreshness'), publicCatalogueFreshness=document.querySelector('#publicCatalogueFreshness'), latestSyncTitle=document.querySelector('#latestSyncTitle'), latestSyncSource=document.querySelector('#latestSyncSource'), latestSyncStats=document.querySelector('#latestSyncStats'), latestSyncHistoryRows=document.querySelector('#latestSyncHistoryRows'), syncFailureNote=document.querySelector('#syncFailureNote');
 const salesGate=document.querySelector('#salesGate'), salesGateForm=document.querySelector('#salesGateForm'), salesPasswordInput=document.querySelector('#salesPasswordInput'), salesGateError=document.querySelector('#salesGateError');
 const compareDialog=document.querySelector('#compareDialog'), compareContent=document.querySelector('#compareContent'), copyCompareButton=document.querySelector('#copyCompare');
 const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved'), shareProductButton=document.querySelector('#shareProduct');
@@ -192,8 +210,9 @@ function packingListSummary(product){
 }
 
 function productStock(product){
-  const slabs=product.pcs!=null?`${Number(product.pcs)} ${t('slabs')}`:t('countUnavailable');
-  return `${slabs}${product.sqm!=null?` · ${Number(product.sqm).toFixed(2)} m²`:''}`;
+  const slabs=product.pcs!=null?countLabel(product.pcs,'slab','slabs'):t('countUnavailable');
+  const area=product.sqm!=null?` · ${Number(product.sqm).toFixed(2)} m²`:` · ${t('areaNotProvided')}`;
+  return `${slabs} · ${area}`;
 }
 function productApproxWeight(product){
   const area=Number(product.sqm);
@@ -206,7 +225,7 @@ function productWeightLabel(product){
 
 function productDimensions(product){
   if(product.dimensions?.length)return product.dimensions.join(' · ');
-  return product.packingList?t('sizesNotListed'):t('noPackingList');
+  return product.packingList?t('sizeNotProvided'):t('noPackingList');
 }
 
 function imageAudit(product){
@@ -331,7 +350,7 @@ function renderSyncAudit(){
   exportAuditButton.disabled=records.length===0;
   auditRows.innerHTML=records.map(product=>{
     const info=auditInfo(product),driveUrl=productDriveUrl(product),excelUrl=product.packingListId?packingListUrl(product):'';
-    return `<div class="audit-row" role="row" tabindex="0" data-product-id="${escapeHtml(productKey(product))}">
+    return `<div class="audit-row" role="row" tabindex="0" aria-label="${escapeHtml(`${t('openGallery')}: ${product.name}${product.code&&product.code!=='—'?` · ${t('bundle')} ${product.code}`:''}`)}" aria-keyshortcuts="Enter Space" data-product-id="${escapeHtml(productKey(product))}">
       <span class="audit-product" data-label="${escapeHtml(t('productSelect'))}" role="cell"><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.code)}</small><span class="audit-overall ${escapeHtml(info.overall.className)}">${escapeHtml(info.overall.label)}</span></span>
       <span data-label="${escapeHtml(t('packingList'))}" role="cell">${auditStatusMarkup(info.packing)}</span>
       <span data-label="${escapeHtml(t('auditAreaSize'))}" role="cell">${auditStatusMarkup(info.size)}</span>
@@ -342,7 +361,7 @@ function renderSyncAudit(){
   }).join('');
   auditRows.querySelectorAll('.audit-row').forEach(row=>{
     row.addEventListener('click',event=>{if(!event.target.closest('a,button,input,label'))openProduct(row.dataset.productId)});
-    row.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.target.closest('a,button,input,label'))openProduct(row.dataset.productId)});
+    row.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&!event.target.closest('a,button,input,label')){event.preventDefault();openProduct(row.dataset.productId)}});
   });
 }
 function setAuditOpen(open){
@@ -422,7 +441,7 @@ function renderSalesDashboard(visible){
     const media=productMediaSummary(product);
     const followup=followupFor(product);
     const driveUrl=product.folderId?`https://drive.google.com/drive/folders/${encodeURIComponent(product.folderId)}`:rootFolder;
-    return `<div class="sales-row" role="row" tabindex="0" data-product-id="${escapeHtml(productKey(product))}">
+    return `<div class="sales-row" role="row" tabindex="0" aria-label="${escapeHtml(`${t('openGallery')}: ${product.name}${product.code&&product.code!=='—'?` · ${t('bundle')} ${product.code}`:''}`)}" aria-keyshortcuts="Enter Space" data-product-id="${escapeHtml(productKey(product))}">
       <span class="sales-product" data-label="${escapeHtml(t('productSelect'))}" role="cell"><span class="sales-product-line"><input class="shortlist-toggle" type="checkbox" ${shortlist.has(productKey(product))?'checked':''} aria-label="Add ${escapeHtml(product.name)} ${escapeHtml(product.code)} to shortlist"><strong>${escapeHtml(product.name)}</strong>${freshnessBadgeMarkup(product,true)}</span><small>${escapeHtml(product.code)}</small></span>
       <span data-label="${escapeHtml(t('status'))}" role="cell"><b class="sales-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</b></span>
       <span data-label="${escapeHtml(t('stock'))}" role="cell">${escapeHtml(productStock(product))}</span>
@@ -440,7 +459,7 @@ function renderSalesDashboard(visible){
     const customerAction=row.querySelector('.sales-customer-action');
     customerAction?.addEventListener('click',event=>{event.stopPropagation();const product=products.find(item=>productKey(item)===row.dataset.productId);if(product)copyText(customerProductUrl(product),customerAction,t('customerLinkCopied'))});
     row.addEventListener('click',event=>{if(!event.target.closest('a,button,input,label'))openProduct(row.dataset.productId)});
-    row.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.target.closest('a,button,input,label'))openProduct(row.dataset.productId)});
+    row.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&!event.target.closest('a,button,input,label')){event.preventDefault();openProduct(row.dataset.productId)}});
   });
   updateShortlistControls();
 }
@@ -520,9 +539,9 @@ function publicCustomerCollectionUrl(records,title=''){const url=setCollectionPa
 function publicSharedCollectionUrl(){const url=new URL(publicBasePageUrl());sharedCollectionKeys.forEach(key=>url.searchParams.append('collection',key));if(sharedCollectionTitle.trim())url.searchParams.set('title',sharedCollectionTitle.trim());return url.toString()}
 function collectionStats(records){
   const slabs=records.reduce((sum,product)=>sum+(Number(product.pcs)||0),0),areas=records.filter(product=>product.sqm!=null&&Number.isFinite(Number(product.sqm))).reduce((sum,product)=>sum+Number(product.sqm),0);
-  return [`${records.length} ${records.length===1?t('bundleSingular'):t('bundles')}`,slabs?`${slabs} ${t('slabs')}`:'',areas?`${areas.toFixed(2)} m²`:'',areas?`${t('approxWeight')}: ${Math.round(areas*58)} kg`:'' ].filter(Boolean).join(' · ');
+  return [countLabel(records.length,'bundleSingular','bundles'),slabs?countLabel(slabs,'slab','slabs'):'',areas?`${areas.toFixed(2)} m²`:'',areas?`${t('approxWeight')}: ${Math.round(areas*58)} kg`:'' ].filter(Boolean).join(' · ');
 }
-function collectionUpdatedLabel(){return syncedAt?`${t('lastUpdated')}: ${new Date(syncedAt).toLocaleDateString()}`:''}
+function collectionUpdatedLabel(){return syncedAt?`${t('lastUpdated')}: ${syncDateLabel(syncedAt)}`:''}
 function catalogueFreshnessMessage(){
   const syncedDate=syncedAt?new Date(syncedAt):null,ageMs=syncedDate&&!Number.isNaN(syncedDate.getTime())?Date.now()-syncedDate.getTime():null;
   const staleAfterDays=7;
@@ -531,10 +550,9 @@ function catalogueFreshnessMessage(){
   return `${t('staleCatalogue')} ${t('lastSynced')} ${syncedDate.toLocaleDateString()} (${ageDays} ${ageDays===1?t('dayAgo'):t('daysAgo')}).`;
 }
 function renderCatalogueFreshness(){
-  if(!catalogueFreshness)return;
   const freshnessMessage=catalogueFreshnessMessage();
-  catalogueFreshness.hidden=!freshnessMessage;
-  catalogueFreshness.textContent=freshnessMessage;
+  if(catalogueFreshness){catalogueFreshness.hidden=!freshnessMessage;catalogueFreshness.textContent=freshnessMessage}
+  if(publicCatalogueFreshness){publicCatalogueFreshness.hidden=!syncedAt;publicCatalogueFreshness.textContent=syncedAt?message('updatedAt',{date:syncDateLabel(syncedAt)}):''}
 }
 function syncDateLabel(value){
   const date=value?new Date(value):null;
@@ -587,8 +605,8 @@ function renderLatestSync(){
   }
 }
 function qrCodeMarkup(url,label=t('scanToView'),className=''){
-  const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=10&data=${encodeURIComponent(url)}`;
-  return `<div class="print-qr ${className}"><img src="${escapeHtml(qrUrl)}" alt="${escapeHtml(label)}" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden>${escapeHtml(label)}<small>${escapeHtml(url)}</small></span><b>${escapeHtml(label)}</b></div>`;
+  const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=10&data=${encodeURIComponent(url)}`;
+  return `<div class="print-qr ${className}"><img src="${escapeHtml(qrUrl)}" alt="${escapeHtml(label)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden>${escapeHtml(label)}<small>${escapeHtml(url)}</small></span><b>${escapeHtml(label)}</b></div>`;
 }
 function renderCollectionBanner(){
   if(!sharedCollectionActive){collectionBanner.hidden=true;if(collectionQr)collectionQr.innerHTML='';if(collectionUpdated)collectionUpdated.textContent='';return}
@@ -598,7 +616,7 @@ function renderCollectionBanner(){
   collectionBanner.hidden=false;
   collectionBanner.classList.toggle('partial',missing>0);collectionBanner.classList.toggle('stale',Boolean(freshnessMessage));
   collectionTitle.textContent=sharedCollectionTitle||(available.length?collectionStats(available):t('sharedCollectionEmpty'));
-  collectionSummary.textContent=[message('sharedListStatus',{available:available.length,requested}),missing?message('sharedListMissing',{missing}):'',available.length?collectionStats(available):'',freshnessMessage,t('sharedSelectionHint'),t('availabilityNote')].filter(Boolean).join(' · ');
+  collectionSummary.textContent=[message('sharedListStatus',{availableLabel:countLabel(available.length,'bundleSingular','bundles'),requestedLabel:countLabel(requested,'bundleSingular','bundles')}),missing?message('sharedListMissing',{missingLabel:countLabel(missing,'bundleSingular','bundles')}):'',available.length?collectionStats(available):'',freshnessMessage,t('sharedSelectionHint'),t('availabilityNote')].filter(Boolean).join(' · ');
   if(collectionQr){collectionQr.setAttribute('aria-label',t('scanSharedList'));collectionQr.innerHTML=qrCodeMarkup(publicSharedCollectionUrl(),t('scanSharedList'),'collection-qr')}
   if(collectionUpdated){
     const date=syncedAt?new Date(syncedAt):null,validDate=date&&!Number.isNaN(date.getTime());
@@ -607,7 +625,7 @@ function renderCollectionBanner(){
 }
 function clearSharedCollection(){
   sharedCollectionActive=false;sharedCollectionTitle='';sharedCollectionKeys.clear();document.body.classList.remove('shared-collection-mode');
-  const url=new URL(location.href);url.searchParams.delete('collection');url.searchParams.delete('title');history.replaceState(null,'',`${url.pathname}${url.search}${url.hash}`);render();
+  const url=new URL(location.href);url.searchParams.delete('collection');url.searchParams.delete('title');history.replaceState(null,'',`${url.pathname}${url.search}${url.hash}`);updateShareMetadata();render();
 }
 function productSummary(product){
   const packing=packingListSummary(product),media=productMediaSummary(product);
@@ -618,9 +636,9 @@ function shortlistSummary(title='Lucra Marble shortlist'){
 }
 function customerProductSummary(product,usePublicLink=false,includeDrive=false){
   const code=product.code&&product.code!=='—'?` (${product.code})`:'';
-  const stock=product.pcs!=null?`${Number(product.pcs)} slabs`:'Bundle details available on request';
-  const area=product.sqm!=null?` · ${Number(product.sqm).toFixed(2)} m²`:'';
-  const dimensions=product.dimensions?.length?`Sizes: ${productDimensions(product)}`:'';
+  const stock=product.pcs!=null?countLabel(product.pcs,'slab','slabs'):'Bundle details available on request';
+  const area=product.sqm!=null?`${Number(product.sqm).toFixed(2)} m²`:t('areaNotProvided');
+  const dimensions=`Sizes: ${productDimensions(product)}`;
   return [
     `Lucra Marble · ${product.name}${code}`,
     product.reserved?'Currently reserved':'Available',
@@ -775,13 +793,13 @@ function render(){
   count.textContent=`${visible.length} ${visible.length===1?t('bundleSingular'):t('bundles')}`;
   empty.hidden=visible.length>0;
   renderSalesDashboard(visible);
-  grid.innerHTML=visible.map((p,index)=>{const selected=presentationSelection.has(productKey(p));const image=p.images[0];const cardSrc=image?.thumbSrc||image?.src;return `<article class="card" tabindex="0" data-product-id="${escapeHtml(productKey(p))}">
+  grid.innerHTML=visible.map((p,index)=>{const selected=presentationSelection.has(productKey(p));const image=p.images[0];const cardSrc=image?.thumbSrc||image?.src;const bundleLabel=p.code&&p.code!=='—'?` · ${t('bundle')} ${p.code}`:'';return `<article class="card" tabindex="0" aria-label="${escapeHtml(`${t('openGallery')}: ${p.name}${bundleLabel}`)}" aria-keyshortcuts="Enter Space" data-product-id="${escapeHtml(productKey(p))}">
     <div class="card-image ${image?.src?'is-loading':''}"><div class="stone-placeholder" style="--stone:${p.stone}"></div>${image?.src?`<span class="image-loading-badge">${escapeHtml(t('imageLoading'))}</span><img data-product-id="${escapeHtml(productKey(p))}" data-photo-file-id="${escapeHtml(image.fileId||'')}" src="${escapeHtml(cardSrc)}" ${image.thumbSrc?`srcset="${escapeHtml(image.thumbSrc)} 700w, ${escapeHtml(image.src)} 1400w" sizes="(max-width:580px) calc(100vw - 40px), (max-width:900px) calc(50vw - 26px), calc(50vw - 26px)"`:''} alt="${escapeHtml(p.name)} slab" loading="${index<2?'eager':'lazy'}" fetchpriority="${index<2?'high':'low'}" decoding="async" onload="this.classList.add('loaded');const container=this.closest('.card-image');container.classList.remove('is-loading');const ratio=this.naturalWidth/this.naturalHeight;container.classList.toggle('image-contained',ratio<1.38||ratio>1.78)" onerror="this.remove();const container=this.closest('.card-image');container.classList.remove('is-loading');container.classList.add('image-error')"><span class="image-error-badge">${escapeHtml(t('imageUnavailableShort'))}</span>`:''}
-      <span class="status-badge ${p.reserved?'reserved':''}">${escapeHtml(p.reserved?t('reserved'):t('available'))}</span>${freshnessBadgeMarkup(p)}${sharedCollectionActive?'':`<button type="button" class="card-collection-toggle ${selected?'selected':''}" data-product-id="${escapeHtml(productKey(p))}" aria-pressed="${selected}" aria-label="${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))} ${escapeHtml(p.name)}"><span aria-hidden="true">${selected?'✓':'+'}</span><span>${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))}</span></button>`}</div>
-    <div class="card-info"><div><h3>${escapeHtml(p.name)}</h3><p class="card-meta">${p.pcs?escapeHtml(productStock(p)):p.packingList?escapeHtml(t('seePackingList')):escapeHtml(t('galleryAvailable'))}</p>${p.media?`<p class="card-media-meta">${escapeHtml(p.media)}</p>`:''}</div><span class="card-code">${escapeHtml(p.code)}</span></div>
+      <span class="status-badge ${p.reserved?'reserved':''}">${escapeHtml(p.reserved?t('reserved'):t('available'))}</span>${freshnessBadgeMarkup(p)}${sharedCollectionActive?'':`<button type="button" class="card-collection-toggle ${selected?'selected':''}" data-product-id="${escapeHtml(productKey(p))}" aria-pressed="${selected}" aria-label="${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))} ${escapeHtml(p.name)}${escapeHtml(bundleLabel)}"><span aria-hidden="true">${selected?'✓':'+'}</span><span>${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))}</span></button>`}</div>
+    <div class="card-info"><div><h3>${escapeHtml(p.name)}</h3><p class="card-meta">${escapeHtml(productStock(p))}</p>${p.media?`<p class="card-media-meta">${escapeHtml(p.media)}</p>`:''}</div><span class="card-code">${escapeHtml(p.code&&p.code!=='—'?`${t('bundle')} ${p.code}`:t('notProvided'))}</span></div>
   </article>`}).join('');
   grid.querySelectorAll('img[data-photo-file-id]').forEach(image=>image.addEventListener('error',()=>markPhotoBroken(image.dataset.productId,image.dataset.photoFileId),{once:true}));
-  grid.querySelectorAll('.card').forEach(card=>{const toggle=card.querySelector('.card-collection-toggle');toggle?.addEventListener('click',event=>{event.stopPropagation();togglePresentationSelection(card.dataset.productId,!presentationSelection.has(card.dataset.productId))});card.addEventListener('click',event=>{if(!event.target.closest('button'))openProduct(card.dataset.productId)});card.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.target.closest('button'))openProduct(card.dataset.productId)})});
+  grid.querySelectorAll('.card').forEach(card=>{const toggle=card.querySelector('.card-collection-toggle');toggle?.addEventListener('click',event=>{event.stopPropagation();togglePresentationSelection(card.dataset.productId,!presentationSelection.has(card.dataset.productId))});card.addEventListener('click',event=>{if(!event.target.closest('button'))openProduct(card.dataset.productId)});card.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('button')){e.preventDefault();openProduct(card.dataset.productId)}})});
 }
 
 document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.filter.active').classList.remove('active');btn.classList.add('active');document.querySelectorAll('.filter').forEach(filter=>filter.setAttribute('aria-pressed',String(filter===btn)));currentFilter=btn.dataset.filter;render()}));
@@ -791,6 +809,7 @@ sortSelect.addEventListener('change',render);
 [minArea,maxArea,minSlabs,maxSlabs,dimensionFilter,packingFilter,mediaFilter].forEach(input=>input.addEventListener(input.tagName==='SELECT'?'change':'input',render));
 clearFiltersButton.addEventListener('click',()=>{minArea.value='';maxArea.value='';minSlabs.value='';maxSlabs.value='';dimensionFilter.value='';packingFilter.value='all';mediaFilter.value='all';render()});
 clearCollectionButton.addEventListener('click',clearSharedCollection);
+copySharedCollectionLink?.addEventListener('click',()=>{if(sharedCollectionActive)copyText(publicSharedCollectionUrl(),copySharedCollectionLink,t('listLinkCopied'))});
 presentationCollectionName.addEventListener('input',event=>{customerCollectionTitle=event.currentTarget.value.trim();try{localStorage.setItem('lucraCustomerCollectionTitle',customerCollectionTitle)}catch(error){}renderPresentationCollection()});
 sharePresentationCollectionButton.addEventListener('click',async()=>{const selected=selectedPresentationProducts();if(!selected.length)return;const title=customerCollectionTitle.trim(),url=publicCustomerCollectionUrl(selected,title);await copyText(url,sharePresentationCollectionButton,t('collectionLinkCopied'))});
 copyPresentationCollectionSummaryButton.addEventListener('click',()=>{const selected=selectedPresentationProducts();if(selected.length)copyText(customerCollectionSummary(selected,customerCollectionTitle.trim()),copyPresentationCollectionSummaryButton,t('collectionSummaryCopied'))});
@@ -877,14 +896,15 @@ function openProduct(id){
   if(!dialog.open)dialogReturnFocus=document.activeElement;
   currentProduct=products.find(p=>productKey(p)===id); imageIndex=0;galleryPreloadCache.clear();
   if(!currentProduct)return;
+  updateShareMetadata(currentProduct);
   dialogCloseButton.setAttribute('aria-label',t('closeGallery'));gallerySurface.setAttribute('aria-label',`${t('galleryLabel')}: ${currentProduct.name}`);
   document.querySelector('#dialogCode').textContent=currentProduct.code;
   document.querySelector('#dialogName').textContent=currentProduct.name;
   const hasPackingList=Boolean(currentProduct.packingList);
   document.querySelector('#dialogPcs').textContent=currentProduct.pcs!=null?currentProduct.pcs:(hasPackingList?'Not listed':'No packing list');
-  document.querySelector('#dialogSqm').textContent=currentProduct.sqm!=null?`${Number(currentProduct.sqm).toFixed(2)} m² · ${(Number(currentProduct.sqm)*10.7639).toFixed(0)} ft²`:(hasPackingList?'Not listed':'No packing list');
+  document.querySelector('#dialogSqm').textContent=currentProduct.sqm!=null?`${Number(currentProduct.sqm).toFixed(2)} m² · ${(Number(currentProduct.sqm)*10.7639).toFixed(0)} ft²`:(hasPackingList?t('areaNotProvided'):t('noPackingList'));
   document.querySelector('#dialogWeight').textContent=productWeightLabel(currentProduct);
-  document.querySelector('#dialogSize').textContent=currentProduct.dimensions?.length?productDimensions(currentProduct):(hasPackingList?'Not listed':'No packing list');
+  document.querySelector('#dialogSize').textContent=currentProduct.dimensions?.length?productDimensions(currentProduct):(hasPackingList?t('sizeNotProvided'):t('noPackingList'));
   const status=document.querySelector('#dialogStatus');status.className=`status-badge ${currentProduct.reserved?'reserved':''}`;status.textContent=currentProduct.reserved?'Reserved':'Available';
   const packingSummary=packingListSummary(currentProduct);
   document.querySelector('#bundleLines').innerHTML=currentProduct.lines.length?currentProduct.lines.map(x=>typeof x==='string'?`<p><span>${escapeHtml(x.split(' · ')[0])}</span><span>${escapeHtml(x.split(' · ')[1])}</span><span>${escapeHtml(x.split(' · ')[2])}</span></p>`:`<p><span>${escapeHtml(x.block||'Additional size')}</span><span>${escapeHtml(`${x.pcs} pcs · ${x.widthCm??'—'} × ${x.heightCm??'—'} cm`)}</span><span>${escapeHtml(x.sqm!=null?`${Number(x.sqm).toFixed(2)} m²`:'—')}</span></p>`).join(''):`<p><span>Packing list</span><span>${escapeHtml(packingSummary.detail)}</span><span>${escapeHtml(packingSummary.label)}</span></p>`;
@@ -1004,7 +1024,7 @@ function setGalleryFullscreen(fullscreen){
 }
 galleryExpandButton.addEventListener('click',()=>setGalleryFullscreen(!dialog.classList.contains('gallery-focus')));
 dialog.addEventListener('keydown',event=>{if(!dialog.open||event.target.matches('input,textarea,select'))return;if(event.key==='ArrowLeft'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(-1)}if(event.key==='ArrowRight'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(1)}if(event.key.toLowerCase()==='z'){event.preventDefault();toggleGalleryZoom()}if(event.key.toLowerCase()==='f'){event.preventDefault();setGalleryFullscreen(!dialog.classList.contains('gallery-focus'))}});
-dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');customerCta.hidden=false;salesFollowupSection.hidden=false;galleryExpandButton.textContent='⤢ Fullscreen';galleryExpandButton.title=t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);galleryExpandButton.setAttribute('aria-pressed','false');gallerySurface.setAttribute('aria-label',`${t('galleryLabel')}: ${currentProduct?.name||''}`);galleryPanX=0;galleryPanY=0;galleryZoomScale=1.55;galleryPointers.clear();galleryPinchStart=null;gallerySwipeStart=null;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';updateGalleryZoomControl();const returnFocus=dialogReturnFocus;dialogReturnFocus=null;if(returnFocus?.isConnected&&typeof returnFocus.focus==='function')requestAnimationFrame(()=>returnFocus.focus())});
+dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');customerCta.hidden=false;salesFollowupSection.hidden=false;galleryExpandButton.textContent='⤢ Fullscreen';galleryExpandButton.title=t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);galleryExpandButton.setAttribute('aria-pressed','false');gallerySurface.setAttribute('aria-label',`${t('galleryLabel')}: ${currentProduct?.name||''}`);galleryPanX=0;galleryPanY=0;galleryZoomScale=1.55;galleryPointers.clear();galleryPinchStart=null;gallerySwipeStart=null;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';updateGalleryZoomControl();updateShareMetadata();const returnFocus=dialogReturnFocus;dialogReturnFocus=null;if(returnFocus?.isConnected&&typeof returnFocus.focus==='function')requestAnimationFrame(()=>returnFocus.focus())});
 document.querySelector('#copyLink').addEventListener('click',async(e)=>{const url=customerProductUrl(currentProduct);await navigator.clipboard.writeText(url);e.currentTarget.textContent='Link copied';setTimeout(()=>e.currentTarget.textContent='Copy bundle link',1400)});
 shareProductButton.addEventListener('click',shareCustomerProduct);
 shareCollectionButton.addEventListener('click',shareCustomerCollection);
@@ -1020,7 +1040,7 @@ function normalizeLiveProduct(p,i){
   const imageSources=fileId=>({src:mediaUrl(fileId),thumbSrc:mediaUrl(fileId,700)});
   const slabImages=(p.images||[]).map(image=>({...imageSources(image.fileId),label:String(image.label??image.number),type:'slab'}));
   const extras=(p.extraImages||[]).map(image=>({...imageSources(image.fileId),label:image.label||'Detail',type:'extra'}));
-  return {...p,size:p.dimensions?.length?(p.dimensions.length===1?p.dimensions[0]:`${p.dimensions[0]} + ${p.dimensions.length-1} sizes`):'See packing list',images:[...slabImages,...extras],slabImageCount:slabImages.length,extraImageCount:extras.length,stone:stones[i%stones.length],media:[slabImages.length?`${slabImages.length} ${t('slabPhotos')}`:null,extras.length?`${extras.length} extra views`:null,p.videos?.length?`${p.videos.length} video`:null].filter(Boolean).join(' · ')};
+  return {...p,size:p.dimensions?.length?(p.dimensions.length===1?p.dimensions[0]:`${p.dimensions[0]} + ${p.dimensions.length-1} sizes`):'See packing list',images:[...slabImages,...extras],slabImageCount:slabImages.length,extraImageCount:extras.length,stone:stones[i%stones.length],media:[slabImages.length?countLabel(slabImages.length,'slabPhoto','slabPhotos'):null,extras.length?countLabel(extras.length,'extraView','extraViews'):null,p.videos?.length?countLabel(p.videos.length,'video','videos'):null].filter(Boolean).join(' · ')};
 }
 
 function syncSummary(data){

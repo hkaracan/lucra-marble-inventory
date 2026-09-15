@@ -4,14 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#eef7fa" />
+  <meta name="description" content="Browse Lucra Marble's current natural-stone slab inventory from Denizli, Türkiye." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Lucra Marble" />
+  <meta property="og:title" content="Lucra Marble — Slab Inventory" />
+  <meta property="og:description" content="Browse Lucra Marble's current natural-stone slab inventory from Denizli, Türkiye." />
+  <meta property="og:url" content="https://hkaracan.github.io/lucra-marble-inventory/" />
+  <meta property="og:image" content="https://hkaracan.github.io/lucra-marble-inventory/public/lucra-logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Lucra Marble — Slab Inventory" />
+  <meta name="twitter:description" content="Browse Lucra Marble's current natural-stone slab inventory from Denizli, Türkiye." />
+  <meta name="twitter:image" content="https://hkaracan.github.io/lucra-marble-inventory/public/lucra-logo.png" />
   <title>Lucra Marble — Slab Inventory</title>
   <link rel="icon" href="public/lucra-logo-square.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260915-03" />
+  <link rel="stylesheet" href="styles.css?v=20260915-04" />
 </head>
 <body>
+  <a class="skip-link" href="#catalog" data-i18n="skipToCatalogue">Skip to catalogue</a>
   <header class="site-header">
     <a class="brand" href="#" aria-label="Lucra Marble inventory home">
       <img src="public/lucra-logo.png" alt="Lucra Marble" />
@@ -35,7 +47,7 @@
       <p class="hero-copy" data-i18n="heroCopy">Explore Lucra Marble's current slab collection. Search by material, browse individual bundles, and view every slab in detail.</p>
     </section>
 
-    <section class="catalog" aria-labelledby="catalogTitle">
+    <section class="catalog" id="catalog" tabindex="-1" aria-labelledby="catalogTitle">
       <div class="catalog-head">
         <div>
           <p class="eyebrow" data-i18n="liveCollection">LIVE COLLECTION</p>
@@ -43,8 +55,8 @@
         </div>
         <div class="catalog-head-tools">
           <p class="result-count" id="resultCount"></p>
-          <div class="catalog-view" id="catalogView" role="group" aria-label="Catalog view">
-            <span data-i18n="catalogView">Cards per row</span>
+          <div class="catalog-view" id="catalogView" role="group" aria-labelledby="catalogViewLabel">
+            <span id="catalogViewLabel" data-i18n="catalogView">Cards per row</span>
             <button type="button" class="catalog-view-button" data-columns="2" aria-label="2 cards per row" aria-pressed="true">2</button>
             <button type="button" class="catalog-view-button" data-columns="3" aria-label="3 cards per row" aria-pressed="false">3</button>
             <button type="button" class="catalog-view-button" data-columns="4" aria-label="4 cards per row" aria-pressed="false">4</button>
@@ -54,20 +66,22 @@
       <div class="collection-banner" id="collectionBanner" hidden>
         <div class="collection-banner-copy"><p class="eyebrow" data-i18n="sharedSelection">SHARED LIST</p><strong id="collectionTitle"></strong><span id="collectionSummary" role="status" aria-live="polite"></span></div>
         <div class="collection-banner-share"><div id="collectionQr" aria-label="QR code for this shared list"></div><div class="collection-banner-updated" id="collectionUpdated" role="status" aria-live="polite"></div></div>
-        <button id="clearCollection" class="quiet-button" type="button" data-i18n="returnToCatalogue">Return to full catalogue</button>
+        <div class="collection-banner-actions"><button id="copySharedCollectionLink" class="secondary" type="button" data-i18n="copyListLink">Copy list link</button><button id="clearCollection" class="quiet-button" type="button" data-i18n="returnToCatalogue">Return to full catalogue</button></div>
       </div>
 
       <div class="controls">
-        <label class="search">
-          <span>⌕</span>
-          <input id="searchInput" type="search" placeholder="Search material or bundle ID" data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
+          <label class="search" for="searchInput">
+          <span aria-hidden="true">⌕</span><span class="sr-only" id="searchLabel" data-i18n="searchLabel">Search material or bundle ID</span>
+          <input id="searchInput" type="search" aria-labelledby="searchLabel" placeholder="Search material or bundle ID" data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
         </label>
-        <div class="filters" role="group" aria-label="Inventory filters">
+        <div class="filters" id="inventoryFilters" role="group" aria-labelledby="inventoryFiltersLabel">
+          <span class="sr-only" id="inventoryFiltersLabel" data-i18n="inventoryFiltersLabel">Inventory filters</span>
           <button class="filter active" data-filter="all" data-i18n="allBundles" type="button" aria-pressed="true">All bundles</button>
           <button class="filter" data-filter="available" data-i18n="available" type="button" aria-pressed="false">Available</button>
           <button class="filter" data-filter="reserved" data-i18n="reserved" type="button" aria-pressed="false">Reserved</button>
         </div>
       </div>
+      <p class="catalogue-freshness-public" id="publicCatalogueFreshness" role="status" aria-live="polite" hidden></p>
       <button id="advancedFiltersToggle" class="advanced-filters-toggle" type="button" aria-expanded="false"><span data-i18n="moreFilters">More filters</span><span aria-hidden="true">⌄</span></button>
       <div class="advanced-filters" id="advancedFilters" aria-label="More inventory filters">
         <label><span data-i18n="sort">Sort</span> <select id="sortSelect"><option value="name" data-i18n="name">Name</option><option value="slabs" data-i18n="mostSlabs">Most slabs</option><option value="area" data-i18n="largestArea">Largest area</option></select></label>
@@ -287,6 +301,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260915-03"></script>
+  <script src="app.js?v=20260915-04"></script>
 </body>
 </html>
