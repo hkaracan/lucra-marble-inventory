@@ -2,6 +2,19 @@
   "runs": [
     {
       "status": "success",
+      "attemptedAt": "2026-09-15T19:43:08Z",
+      "syncedAt": "2026-09-15T19:43:08Z",
+      "bundles": 54,
+      "added": 0,
+      "updated": 0,
+      "unchanged": 54,
+      "warnings": 2,
+      "errors": 0,
+      "addedFolders": [],
+      "updatedFolders": []
+    },
+    {
+      "status": "success",
       "attemptedAt": "2026-09-15T15:35:18Z",
       "syncedAt": "2026-09-15T15:35:18Z",
       "bundles": 54,
