@@ -61,7 +61,7 @@ Object.assign(translations.en,{reviewSelection:'Review selected bundles'});
 Object.assign(translations.tr,{reviewSelection:'Seçilen demetleri incele'});
 Object.assign(translations.en,{syncHistory:'Recent syncs',syncSuccess:'Success',syncFailed:'Failed',latestSyncFailed:'Latest sync failed',previousCatalogueKept:'The previous catalogue remains published.',viewWorkflow:'View workflow',noSyncHistory:'No sync history available'});
 Object.assign(translations.tr,{syncHistory:'Son senkronizasyonlar',syncSuccess:'Başarılı',syncFailed:'Başarısız',latestSyncFailed:'Son senkronizasyon başarısız',previousCatalogueKept:'Önceki katalog yayımlanmaya devam ediyor.',viewWorkflow:'İş akışını görüntüle',noSyncHistory:'Senkronizasyon geçmişi yok'});
-Object.assign(translations.en,{photoCheck:'Photo check',auditPhotoCheck:'Photo check',photoCheckDetail:'bundles with no photos, broken images, skipped folders, or slab/photo count differences',brokenImages:'broken images',driveFolder:'Drive folder',excelSource:'Excel source',openExcel:'Open Excel source'});
+Object.assign(translations.en,{photoCheck:'Photo check',auditPhotoCheck:'Photo check',photoCheckDetail:'bundles with missing or broken photos, or skipped photo folders',photoCoverage:'Photo coverage notes',photoCoverageDetail:'bundles where numbered slab photos differ from the listed slab count; this can reflect normal production loss',brokenImages:'broken images',driveFolder:'Drive folder',excelSource:'Excel source',openExcel:'Open Excel source',warning:'Warning',auditSource:'Source mismatch',sourceIssues:'Source issues',sourceMismatchDetail:'bundles whose folder code and packing-list name do not agree'});
 Object.assign(translations.tr,{photoCheck:'Fotoğraf kontrolü',auditPhotoCheck:'Fotoğraf kontrolü',photoCheckDetail:'fotoğrafı olmayan, bozuk fotoğraflı, klasörü atlanan veya plaka/fotoğraf sayısı farklı demet',brokenImages:'bozuk fotoğraf',driveFolder:'Drive klasörü',excelSource:'Excel kaynağı',openExcel:'Excel kaynağını aç'});
 Object.assign(translations.en,{scanSharedList:'Scan to open this list',galleryLabel:'Product gallery',closeGallery:'Close gallery'});
 Object.assign(translations.tr,{scanSharedList:'Bu listeyi açmak için tarayın',galleryLabel:'Ürün galerisi',closeGallery:'Galeriyi kapat'});
@@ -71,7 +71,6 @@ Object.assign(translations.en,{skipToCatalogue:'Skip to catalogue',searchLabel:'
 Object.assign(translations.tr,{skipToCatalogue:'Kataloğa geç',searchLabel:'Malzeme veya paket kodu ara',inventoryFiltersLabel:'Envanter filtreleri',catalogViewLabel:'Katalog düzeni',updatedAt:'Güncelleme: {date}',copyListLink:'Liste bağlantısını kopyala',listLinkCopied:'Liste bağlantısı kopyalandı',openGallery:'Ürün galerisini aç',areaNotProvided:'Alan belirtilmedi',sizeNotProvided:'Ölçü belirtilmedi',slab:'plaka',slabPhoto:'plaka fotoğrafı',extraView:'ek görünüm',extraViews:'ek görünüm',video:'video',videos:'video'});
 Object.assign(translations.en,{sharedListMetaTitle:'Shared slab list',sharedListMetaDescription:'View a shared Lucra Marble slab list from Denizli, Türkiye.'});
 Object.assign(translations.tr,{sharedListMetaTitle:'Paylaşılan plaka listesi',sharedListMetaDescription:'Denizli, Türkiye’den paylaşılan Lucra Marble plaka listesini görüntüleyin.'});
-try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
 function message(key,values){return Object.entries(values).reduce((text,[name,value])=>text.replaceAll(`{${name}}`,String(value)),t(key))}
 function countLabel(count,singularKey,pluralKey=singularKey){const value=Number(count)||0;return `${value} ${value===1?t(singularKey):t(pluralKey)}`}
@@ -88,8 +87,6 @@ function applyLanguage(){
   document.documentElement.lang=language;
   document.querySelectorAll('[data-i18n]').forEach(element=>{element.textContent=t(element.dataset.i18n)});
   document.querySelectorAll('[data-i18n-placeholder]').forEach(element=>{element.placeholder=t(element.dataset.i18nPlaceholder)});
-  const switcher=document.querySelector('#languageSwitch');
-  if(switcher){switcher.textContent=language==='en'?'TR':'EN';switcher.title=language==='en'?'Türkçe':'English';switcher.setAttribute('aria-label',switcher.title)}
   const modeLabel=document.querySelector('#modeLabel');
   if(modeLabel)modeLabel.textContent=document.body.classList.contains('sales-mode')?t('salesMode'):t('presentationMode');
   const filterToggle=document.querySelector('#advancedFiltersToggle');
@@ -212,7 +209,7 @@ function packingListSummary(product){
 function productStock(product){
   const slabs=product.pcs!=null?countLabel(product.pcs,'slab','slabs'):t('countUnavailable');
   const area=product.sqm!=null?` · ${Number(product.sqm).toFixed(2)} m²`:` · ${t('areaNotProvided')}`;
-  return `${slabs} · ${area}`;
+  return `${slabs}${area}`;
 }
 function productApproxWeight(product){
   const area=Number(product.sqm);
@@ -226,6 +223,22 @@ function productWeightLabel(product){
 function productDimensions(product){
   if(product.dimensions?.length)return product.dimensions.join(' · ');
   return product.packingList?t('sizeNotProvided'):t('noPackingList');
+}
+
+function sourceCodesIn(value){
+  return [...new Set((String(value??'').match(/\b([KLM]\d+)\b/gi)||[]).map(code=>code.toUpperCase()))];
+}
+function sourceMismatchInfo(product){
+  const stored=Array.isArray(product.sourceWarnings)?product.sourceWarnings.filter(Boolean):[];
+  if(stored.length){
+    return {hasIssue:true,detail:stored.map(warning=>typeof warning==='string'?warning:warning.message||warning.error||t('sourceMismatchDetail')).join(' · ')};
+  }
+  const folderCode=sourceCodesIn(product.folderName)[0]||'';
+  const packingCodes=sourceCodesIn(product.packingList);
+  if(folderCode&&packingCodes.length&&!packingCodes.includes(folderCode)){
+    return {hasIssue:true,detail:`Folder ${folderCode}; packing list name references ${packingCodes.join(', ')}`};
+  }
+  return {hasIssue:false,detail:t('noIssues')};
 }
 
 function imageAudit(product){
@@ -255,9 +268,11 @@ function photoCheck(product){
   if(!imageCount)issues.push(t('noImageAvailable'));
   if(brokenCount)issues.push(`${brokenCount} ${t('brokenImages')}`);
   if(skippedCount)issues.push(`${skippedCount} ${t('photoFoldersSkipped')}`);
-  if(imageCheck.mismatch)issues.push(imageCoverageDetail(imageCheck));
   const className=!imageCount||brokenCount?'missing':skippedCount?'partial':imageCheck.mismatch?'info':'connected';
-  return {imageCheck,imageCount,brokenCount,skippedCount,hasIssue:issues.length>0,label:imageCount?`${imageCount} ${t('views')}`:t('missing'),detail:issues.length?`${t('photoCheck')}: ${issues.join(' · ')}`:`${t('photoCheck')}: ${t('galleryReady')}`,className};
+  const detailParts=[];
+  if(issues.length)detailParts.push(`${t('photoCheck')}: ${issues.join(' · ')}`);
+  if(imageCheck.mismatch)detailParts.push(`${t('photoCoverage')}: ${imageCoverageDetail(imageCheck)}`);
+  return {imageCheck,imageCount,brokenCount,skippedCount,hasIssue:issues.length>0,coverageNote:imageCheck.mismatch,label:imageCount?`${imageCount} ${t('views')}`:t('missing'),detail:detailParts.length?detailParts.join(' · '):`${t('photoCheck')}: ${t('galleryReady')}`,className};
 }
 function markPhotoBroken(productId,fileId){
   if(!productId||!fileId)return;
@@ -278,6 +293,7 @@ function deriveInventoryReport(records){
   const missingImages=records.filter(product=>!product.images?.length);
   const missingAreas=records.filter(product=>product.sqm==null);
   const missingDimensions=records.filter(product=>!product.dimensions?.length);
+  const sourceIssues=records.filter(product=>sourceMismatchInfo(product).hasIssue);
   const skippedPhotoFolders=records.reduce((total,product)=>total+(product.skippedPhotoFolders?.length||0),0);
   return {
     bundles:records.length,
@@ -297,24 +313,28 @@ function deriveInventoryReport(records){
     missingImageFolders:missingImages.map(product=>product.folderName),
     missingAreaFolders:missingAreas.map(product=>product.folderName),
     missingDimensionFolders:missingDimensions.map(product=>product.folderName),
+    sourceMismatches:sourceIssues.length,
+    sourceMismatchFolders:sourceIssues.map(product=>product.folderName),
   };
 }
 
 function followupLabel(status){return t({new:'new',sent:'sent',waiting:'waiting',quoted:'quoted',closed:'closed'}[status]||'new')}
 function followupFor(product){const saved=salesNotes[productKey(product)]||{};return {status:saved.status||'new',note:saved.note||'',updatedAt:saved.updatedAt||null}}
 function renderInventoryHealth(){
-  const missingPacking=products.filter(product=>!product.packingList),unreadablePacking=products.filter(product=>product.packingList&&!product.lines?.length),missingImages=products.filter(product=>!product.images?.length),imageChecks=products.filter(product=>imageAudit(product).mismatch),photoIssues=products.filter(product=>photoCheck(product).hasIssue),skippedFolders=products.filter(product=>product.skippedPhotoFolders?.length),syncErrors=products.filter(product=>product.syncError),incompleteSizes=products.filter(product=>product.sqm==null||!product.dimensions?.length);
+  const missingPacking=products.filter(product=>!product.packingList),unreadablePacking=products.filter(product=>product.packingList&&!product.lines?.length),missingImages=products.filter(product=>!product.images?.length),imageChecks=products.filter(product=>imageAudit(product).mismatch),photoIssues=products.filter(product=>photoCheck(product).hasIssue),skippedFolders=products.filter(product=>product.skippedPhotoFolders?.length),syncErrors=products.filter(product=>product.syncError),sourceIssues=products.filter(product=>sourceMismatchInfo(product).hasIssue),incompleteSizes=products.filter(product=>product.sqm==null||!product.dimensions?.length);
   const checks=[
     {label:t('packingList'),value:missingPacking.length,detail:t('missingPackingDetail'),className:missingPacking.length?'warning':'healthy',filter:'no-packing'},
     {label:t('packingRows'),value:unreadablePacking.length,detail:t('missingPackingRowsDetail'),className:unreadablePacking.length?'warning':'healthy',filter:'attention'},
     {label:t('sizeData'),value:incompleteSizes.length,detail:t('missingSizeDetail'),className:incompleteSizes.length?'warning':'healthy',filter:'size'},
     {label:t('photoCheck'),value:photoIssues.length,detail:t('photoCheckDetail'),className:photoIssues.length?'warning':'healthy',filter:'photo-check'},
+    {label:t('photoCoverage'),value:imageChecks.length,detail:t('photoCoverageDetail'),className:imageChecks.length?'info':'healthy',filter:'image-check'},
+    {label:t('sourceIssues'),value:sourceIssues.length,detail:t('sourceMismatchDetail'),className:sourceIssues.length?'warning':'healthy',filter:'source'},
     {label:t('syncIssues'),value:syncErrors.length+skippedFolders.length,detail:t('syncErrorDetail'),className:syncErrors.length||skippedFolders.length?'warning':'healthy',filter:'warnings'},
   ];
   healthSummary.innerHTML=checks.map(check=>`<button type="button" class="health-card ${check.className}" data-audit-filter="${escapeHtml(check.filter)}" aria-label="${escapeHtml(`${check.label}: ${check.value}. ${t('viewRows')}`)}"><strong>${escapeHtml(check.value)}</strong><span>${escapeHtml(check.label)}</span><small>${escapeHtml(check.value===0?t('noIssues'):check.detail)}</small></button>`).join('');
   const issueList=(title,items,detail)=>items.length?`<section><h5>${escapeHtml(title)} <span>${items.length}</span></h5><p>${items.slice(0,8).map(product=>`<span>${escapeHtml(`${product.name}${product.code&&product.code!=='—'?` · ${product.code}`:''}`)}</span>`).join('')}${items.length>8?`<small>+ ${items.length-8} more</small>`:''}</p></section>`:`<section class="health-clear"><h5>${escapeHtml(title)}</h5><p>${escapeHtml(t('noIssues'))}</p></section>`;
   const reportLine=inventoryReport.added||inventoryReport.updated||inventoryReport.unchanged?`<section class="health-report"><h5>${escapeHtml(t('lastSync'))}</h5><p>${escapeHtml(`${t('added')}: ${inventoryReport.added||0} · ${t('updated')}: ${inventoryReport.updated||0} · ${t('unchanged')}: ${inventoryReport.unchanged||0}`)}</p></section>`:'';
-  healthDetails.innerHTML=`${reportLine}${issueList(t('packingList'),missingPacking,t('missing'))}${issueList(t('packingRows'),unreadablePacking,t('missing'))}${issueList(t('sizeData'),incompleteSizes,t('missing'))}${issueList(t('photoCheck'),photoIssues,t('missing'))}${issueList(t('photos'),missingImages,t('missing'))}${issueList(t('imageChecks'),imageChecks,t('missing'))}${issueList(t('skippedFolders'),skippedFolders,t('missing'))}${issueList(t('syncIssues'),syncErrors,t('missing'))}`;
+  healthDetails.innerHTML=`${reportLine}${issueList(t('packingList'),missingPacking,t('missing'))}${issueList(t('packingRows'),unreadablePacking,t('missing'))}${issueList(t('sizeData'),incompleteSizes,t('missing'))}${issueList(t('photoCheck'),photoIssues,t('missing'))}${issueList(t('photos'),missingImages,t('missing'))}${issueList(t('photoCoverage'),imageChecks,t('missing'))}${issueList(t('skippedFolders'),skippedFolders,t('missing'))}${issueList(t('sourceIssues'),sourceIssues,t('missing'))}${issueList(t('syncIssues'),syncErrors,t('missing'))}`;
 }
 
 function auditInfo(product){
@@ -324,21 +344,22 @@ function auditInfo(product){
   const packingUnreadable=Boolean(product.packingList&&!product.lines?.length);
   const imageCount=product.images?.length||0;
   const skippedCount=product.skippedPhotoFolders?.length||0;
-  const syncWarning=Boolean(product.syncError)||skippedCount>0;
+  const source=sourceMismatchInfo(product);
+  const syncWarning=Boolean(product.syncError)||skippedCount>0||source.hasIssue;
   const packing=product.syncError?{label:t('readError'),detail:product.syncError,className:'missing'}:packingMissing?{label:t('notProvided'),detail:t('noExcel'),className:'neutral'}:packingUnreadable?{label:t('fileFound'),detail:product.packingWarning||t('noReadableRows'),className:'partial'}:{label:t('connected'),detail:`${product.lines.length} ${t('packingRows').toLowerCase()}`,className:'connected'};
   const area=hasArea?`${Number(product.sqm).toFixed(2)} m²`:t('missing');
   const dimensions=hasDimensions?productDimensions(product):t('missing');
   const size=!hasArea&&!hasDimensions?{label:t('missing'),detail:`${t('areaData')}: ${area} · ${t('dimensions')}: ${dimensions}`,className:'missing'}:!hasArea||!hasDimensions?{label:t('partial'),detail:`${t('areaData')}: ${area} · ${t('dimensions')}: ${dimensions}`,className:'partial'}:{label:t('complete'),detail:`${area} · ${dimensions}`,className:'connected'};
   const check=photoCheck(product),imageCheck=check.imageCheck;
   const media={label:check.label,detail:check.detail,className:check.className};
-  const sync=product.syncError?{label:t('readError'),detail:product.syncError,className:'missing'}:skippedCount?{label:t('partial'),detail:`${skippedCount} ${t('photoFoldersSkipped')}`,className:'partial'}:{label:t('clean'),detail:t('noIssues'),className:'connected'};
+  const sync=product.syncError?{label:t('readError'),detail:product.syncError,className:'missing'}:skippedCount?{label:t('partial'),detail:`${skippedCount} ${t('photoFoldersSkipped')}`,className:'partial'}:source.hasIssue?{label:t('warning'),detail:source.detail,className:'warning'}:{label:t('clean'),detail:t('noIssues'),className:'connected'};
   const attention=packingUnreadable||!hasArea||!hasDimensions||check.hasIssue||syncWarning;
-  return {packing,size,media,sync,overall:{label:attention?t('auditAttention'):t('ready'),detail:attention?t('auditAttention'):t('clean'),className:attention?'warning':'connected'},packingMissing,packingUnreadable,sizeMissing:!hasArea||!hasDimensions,imageMissing:!imageCount,imageCheck:imageCheck.mismatch,photoCheck:check.hasIssue,syncWarning};
+  return {packing,size,media,sync,overall:{label:attention?t('auditAttention'):t('ready'),detail:attention?t('auditAttention'):t('clean'),className:attention?'warning':'connected'},packingMissing,packingUnreadable,sizeMissing:!hasArea||!hasDimensions,imageMissing:!imageCount,imageCheck:imageCheck.mismatch,photoCheck:check.hasIssue,sourceMismatch:source.hasIssue,syncWarning};
 }
 function auditStatusMarkup(status){return `<span class="audit-status ${escapeHtml(status.className)}"><b>${escapeHtml(status.label)}</b><small>${escapeHtml(status.detail)}</small></span>`}
 function auditMatchesFilter(product,filter){
   const info=auditInfo(product);
-  return filter==='attention'?info.overall.className==='warning':filter==='no-packing'?info.packingMissing:filter==='size'?info.sizeMissing:filter==='images'?info.imageMissing:filter==='image-check'?info.imageCheck:filter==='photo-check'?info.photoCheck:filter==='warnings'?info.syncWarning:true;
+  return filter==='attention'?info.overall.className==='warning':filter==='no-packing'?info.packingMissing:filter==='size'?info.sizeMissing:filter==='images'?info.imageMissing:filter==='image-check'?info.imageCheck:filter==='photo-check'?info.photoCheck:filter==='source'?info.sourceMismatch:filter==='warnings'?info.syncWarning:true;
 }
 function auditMatches(product){
   return auditMatchesFilter(product,auditFilter);
@@ -391,7 +412,7 @@ function salesSortProducts(records){
 }
 function salesVisibleProducts(visible){
   const packingVisible=showMissingPackingValue?visible:visible.filter(product=>product.packingList);
-  const quickVisible=salesQuickFilter==='all'?packingVisible:packingVisible.filter(salesQuickFilterMatches);
+  const quickVisible=salesQuickFilter==='all'?packingVisible:packingVisible.filter(product=>salesQuickFilterMatches(product));
   const followupVisible=salesFollowupFilter==='all'?quickVisible:quickVisible.filter(product=>followupFor(product).status===salesFollowupFilter);
   const query=salesSearch.trim().toLowerCase();
   const searched=query?followupVisible.filter(product=>`${product.name} ${product.code} ${product.groupName||''} ${product.folderName||''} ${productDimensions(product)}`.toLowerCase().includes(query)):followupVisible;
@@ -402,7 +423,7 @@ function renderSalesDashboard(visible){
   renderLatestSync();
   const hiddenPacking=visible.filter(product=>!product.packingList).length;
   const packingVisible=showMissingPackingValue?visible:visible.filter(product=>product.packingList);
-  const quickVisible=salesQuickFilter==='all'?packingVisible:packingVisible.filter(salesQuickFilterMatches);
+  const quickVisible=salesQuickFilter==='all'?packingVisible:packingVisible.filter(product=>salesQuickFilterMatches(product));
   const dashboardVisible=salesVisibleProducts(visible);
   const hiddenQuick=packingVisible.length-quickVisible.length;
   const hiddenFollowup=quickVisible.length-dashboardVisible.length;
@@ -829,7 +850,6 @@ healthSummary.addEventListener('click',event=>{const card=event.target.closest('
 toggleAuditButton.addEventListener('click',()=>setAuditOpen(auditPanel.hidden));
 auditFilterSelect.addEventListener('change',event=>{auditFilter=event.currentTarget.value;renderSyncAudit()});
 exportAuditButton.addEventListener('click',downloadAudit);
-document.querySelector('#languageSwitch').addEventListener('click',()=>{language=language==='en'?'tr':'en';try{localStorage.setItem('lucraLanguage',language)}catch(error){}applyLanguage();render();if(currentProduct&&dialog.open)openProduct(productKey(currentProduct))});
 function setSalesMode(enabled){document.body.classList.toggle('sales-mode',enabled);catalogView.hidden=enabled;document.querySelector('#modeLabel').textContent=enabled?t('salesMode'):t('presentationMode');render()}
 let salesUnlocked=false;
 try{salesUnlocked=sessionStorage.getItem('lucraSalesUnlocked')==='1'}catch(error){}
@@ -1052,6 +1072,8 @@ function syncSummary(data){
   if(report.unreadablePackingLists)summary.push(`${report.unreadablePackingLists} unreadable packing file${report.unreadablePackingLists===1?'':'s'}`);
   if(report.missingAreas)summary.push(`${report.missingAreas} without area`);
   if(report.photoCheckIssues)summary.push(`${report.photoCheckIssues} photo check issue${report.photoCheckIssues===1?'':'s'}`);
+  if(report.photoCoverageNotes)summary.push(`${report.photoCoverageNotes} photo coverage note${report.photoCoverageNotes===1?'':'s'}`);
+  if(report.sourceMismatches)summary.push(`${report.sourceMismatches} source name/code mismatch${report.sourceMismatches===1?'':'es'}`);
   if(warnings.length)summary.push(`${warnings.length} sync warning${warnings.length===1?'':'s'}`);
   if(errors.length)summary.push(`${errors.length} bundle error${errors.length===1?'':'s'}`);
   return summary.join(' · ');
@@ -1074,14 +1096,56 @@ function setSyncFeedback(data,prefix='Last sync'){
   syncStatus.title=detail||'';
 }
 
+function localSnapshotNeedsRefresh(data){
+  const synced=Date.parse(data?.syncedAt||'');
+  return !Number.isFinite(synced)||Date.now()-synced>2*60*60*1000;
+}
+async function fetchPublishedSnapshot(){
+  const stamp=Date.now();
+  const inventoryResponse=await fetch(`${publicSiteBase}data/inventory.json?ts=${stamp}`,{cache:'no-store'});
+  if(!inventoryResponse.ok)throw new Error('No published inventory');
+  const data=await inventoryResponse.json();
+  const [historyData,statusData]=await Promise.all([
+    fetch(`${publicSiteBase}data/sync_history.json?ts=${stamp}`,{cache:'no-store'}).then(response=>response.ok?response.json():null).catch(()=>null),
+    fetch(`${publicSiteBase}data/sync_status.json?ts=${stamp}`,{cache:'no-store'}).then(response=>response.ok?response.json():null).catch(()=>null),
+  ]);
+  return {data,historyData,statusData};
+}
+function fetchPublishedScriptSnapshot(){
+  return new Promise((resolve,reject)=>{
+    const previous=window.LUCRA_INVENTORY,script=document.createElement('script');
+    script.async=true;script.src=`${publicSiteBase}data/inventory.js?ts=${Date.now()}`;
+    script.onload=()=>{
+      const data=window.LUCRA_INVENTORY;
+      window.LUCRA_INVENTORY=previous;script.remove();
+      data?.products?resolve({data,historyData:data.syncHistory||null,statusData:data.syncStatus||null}):reject(new Error('No published inventory script'));
+    };
+    script.onerror=()=>{script.remove();reject(new Error('Published inventory script unavailable'))};
+    document.head.appendChild(script);
+  });
+}
+
     async function loadInventory(){
       try{
-        let data,historyData=null,statusData=null;
+        let data,historyData=null,statusData=null,inventorySource='Local snapshot';
         if(location.protocol==='file:'){
           data=window.LUCRA_INVENTORY;
           if(!data)throw new Error('No local inventory snapshot');
           historyData=data.syncHistory||null;
           statusData=data.syncStatus||null;
+          if(localSnapshotNeedsRefresh(data)){
+            try{
+              const published=await fetchPublishedSnapshot();
+              data=published.data;historyData=published.historyData;statusData=published.statusData;inventorySource='Published catalogue';
+            }catch(error){
+              try{
+                const published=await fetchPublishedScriptSnapshot();
+                data=published.data;historyData=published.historyData;statusData=published.statusData;inventorySource='Published catalogue';
+              }catch(scriptError){
+                inventorySource='Local snapshot';
+              }
+            }
+          }
         }else{
           const stamp=Date.now();
           const inventoryResponse=await fetch(`data/inventory.json?ts=${stamp}`);
@@ -1096,9 +1160,9 @@ function setSyncFeedback(data,prefix='Last sync'){
         syncHistory=Array.isArray(historyRuns)?historyRuns:[];
         syncState=statusData||data.syncStatus||null;
         brokenPhotoIdsByProduct.clear();
-        products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));pruneShortlist();prunePresentationSelection();inventoryReport=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products);syncedAt=data.syncedAt;
+        products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));pruneShortlist();prunePresentationSelection();const reportedInventory=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products),sourceIssues=products.filter(product=>sourceMismatchInfo(product).hasIssue),photoIssues=products.filter(product=>photoCheck(product).hasIssue),photoCoverageNotes=products.filter(product=>imageAudit(product).mismatch);inventoryReport={...reportedInventory,photoCheckIssues:photoIssues.length,photoCoverageNotes:photoCoverageNotes.length,sourceMismatches:sourceIssues.length,sourceMismatchFolders:sourceIssues.map(product=>product.folderName)};syncedAt=data.syncedAt;
         syncStatus.innerHTML=`<i></i> ${products.length} bundles · ${new Date(syncedAt).toLocaleDateString()}`;
-        setSyncFeedback({...data,count:products.length},location.protocol==='file:'?'Local snapshot':isGithubPages?'Last published sync':'Last sync');
+        setSyncFeedback({...data,count:products.length,report:inventoryReport},location.protocol==='file:'?inventorySource:isGithubPages?'Last published sync':'Last sync');
       }catch(error){syncStatus.innerHTML='<i></i> Preview data';syncStatus.title='';syncFeedback.textContent='';syncHistory=[];syncState=null;}
       render();
     }

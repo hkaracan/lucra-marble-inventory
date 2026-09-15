@@ -34,7 +34,6 @@
       <button class="mode-switch" id="modeSwitch" type="button" aria-label="Switch display mode">
         <span class="mode-icon">◫</span><span id="modeLabel">Presentation Mode</span>
       </button>
-      <button class="language-switch" id="languageSwitch" type="button" aria-label="Switch language">TR</button>
     </div>
   </header>
 
@@ -149,6 +148,7 @@
           <button type="button" class="sales-quick-filter" data-audit-filter="size" aria-pressed="false"><span data-i18n="auditSize">Missing area / size</span><b class="quick-filter-count">0</b></button>
           <button type="button" class="sales-quick-filter" data-audit-filter="photo-check" aria-pressed="false"><span data-i18n="auditPhotoCheck">Photo check</span><b class="quick-filter-count">0</b></button>
           <button type="button" class="sales-quick-filter" data-audit-filter="warnings" aria-pressed="false"><span data-i18n="auditWarnings">Sync warnings</span><b class="quick-filter-count">0</b></button>
+          <button type="button" class="sales-quick-filter" data-audit-filter="source" aria-pressed="false"><span data-i18n="auditSource">Source mismatch</span><b class="quick-filter-count">0</b></button>
           <button type="button" class="sales-quick-filter" data-audit-filter="reserved" aria-pressed="false"><span data-i18n="reserved">Reserved</span><b class="quick-filter-count">0</b></button>
         </div>
         <section class="inventory-health" aria-labelledby="inventoryHealthTitle">
@@ -163,7 +163,7 @@
           </div>
           <div id="auditPanel" hidden>
             <div class="audit-toolbar">
-              <label><span data-i18n="auditFilter">Show</span><select id="auditFilter"><option value="all" data-i18n="auditAll">All products</option><option value="attention" data-i18n="auditAttention">Needs attention</option><option value="no-packing" data-i18n="auditNoPacking">No packing list</option><option value="size" data-i18n="auditSize">Missing area / size</option><option value="images" data-i18n="auditImages">Missing images</option><option value="photo-check" data-i18n="auditPhotoCheck">Photo check</option><option value="image-check" data-i18n="auditImageCheck">Image count mismatch</option><option value="warnings" data-i18n="auditWarnings">Sync warnings</option></select></label>
+              <label><span data-i18n="auditFilter">Show</span><select id="auditFilter"><option value="all" data-i18n="auditAll">All products</option><option value="attention" data-i18n="auditAttention">Needs attention</option><option value="no-packing" data-i18n="auditNoPacking">No packing list</option><option value="size" data-i18n="auditSize">Missing area / size</option><option value="images" data-i18n="auditImages">Missing images</option><option value="photo-check" data-i18n="auditPhotoCheck">Photo check</option><option value="image-check" data-i18n="auditImageCheck">Image count mismatch</option><option value="warnings" data-i18n="auditWarnings">Sync warnings</option><option value="source" data-i18n="auditSource">Source mismatch</option></select></label>
               <span class="audit-count" id="auditCount"></span>
               <button id="exportAudit" class="secondary" type="button" data-i18n="exportAudit">Export audit CSV</button>
             </div>
@@ -175,7 +175,7 @@
           </div>
         </section>
         <div class="sales-list-controls">
-          <label class="sales-list-search"><span aria-hidden="true">⌕</span><input id="salesSearchInput" type="search" data-i18n-placeholder="salesSearchPlaceholder" placeholder="Search dashboard list" autocomplete="off" /></label>
+          <label class="sales-list-search"><span aria-hidden="true">⌕</span><span class="sr-only">Search dashboard list</span><input id="salesSearchInput" type="search" aria-label="Search dashboard list" data-i18n-placeholder="salesSearchPlaceholder" placeholder="Search dashboard list" autocomplete="off" /></label>
           <label class="sales-list-sort"><span data-i18n="salesSort">Sort list</span><select id="salesSortSelect"><option value="name" data-i18n="name">Name</option><option value="slabs" data-i18n="mostSlabs">Most slabs</option><option value="area" data-i18n="largestArea">Largest area</option><option value="packing" data-i18n="packingList">Packing list</option><option value="status" data-i18n="status">Status</option></select></label>
         </div>
         <div class="sales-tools">
@@ -301,6 +301,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260915-05"></script>
+  <script src="app.js?v=20260915-06"></script>
 </body>
 </html>

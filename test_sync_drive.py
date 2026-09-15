@@ -345,6 +345,21 @@ class MockedSyncTest(unittest.TestCase):
         self.assertEqual([product["code"] for product in payload["products"]], ["L1014"])
         self.assertTrue(payload["errors"])
 
+    def test_source_code_mismatch_is_reported_without_changing_the_folder_code(self):
+        folder = {
+            "id": "red-travertine",
+            "name": "Red Travertine K5094",
+            "_items": [{"id": "packing", "name": "K5480 Packing List.xlsx"}],
+        }
+
+        with patch.object(sync_drive, "download_file", return_value=packing_list_bytes()):
+            product = sync_drive.normalize_folder(folder)
+
+        self.assertEqual(product["code"], "K5094")
+        self.assertEqual(len(product["sourceWarnings"]), 1)
+        self.assertEqual(product["sourceWarnings"][0]["packingCodes"], ["K5480"])
+        self.assertIn("K5094", product["sourceWarnings"][0]["message"])
+
 
 if __name__ == "__main__":
     unittest.main()

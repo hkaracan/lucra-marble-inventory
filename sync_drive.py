@@ -38,6 +38,7 @@ FILE_PATTERN = re.compile(r"\.(jpe?g|png|webp|heic|heif|mp4|mov|webm|xlsx?)$", r
 CAMERA_IMAGE_PATTERN = re.compile(r"^(?:IMG|DSC|PXL)[ _-]?\d+\.(?:jpe?g|png|webp|heic|heif)$", re.I)
 PACKING_LIST_PATTERN = re.compile(r"\bpacking\s+list\b", re.I)
 BUNDLE_CODE_PATTERN = re.compile(r"(?:^|\s)([KLM]\d+)\s*$", re.I)
+SOURCE_CODE_PATTERN = re.compile(r"\b([KLM]\d+)\b", re.I)
 REQUEST_LOCK = threading.Lock()
 LAST_REQUEST_AT = 0.0
 MIN_REQUEST_GAP = 0.35
@@ -107,6 +108,28 @@ def is_bundle_folder(name: str) -> bool:
 
 def is_l1014_folder(name: str) -> bool:
     return bool(L1014_PATTERN.search(name))
+
+
+def source_codes(value: str | None) -> list[str]:
+    return sorted({match.group(1).upper() for match in SOURCE_CODE_PATTERN.finditer(str(value or ""))})
+
+
+def source_code_warnings(folder_name: str, packing_name: str | None) -> list[dict[str, object]]:
+    folder_codes = source_codes(folder_name)
+    packing_codes = source_codes(packing_name)
+    if not folder_codes or not packing_codes:
+        return []
+    folder_code = folder_codes[-1]
+    if folder_code in packing_codes:
+        return []
+    return [
+        {
+            "kind": "source-code-mismatch",
+            "folderCode": folder_code,
+            "packingCodes": packing_codes,
+            "message": f"Folder code {folder_code} does not match packing-list name code(s): {', '.join(packing_codes)}.",
+        }
+    ]
 
 
 def inventory_script_path() -> Path:
@@ -676,6 +699,7 @@ def normalize_folder(folder: dict[str, str]) -> dict:
             (str(line.get("material") or "").strip() for line in packing.get("lines", []) if str(line.get("material") or "").strip()),
             code if code != "—" else clean_name,
         )
+    source_warnings = source_code_warnings(folder_name, packing_name)
     finishes = sorted({line["finish"] for line in packing["lines"] if line.get("finish")})
     dimensions = sorted({f'{line["widthCm"]} × {line["heightCm"]} cm' for line in packing["lines"] if line.get("widthCm") and line.get("heightCm")})
     labels = sorted({int(image["label"]) for image in slab_images if str(image.get("label", "")).isdigit()})
@@ -713,6 +737,7 @@ def normalize_folder(folder: dict[str, str]) -> dict:
         "syncError": packing.get("error"),
         "packingWarning": packing.get("parseWarning"),
         "skippedPhotoFolders": skipped_photo_folders,
+        "sourceWarnings": source_warnings,
         "photoCheck": photo_check,
     }
 
@@ -793,6 +818,14 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
                     "folder": product["folderName"],
                     "kind": "packing-list",
                     "error": product["packingWarning"],
+                }
+            )
+        for source_warning in product.get("sourceWarnings", []):
+            warnings.append(
+                {
+                    "folder": product["folderName"],
+                    "kind": source_warning.get("kind", "source-code-mismatch"),
+                    "error": source_warning.get("message", "Folder and packing-list codes do not match."),
                 }
             )
     sync_timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
@@ -876,9 +909,15 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
             not product.get("images")
             and not product.get("extraImages")
         )
-        or product.get("photoCheck", {}).get("countMismatch")
+        or product.get("photoCheck", {}).get("brokenImages")
         or product.get("skippedPhotoFolders")
     ]
+    photo_coverage_notes=[
+        product
+        for product in products
+        if product.get("photoCheck", {}).get("countMismatch")
+    ]
+    source_mismatch_products=[product for product in products if product.get("sourceWarnings")]
     image_mismatch_folders=[
         product.get("folderName")
         for product in products
@@ -896,6 +935,8 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
         "missingDimensions":len(missing_dimensions),
         "skippedPhotoFolders":skipped_photo_folders,
         "photoCheckIssues":len(photo_check_issues),
+        "photoCoverageNotes":len(photo_coverage_notes),
+        "sourceMismatches":len(source_mismatch_products),
         "folderErrors":len(errors),
         "warningCount":len(warnings),
         "addedFolders":[product.get("folderName") for product in added],
@@ -907,6 +948,8 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
         "missingDimensionFolders":[product.get("folderName") for product in missing_dimensions],
         "photoCheckIssueFolders":[product.get("folderName") for product in photo_check_issues],
         "imageMismatchFolders":image_mismatch_folders,
+        "photoCoverageNoteFolders":[product.get("folderName") for product in photo_coverage_notes],
+        "sourceMismatchFolders":[product.get("folderName") for product in source_mismatch_products],
     }
     sync_run = sync_run_record(payload)
     history = [sync_run] + [run for run in read_sync_history() if run.get("attemptedAt") != sync_run["attemptedAt"]]

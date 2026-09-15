@@ -11,7 +11,7 @@ python3 server.py
 
 Then open `http://localhost:4173`.
 
-You can also open `index.html` directly from this folder. Direct HTML mode shows the latest locally generated inventory snapshot and public Drive thumbnails; use the Python server when you want to run a fresh manual Drive sync.
+You can also open `index.html` directly from this folder. Direct HTML mode uses the local snapshot when it is recent and automatically falls back to the latest published GitHub Pages snapshot when the local copy is more than two hours old. It still works offline with the local snapshot and public Drive thumbnails; use the Python server when you want to run a fresh manual Drive sync.
 
 The public website is available at [hkaracan.github.io/lucra-marble-inventory](https://hkaracan.github.io/lucra-marble-inventory/). Because GitHub Pages is a static host, its **Sync via GitHub Actions** button opens the manual workflow instead of running the local Python API.
 
