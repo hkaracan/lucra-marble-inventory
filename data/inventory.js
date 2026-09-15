@@ -1,7 +1,7 @@
 // Generated from inventory.json by sync_drive.py.
 window.LUCRA_INVENTORY = {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-15T08:19:41Z",
+  "syncedAt": "2026-09-15T15:35:18Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
@@ -112,9 +112,21 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "Packing List K2970.xlsx",
+      "packingListId": "1QK5PE_I1j2aIqkIRDsKXecgxl1Qe3mNT",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 10,
+        "slabImages": 9,
+        "extraImages": 1,
+        "expectedSlabs": 9,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Alexander Black",
@@ -589,9 +601,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "K4987 Packing List.xlsx",
+      "packingListId": "12_Jxxt8LzRzywxUZVHOwKM70f72O9Rla",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 59,
+        "slabImages": 51,
+        "extraImages": 8,
+        "expectedSlabs": 51,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Arabescato Imperiale",
@@ -825,9 +849,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K6235.xlsx",
+      "packingListId": "1zL9wXazkN9IUI56bJxp222jeU8tIuLtZ",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 28,
+        "slabImages": 22,
+        "extraImages": 6,
+        "expectedSlabs": 22,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Bianco Dolomite",
@@ -1280,9 +1316,21 @@ window.LUCRA_INVENTORY = {
       "extraImages": [],
       "videos": [],
       "packingList": "Packing List L1011.xlsx",
+      "packingListId": "1WJNay3NRT6J_1DLtH9r8fiXpkM-LM8va",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 61,
+        "slabImages": 61,
+        "extraImages": 0,
+        "expectedSlabs": 61,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Breccia Montagna",
@@ -1389,9 +1437,21 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "Packing List K3332.xlsx",
+      "packingListId": "1vlJQzKm2Hqv2HHKhvMjmkzagF1ScNbLz",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 13,
+        "slabImages": 10,
+        "extraImages": 3,
+        "expectedSlabs": 10,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Bruno Perla",
@@ -1744,9 +1804,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "K6029 PACKING LIST.xlsx",
+      "packingListId": "1RZhk_T7LsY5JWRvI3uvXJ3pz1F-opF4v",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 40,
+        "slabImages": 37,
+        "extraImages": 3,
+        "expectedSlabs": 37,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Cafe Amore",
@@ -2091,9 +2163,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K6058.xlsx",
+      "packingListId": "1BoP8_gehaBzbGmFGq0Q7zMlSnkTP5eN0",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 44,
+        "slabImages": 39,
+        "extraImages": 5,
+        "expectedSlabs": 39,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Ceppo Beige",
@@ -2212,9 +2296,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "K5567 Packing List .xlsx",
+      "packingListId": "1QoXglxefB74rNn1QWYXzMY4KMkzzEUa3",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 14,
+        "slabImages": 11,
+        "extraImages": 3,
+        "expectedSlabs": 11,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Ceppo Beige",
@@ -2790,9 +2886,21 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "Packing List K6086.xlsx",
+      "packingListId": "1IajDeOkdKgpLi-kv_YQi4eVaMy7ZIjTN",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 79,
+        "slabImages": 74,
+        "extraImages": 5,
+        "expectedSlabs": 74,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Ceppo Grey",
@@ -3158,9 +3266,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K3630.xlsx",
+      "packingListId": "10nBI7-OnavUObs1qP6AzblcM_brz3DgX",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 42,
+        "slabImages": 37,
+        "extraImages": 5,
+        "expectedSlabs": 37,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Crema Luna",
@@ -3672,9 +3792,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K6131.xlsx",
+      "packingListId": "1dEy0lk9EP-YoPYXqNG8hMQOZ49RClhOO",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 65,
+        "slabImages": 59,
+        "extraImages": 6,
+        "expectedSlabs": 59,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Diamond Grey",
@@ -4275,9 +4407,23 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "M2878.xlsx",
+      "packingListId": "1WvinSLVVOSERb2ibLOxeeoVlyoXwQtq_",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 72,
+        "slabImages": 57,
+        "extraImages": 15,
+        "expectedSlabs": 57,
+        "missingNumbers": [
+          46
+        ],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Flinders White",
@@ -4424,9 +4570,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List.xlsx",
+      "packingListId": "1OXeOIOyu7dC0Sgo1dFtuR5OEwd9FH9bC",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 18,
+        "slabImages": 10,
+        "extraImages": 8,
+        "expectedSlabs": 10,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Flinders White",
@@ -4856,9 +5014,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "K3491 Packing List.xlsx",
+      "packingListId": "1ildap8ZxWUtG85JjnCPeYvGMA-lnaBF6",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 49,
+        "slabImages": 43,
+        "extraImages": 6,
+        "expectedSlabs": 43,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Giallo Siena Dolomite",
@@ -5256,9 +5426,21 @@ window.LUCRA_INVENTORY = {
       "extraImages": [],
       "videos": [],
       "packingList": "K1442 Packing List.xlsx",
+      "packingListId": "15TO_7LrQ9aPP8mfAWmAds8Eu6i__Jl90",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 50,
+        "slabImages": 50,
+        "extraImages": 0,
+        "expectedSlabs": 50,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Golden Roots",
@@ -5519,9 +5701,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packimng List K5080.xlsx",
+      "packingListId": "1mO79WdP_0QgP1ZI8qSA5Ro6B6e0RFm4M",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 33,
+        "slabImages": 24,
+        "extraImages": 9,
+        "expectedSlabs": 24,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Green Olive",
@@ -5953,9 +6147,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K3618.xlsx",
+      "packingListId": "1SaemWelMP3qXqpAvyR0tc9b_CB2gthWx",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 58,
+        "slabImages": 52,
+        "extraImages": 6,
+        "expectedSlabs": 52,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Ice Bloom",
@@ -6318,9 +6524,53 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K4132.xlsx",
+      "packingListId": "1Gyd-g5r4pM739BXKoxOJQLcdeutjqvZG",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 38,
+        "slabImages": 32,
+        "extraImages": 6,
+        "expectedSlabs": 32,
+        "missingNumbers": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61
+        ],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Invisible Blue",
@@ -6444,9 +6694,21 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "K3280 Packing List.xlsx",
+      "packingListId": "1IRgN3awMwZAYKdd-xeU9xuKeMbluklY6",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 14,
+        "slabImages": 12,
+        "extraImages": 2,
+        "expectedSlabs": 12,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Karmania Traonyx",
@@ -6726,9 +6988,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K5809.xlsx",
+      "packingListId": "19MElUc6-nR7laLacMMlWGm2PGhVkzRjh",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 33,
+        "slabImages": 29,
+        "extraImages": 4,
+        "expectedSlabs": 29,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Lilac Extra",
@@ -7167,9 +7441,23 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K 3619.xlsx",
+      "packingListId": "1xCmGjS8N3LgS6d1UAUowypDpWIHSp6kj",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 53,
+        "slabImages": 48,
+        "extraImages": 5,
+        "expectedSlabs": 49,
+        "missingNumbers": [
+          42
+        ],
+        "countMismatch": true,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Marmara Equator",
@@ -7534,9 +7822,21 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "K3514 Packing List.xlsx",
+      "packingListId": "1f7vsjzZQTEpc2oNVnWnjDbbiK6i1O6Vb",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 41,
+        "slabImages": 40,
+        "extraImages": 1,
+        "expectedSlabs": 40,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "MoonLight Grey",
@@ -7659,9 +7959,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "K5147 Packing List1.xlsx",
+      "packingListId": "1HSRAiMdz5FGMne21RsYUopiNfa0eVXPR",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 11,
+        "slabImages": 10,
+        "extraImages": 1,
+        "expectedSlabs": 10,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Naturella",
@@ -7924,9 +8236,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K5171.xlsx",
+      "packingListId": "1wqnwh8__W8JqhyH6UYx9DAd0zuuwpFoy",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 33,
+        "slabImages": 32,
+        "extraImages": 1,
+        "expectedSlabs": 32,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "NebuLa Wave",
@@ -8290,9 +8614,30 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List L1009.xlsx",
+      "packingListId": "1RaFjfLlkB4BMk1VobgvBXxAJPMXQs-fb",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [
+        {
+          "kind": "source-code-mismatch",
+          "folderCode": "L009",
+          "packingCodes": [
+            "L1009"
+          ],
+          "message": "Folder code L009 does not match packing-list name code(s): L1009."
+        }
+      ],
+      "photoCheck": {
+        "listedImages": 47,
+        "slabImages": 39,
+        "extraImages": 8,
+        "expectedSlabs": 39,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Nimbus White",
@@ -8890,9 +9235,21 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "K6170 Packing List.xlsx",
+      "packingListId": "1-MmsY7QqopzqgbFXtVag1H3UT4rgyph8",
       "syncError": null,
       "packingWarning": null,
       "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 73,
+        "slabImages": 71,
+        "extraImages": 2,
+        "expectedSlabs": 71,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      },
       "addedAt": "2026-09-09T08:30:53Z"
     },
     {
@@ -9689,9 +10046,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "k6169.xlsx",
+      "packingListId": "1VPoGpUeL5GMXp9n6yS7jDEOfg6SHDzmj",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 86,
+        "slabImages": 75,
+        "extraImages": 11,
+        "expectedSlabs": 75,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Nordic Ice",
@@ -10320,9 +10689,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "K3490 Packing List.xlsx",
+      "packingListId": "1jGVJPqGYrbTTjHhZCOKoITqB7tkoA1Ij",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 70,
+        "slabImages": 65,
+        "extraImages": 5,
+        "expectedSlabs": 65,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Polar White",
@@ -10784,9 +11165,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K6089.xlsx",
+      "packingListId": "1oQQ-6DSI_os4mtGQ_8mXIKR_5lvcstnN",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 58,
+        "slabImages": 53,
+        "extraImages": 5,
+        "expectedSlabs": 53,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Porto Rosa",
@@ -11069,9 +11462,21 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "L006 Packing List.xlsx",
+      "packingListId": "1FhfsA3_3JdanIrDl0v0wnFnoBBrT7j1j",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 38,
+        "slabImages": 33,
+        "extraImages": 5,
+        "expectedSlabs": 32,
+        "missingNumbers": [],
+        "countMismatch": true,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Red Jasper",
@@ -11374,9 +11779,23 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "Packing List L1010.xlsx",
+      "packingListId": "1lFxVYtgl5zOyDxP6_QAIJAo7xX3ZuLlO",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 41,
+        "slabImages": 38,
+        "extraImages": 3,
+        "expectedSlabs": 37,
+        "missingNumbers": [
+          9
+        ],
+        "countMismatch": true,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Red Travertine",
@@ -11649,9 +12068,33 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "K5480 Packing List.xlsx adlı dosyanın kopyası",
+      "packingListId": "170usntN9onut1Y0KvxoSNtIoE-XwxBnp",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [
+        {
+          "kind": "source-code-mismatch",
+          "folderCode": "K5094",
+          "packingCodes": [
+            "K5480"
+          ],
+          "message": "Folder code K5094 does not match packing-list name code(s): K5480."
+        }
+      ],
+      "photoCheck": {
+        "listedImages": 34,
+        "slabImages": 33,
+        "extraImages": 1,
+        "expectedSlabs": 34,
+        "missingNumbers": [
+          20,
+          30
+        ],
+        "countMismatch": true,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Rosso Levanto",
@@ -11778,9 +12221,21 @@ window.LUCRA_INVENTORY = {
       "extraImages": [],
       "videos": [],
       "packingList": null,
+      "packingListId": null,
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 18,
+        "slabImages": 18,
+        "extraImages": 0,
+        "expectedSlabs": 18,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Rosso Levanto",
@@ -12206,9 +12661,28 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "Packing List L1013 Rosso Levanto.xlsx",
+      "packingListId": "1SE5b16X4ZN9ljV2GC0FWjdS5SHQRr7BS",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 55,
+        "slabImages": 53,
+        "extraImages": 2,
+        "expectedSlabs": 56,
+        "missingNumbers": [
+          11,
+          29,
+          31,
+          32,
+          48,
+          51
+        ],
+        "countMismatch": true,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Rosso Levanto",
@@ -12520,9 +12994,23 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "Packing List L1014.xlsx",
+      "packingListId": "1SfqGjPZ_aa6zKLYMq-Qvh0Hhqy2Ht2of",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 41,
+        "slabImages": 37,
+        "extraImages": 4,
+        "expectedSlabs": 37,
+        "missingNumbers": [
+          4
+        ],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Silver Travertine Ham (Raw)",
@@ -12711,9 +13199,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List.xlsx",
+      "packingListId": "18QCbWuR3reiWKhTq5Z_IvZ-5NVVNzJjH",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 18,
+        "slabImages": 0,
+        "extraImages": 18,
+        "expectedSlabs": 53,
+        "missingNumbers": [],
+        "countMismatch": true,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Sunset Dlomite",
@@ -13280,9 +13780,23 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K3561.xlsx",
+      "packingListId": "1g_4mTuaXLUmmkeF7GZEx4XPszm4oMn75",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 66,
+        "slabImages": 63,
+        "extraImages": 3,
+        "expectedSlabs": 63,
+        "missingNumbers": [
+          45
+        ],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Sunset Dolomite",
@@ -13595,9 +14109,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K1443.xlsx",
+      "packingListId": "1CRvsej8w11VtubnK2-IpansMzQtrz98Z",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 36,
+        "slabImages": 22,
+        "extraImages": 14,
+        "expectedSlabs": 22,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Terranova Ceppo",
@@ -13868,9 +14394,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "TERRANOVA K6044 PACKING LIST.xlsx",
+      "packingListId": "1ExmLdrL_rrqA8M62Dk3SISxcv9OZaqld",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 33,
+        "slabImages": 30,
+        "extraImages": 3,
+        "expectedSlabs": 30,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Travertine",
@@ -13989,9 +14527,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List L009.xlsx",
+      "packingListId": "1kxBR8ax103ipmlx68gPjHYAQeVJMgKOs",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 8,
+        "slabImages": 0,
+        "extraImages": 8,
+        "expectedSlabs": 45,
+        "missingNumbers": [],
+        "countMismatch": true,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Tundra Grey",
@@ -14228,9 +14778,21 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "Packing List K1312 Tundra Grey.xlsx",
+      "packingListId": "1YxWZCpJwCDE6vg8Qorhodmml1wR3aH-w",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 23,
+        "slabImages": 21,
+        "extraImages": 2,
+        "expectedSlabs": 21,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Tundra Grey",
@@ -14517,9 +15079,21 @@ window.LUCRA_INVENTORY = {
       "extraImages": [],
       "videos": [],
       "packingList": "K3966 Packing List.xlsx",
+      "packingListId": "1jKfV6xFPYW_aVR4TERa00j4n74Cl57-3",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 33,
+        "slabImages": 33,
+        "extraImages": 0,
+        "expectedSlabs": 33,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Tundra Grey",
@@ -15021,9 +15595,25 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K6155.xlsx",
+      "packingListId": "1BzKCxyEvdsdp-3wpctFyHZZpsPCDzImh",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 55,
+        "slabImages": 54,
+        "extraImages": 1,
+        "expectedSlabs": 56,
+        "missingNumbers": [
+          20,
+          28,
+          47
+        ],
+        "countMismatch": true,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Tundra Grey Brushed",
@@ -15400,9 +15990,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "Packing List K900 Tundra Grey.xlsx",
+      "packingListId": "1aEeOoPLJsjXHx-pjiRYX0Dz6qQmwm1N2",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 40,
+        "slabImages": 38,
+        "extraImages": 2,
+        "expectedSlabs": 38,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Tundra Light",
@@ -15519,9 +16121,21 @@ window.LUCRA_INVENTORY = {
       "extraImages": [],
       "videos": [],
       "packingList": "K191 Packing List.xlsx",
+      "packingListId": "1hHIae6cb9ocCb4Fmwj8UoMoml3ZZtEGK",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 11,
+        "slabImages": 11,
+        "extraImages": 0,
+        "expectedSlabs": 11,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Tundra Light",
@@ -16018,9 +16632,21 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "Packing List K6138.xlsx",
+      "packingListId": "1qHQ6RWWJq4d2aYOHLQajZiEFKDcpsPCM",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 62,
+        "slabImages": 61,
+        "extraImages": 1,
+        "expectedSlabs": 61,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Tundra Light",
@@ -16431,9 +17057,21 @@ window.LUCRA_INVENTORY = {
       "extraImages": [],
       "videos": [],
       "packingList": "Packing List K6139.xlsx",
+      "packingListId": "1CLOyYbsXtEuP6VrBJX2SH5AnDlYW3HN5",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 54,
+        "slabImages": 54,
+        "extraImages": 0,
+        "expectedSlabs": 53,
+        "missingNumbers": [],
+        "countMismatch": true,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Tundra Ocean",
@@ -16730,9 +17368,21 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "Packing List K6164.xlsx",
+      "packingListId": "1uudrcWreE9bfc0-1dokAFTIIm9aatl4y",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 38,
+        "slabImages": 37,
+        "extraImages": 1,
+        "expectedSlabs": 37,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Van Gogh",
@@ -17079,9 +17729,21 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": "K3229 Packing List.xlsx",
+      "packingListId": "1I4X7jLaqJib0q0vLaLQR5T-hDyQvCLC-",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 44,
+        "slabImages": 36,
+        "extraImages": 8,
+        "expectedSlabs": 36,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Vanilla",
@@ -17293,9 +17955,21 @@ window.LUCRA_INVENTORY = {
       "extraImages": [],
       "videos": [],
       "packingList": "K6130 Packing List.xlsx",
+      "packingListId": "1Bk0qDEMaaEdbnk11QBzLE6R1u-su-srI",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 22,
+        "slabImages": 22,
+        "extraImages": 0,
+        "expectedSlabs": 22,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Vanilla Ice",
@@ -17600,9 +18274,23 @@ window.LUCRA_INVENTORY = {
         }
       ],
       "packingList": null,
+      "packingListId": null,
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 46,
+        "slabImages": 44,
+        "extraImages": 2,
+        "expectedSlabs": 44,
+        "missingNumbers": [
+          34
+        ],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Velluto Onyx",
@@ -17763,9 +18451,33 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "K3947 Packing List.xlsx",
+      "packingListId": "1u93PBR09K51sORImz2bGQuIXwdaWodM6",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 21,
+        "slabImages": 14,
+        "extraImages": 7,
+        "expectedSlabs": 14,
+        "missingNumbers": [
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          22,
+          23,
+          24,
+          25
+        ],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Velluto Onyx Cross Cut",
@@ -17886,9 +18598,21 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "Packing List K3653.xlsx",
+      "packingListId": "1Cyp6cPJNwEyn7VA5diuSmh9sVYsIMEPh",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 12,
+        "slabImages": 9,
+        "extraImages": 3,
+        "expectedSlabs": 9,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     },
     {
       "name": "Verde Levanto",
@@ -18147,28 +18871,109 @@ window.LUCRA_INVENTORY = {
       ],
       "videos": [],
       "packingList": "Packing List K5420.xlsx",
+      "packingListId": "1nc3POzPyGPAylcZqRDhMVsAiCiTU554A",
       "syncError": null,
       "packingWarning": null,
-      "skippedPhotoFolders": []
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 32,
+        "slabImages": 28,
+        "extraImages": 4,
+        "expectedSlabs": 28,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
     }
   ],
   "errors": [],
-  "warnings": [],
+  "warnings": [
+    {
+      "folder": "NebuLa Wave L009",
+      "kind": "source-code-mismatch",
+      "error": "Folder code L009 does not match packing-list name code(s): L1009."
+    },
+    {
+      "folder": "Red Travertine K5094",
+      "kind": "source-code-mismatch",
+      "error": "Folder code K5094 does not match packing-list name code(s): K5480."
+    }
+  ],
   "report": {
     "bundles": 54,
     "added": 0,
-    "updated": 0,
-    "unchanged": 54,
+    "updated": 54,
+    "unchanged": 0,
     "missingPackingLists": 2,
     "unreadablePackingLists": 0,
     "missingImages": 0,
     "missingAreas": 2,
     "missingDimensions": 2,
     "skippedPhotoFolders": 0,
+    "photoCheckIssues": 0,
+    "photoCoverageNotes": 9,
+    "sourceMismatches": 2,
     "folderErrors": 0,
-    "warningCount": 0,
+    "warningCount": 2,
     "addedFolders": [],
-    "updatedFolders": [],
+    "updatedFolders": [
+      "Alaskan Blue K2970",
+      "Alexander Black K4987",
+      "Arabescato Imperiale K6235",
+      "Bianco Dolomite L1011",
+      "Breccia Montagna K3332",
+      "Bruno Perla K6029",
+      "Cafe Amore K6058",
+      "Ceppo Beige K5567",
+      "Ceppo Beige K6086",
+      "Ceppo Grey K3630",
+      "Crema Luna K6131",
+      "Diamond Grey M2878",
+      "Flinders White K3167",
+      "Flinders White K3491",
+      "Giallo Siena Dolomite K1442",
+      "Golden Roots K5080",
+      "Green Olive K3618",
+      "Ice Bloom K4132",
+      "Invisible Blue K3280",
+      "Karmania Traonyx K5809",
+      "Lilac Extra K3619",
+      "Marmara Equator K3514",
+      "MoonLight Grey K5147",
+      "Naturella K5171",
+      "NebuLa Wave L009",
+      "Nimbus White K6170",
+      "Nimbus White Veincut K6169",
+      "Nordic Ice K3490",
+      "Polar White K6089",
+      "Porto Rosa L006",
+      "Red Jasper L1010",
+      "Red Travertine K5094",
+      "Rosso Levanto K6222",
+      "Rosso Levanto L1013",
+      "Rosso Levanto L1014",
+      "Silver Travertine Ham (Raw) K5301",
+      "Sunset Dlomite K3561",
+      "Sunset Dolomite K1443",
+      "Terranova Ceppo K6044",
+      "Travertine L009",
+      "Tundra Grey K1312",
+      "Tundra Grey K3966",
+      "Tundra Grey K6155",
+      "Tundra Grey Brushed",
+      "Tundra Light K191",
+      "Reserved - Tundra Light K6138",
+      "Tundra Light K6139",
+      "Tundra Ocean K6164",
+      "Van Gogh K3229",
+      "Vanilla K6130",
+      "Vanilla Ice K5372",
+      "Reserved Velluto Onyx K3947",
+      "Velluto Onyx Cross Cut K3653",
+      "Verde Levanto K5420"
+    ],
     "missingPackingListFolders": [
       "Rosso Levanto K6222",
       "Vanilla Ice K5372"
@@ -18182,6 +18987,109 @@ window.LUCRA_INVENTORY = {
     "missingDimensionFolders": [
       "Rosso Levanto K6222",
       "Vanilla Ice K5372"
+    ],
+    "photoCheckIssueFolders": [],
+    "imageMismatchFolders": [
+      "Lilac Extra K3619",
+      "Porto Rosa L006",
+      "Red Jasper L1010",
+      "Red Travertine K5094",
+      "Rosso Levanto L1013",
+      "Silver Travertine Ham (Raw) K5301",
+      "Travertine L009",
+      "Tundra Grey K6155",
+      "Tundra Light K6139"
+    ],
+    "photoCoverageNoteFolders": [
+      "Lilac Extra K3619",
+      "Porto Rosa L006",
+      "Red Jasper L1010",
+      "Red Travertine K5094",
+      "Rosso Levanto L1013",
+      "Silver Travertine Ham (Raw) K5301",
+      "Travertine L009",
+      "Tundra Grey K6155",
+      "Tundra Light K6139"
+    ],
+    "sourceMismatchFolders": [
+      "NebuLa Wave L009",
+      "Red Travertine K5094"
     ]
+  },
+  "syncHistory": [
+    {
+      "status": "success",
+      "attemptedAt": "2026-09-15T15:35:18Z",
+      "syncedAt": "2026-09-15T15:35:18Z",
+      "bundles": 54,
+      "added": 0,
+      "updated": 54,
+      "unchanged": 0,
+      "warnings": 2,
+      "errors": 0,
+      "addedFolders": [],
+      "updatedFolders": [
+        "Alaskan Blue K2970",
+        "Alexander Black K4987",
+        "Arabescato Imperiale K6235",
+        "Bianco Dolomite L1011",
+        "Breccia Montagna K3332",
+        "Bruno Perla K6029",
+        "Cafe Amore K6058",
+        "Ceppo Beige K5567",
+        "Ceppo Beige K6086",
+        "Ceppo Grey K3630",
+        "Crema Luna K6131",
+        "Diamond Grey M2878",
+        "Flinders White K3167",
+        "Flinders White K3491",
+        "Giallo Siena Dolomite K1442",
+        "Golden Roots K5080",
+        "Green Olive K3618",
+        "Ice Bloom K4132",
+        "Invisible Blue K3280",
+        "Karmania Traonyx K5809"
+      ]
+    }
+  ],
+  "syncStatus": {
+    "status": "success",
+    "attemptedAt": "2026-09-15T15:35:18Z",
+    "syncedAt": "2026-09-15T15:35:18Z",
+    "message": "Inventory sync completed.",
+    "run": {
+      "status": "success",
+      "attemptedAt": "2026-09-15T15:35:18Z",
+      "syncedAt": "2026-09-15T15:35:18Z",
+      "bundles": 54,
+      "added": 0,
+      "updated": 54,
+      "unchanged": 0,
+      "warnings": 2,
+      "errors": 0,
+      "addedFolders": [],
+      "updatedFolders": [
+        "Alaskan Blue K2970",
+        "Alexander Black K4987",
+        "Arabescato Imperiale K6235",
+        "Bianco Dolomite L1011",
+        "Breccia Montagna K3332",
+        "Bruno Perla K6029",
+        "Cafe Amore K6058",
+        "Ceppo Beige K5567",
+        "Ceppo Beige K6086",
+        "Ceppo Grey K3630",
+        "Crema Luna K6131",
+        "Diamond Grey M2878",
+        "Flinders White K3167",
+        "Flinders White K3491",
+        "Giallo Siena Dolomite K1442",
+        "Golden Roots K5080",
+        "Green Olive K3618",
+        "Ice Bloom K4132",
+        "Invisible Blue K3280",
+        "Karmania Traonyx K5809"
+      ]
+    }
   }
 };
