@@ -266,6 +266,25 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
 .sales-freshness-badge{position:static;display:inline-flex;align-items:center;flex:0 0 auto;padding:4px 6px;border-radius:3px;box-shadow:none;font-size:9px;letter-spacing:.06em;white-space:nowrap}
 @media(max-width:580px){.freshness-badge{left:10px;bottom:10px;padding:6px 8px;font-size:9px}.sales-freshness-badge{font-size:8px;padding:3px 5px}}
 
+/* Compact sync status for the sales dashboard. */
+.latest-sync{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 18px;padding:11px 13px;border:1px solid var(--line);background:white}
+.latest-sync-head{display:flex;align-items:baseline;gap:10px;min-width:0;flex-wrap:wrap}
+.latest-sync-head .eyebrow{margin:0;color:var(--muted);font-size:9px;letter-spacing:.12em}
+.latest-sync-head strong{font:600 14px Manrope;letter-spacing:-.02em;white-space:nowrap}
+.latest-sync-head>span{color:var(--muted);font-size:10px;white-space:nowrap}
+.latest-sync-stats{display:flex;align-items:center;gap:14px;flex:0 0 auto}
+.latest-sync-stat{display:flex;align-items:baseline;gap:5px;white-space:nowrap}
+.latest-sync-stat b{color:var(--navy);font:700 14px "DM Sans"}
+.latest-sync-stat.added b{color:#398158}
+.latest-sync-stat.updated b{color:var(--aqua)}
+.latest-sync-stat small{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.06em}
+@media(max-width:720px){
+  .latest-sync{align-items:flex-start;flex-direction:column;gap:9px}
+  .latest-sync-head{gap:7px 9px}
+  .latest-sync-head>span{flex-basis:100%}
+  .latest-sync-stats{width:100%;justify-content:space-between;gap:8px}
+}
+
 /* Presentation cards use a single, quiet add-to-list affordance. */
 body:not(.sales-mode) .card-collection-toggle{width:40px;height:40px;padding:0;justify-content:center;gap:0;border-radius:50%;font-size:18px;box-shadow:0 4px 14px rgba(23,34,44,.12)}
 body:not(.sales-mode) .card-collection-toggle>span:first-child{font-size:21px;line-height:1}

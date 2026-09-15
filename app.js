@@ -59,6 +59,8 @@ Object.assign(translations.en,{sharedListStatus:'{available} of {requested} bund
 Object.assign(translations.tr,{sharedListStatus:'{requested} demetten {available} demet mevcut',sharedListMissing:'{missing} demet güncel katalogda bulunmuyor',returnToCatalogue:'Kataloğun tamamına dön'});
 Object.assign(translations.en,{reviewSelection:'Review selected bundles'});
 Object.assign(translations.tr,{reviewSelection:'Seçilen demetleri incele'});
+Object.assign(translations.en,{latestSync:'LATEST SYNC',syncBundlesChecked:'bundles checked',publicDriveSource:'Public Drive · read-only'});
+Object.assign(translations.tr,{latestSync:'SON SENKRONİZASYON',syncBundlesChecked:'demet kontrol edildi',publicDriveSource:'Herkese açık Drive · salt okunur'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
 function t(key){return translations[language][key]??translations.en[key]??key}
 function message(key,values){return Object.entries(values).reduce((text,[name,value])=>text.replaceAll(`{${name}}`,String(value)),t(key))}
@@ -128,7 +130,7 @@ const auditSection=document.querySelector('.sync-audit'), auditPanel=document.qu
 const followupFilterSelect=document.querySelector('#followupFilter');
 const collectionBanner=document.querySelector('#collectionBanner'), collectionTitle=document.querySelector('#collectionTitle'), collectionSummary=document.querySelector('#collectionSummary'), clearCollectionButton=document.querySelector('#clearCollection'), shareCollectionButton=document.querySelector('#shareCollection');
 const presentationCollection=document.querySelector('#presentationCollection'), presentationCollectionName=document.querySelector('#presentationCollectionName'), presentationCollectionTitle=document.querySelector('#presentationCollectionTitle'), presentationCollectionSummary=document.querySelector('#presentationCollectionSummary'), presentationCollectionItems=document.querySelector('#presentationCollectionItems'), sharePresentationCollectionButton=document.querySelector('#sharePresentationCollection'), copyPresentationCollectionSummaryButton=document.querySelector('#copyPresentationCollectionSummary'), printPresentationCollectionButton=document.querySelector('#printPresentationCollection'), whatsappPresentationCollectionButton=document.querySelector('#whatsappPresentationCollection'), clearPresentationCollectionButton=document.querySelector('#clearPresentationCollection');
-const catalogueFreshness=document.querySelector('#catalogueFreshness');
+const catalogueFreshness=document.querySelector('#catalogueFreshness'), latestSyncTitle=document.querySelector('#latestSyncTitle'), latestSyncSource=document.querySelector('#latestSyncSource'), latestSyncStats=document.querySelector('#latestSyncStats');
 const salesGate=document.querySelector('#salesGate'), salesGateForm=document.querySelector('#salesGateForm'), salesPasswordInput=document.querySelector('#salesPasswordInput'), salesGateError=document.querySelector('#salesGateError');
 const compareDialog=document.querySelector('#compareDialog'), compareContent=document.querySelector('#compareContent'), copyCompareButton=document.querySelector('#copyCompare');
 const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved'), shareProductButton=document.querySelector('#shareProduct');
@@ -356,6 +358,7 @@ function salesVisibleProducts(visible){
 }
 function renderSalesDashboard(visible){
   renderCatalogueFreshness();
+  renderLatestSync();
   const hiddenPacking=visible.filter(product=>!product.packingList).length;
   const packingVisible=showMissingPackingValue?visible:visible.filter(product=>product.packingList);
   const quickVisible=salesQuickFilter==='all'?packingVisible:packingVisible.filter(salesQuickFilterMatches);
@@ -508,6 +511,20 @@ function renderCatalogueFreshness(){
   const freshnessMessage=catalogueFreshnessMessage();
   catalogueFreshness.hidden=!freshnessMessage;
   catalogueFreshness.textContent=freshnessMessage;
+}
+function renderLatestSync(){
+  if(!latestSyncTitle||!latestSyncSource||!latestSyncStats)return;
+  const date=syncedAt?new Date(syncedAt):null;
+  const validDate=date&&!Number.isNaN(date.getTime());
+  latestSyncTitle.textContent=validDate?date.toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'}):t('notProvided');
+  latestSyncSource.textContent=validDate?`${t('publicDriveSource')} · ${inventoryReport.bundles||products.length} ${t('syncBundlesChecked')}`:'';
+  latestSyncStats.setAttribute('aria-label',t('latestSync'));
+  const report=inventoryReport||{};
+  latestSyncStats.innerHTML=[
+    [t('added'),report.added||0,'added'],
+    [t('updated'),report.updated||0,'updated'],
+    [t('unchanged'),report.unchanged||0,'unchanged'],
+  ].map(([label,value,className])=>`<span class="latest-sync-stat ${className}"><b>${escapeHtml(value)}</b><small>${escapeHtml(label)}</small></span>`).join('');
 }
 function qrCodeMarkup(url,label=t('scanToView'),className=''){
   const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=10&data=${encodeURIComponent(url)}`;

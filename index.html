@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260907-47" />
+  <link rel="stylesheet" href="styles.css?v=20260915-01" />
 </head>
 <body>
   <header class="site-header">
@@ -113,6 +113,14 @@
           <label class="show-missing"><input id="showMissingPacking" type="checkbox" checked /> <span data-i18n="showMissingPacking">Include bundles without packing lists</span></label>
         </div>
         <div class="sales-kpis" id="salesKpis"></div>
+        <section class="latest-sync" aria-labelledby="latestSyncTitle">
+          <div class="latest-sync-head">
+            <p class="eyebrow" data-i18n="latestSync">LATEST SYNC</p>
+            <strong id="latestSyncTitle">—</strong>
+            <span id="latestSyncSource"></span>
+          </div>
+          <div class="latest-sync-stats" id="latestSyncStats" aria-label="Latest sync changes"></div>
+        </section>
         <div class="sales-quick-filters" role="group" aria-label="Quick data filters">
           <span data-i18n="quickFilters">Quick filters</span>
           <button type="button" class="sales-quick-filter active" data-audit-filter="all" aria-pressed="true"><span data-i18n="auditAll">All products</span><b class="quick-filter-count">0</b></button>
@@ -273,6 +281,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260907-47"></script>
+  <script src="app.js?v=20260915-01"></script>
 </body>
 </html>
