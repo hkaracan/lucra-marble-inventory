@@ -22,6 +22,7 @@ ROOT_FOLDER_ID = "17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z"
 ROOT_FOLDER_URL = f"https://drive.google.com/drive/folders/{ROOT_FOLDER_ID}"
 OUTPUT = Path(__file__).parent / "data" / "inventory.json"
 OVERFLOW_MANIFEST_PATH = Path(__file__).parent / "data" / "drive_overflow.json"
+SYNC_HISTORY_LIMIT = 5
 USER_AGENT = "Mozilla/5.0 (compatible; LucraInventory/1.0)"
 ITEM_PATTERN = re.compile(
     r'<div[^>]*data-id="([^"]+)"[^>]*>.*?<strong[^>]*>(.*?)</strong>', re.S
@@ -116,6 +117,52 @@ def inventory_script_contents(payload: dict) -> str:
     return "// Generated from inventory.json by sync_drive.py.\nwindow.LUCRA_INVENTORY = " + json.dumps(
         payload, ensure_ascii=False, indent=2
     ) + ";\n"
+
+
+def sync_history_path() -> Path:
+    return OUTPUT.with_name("sync_history.json")
+
+
+def sync_status_path() -> Path:
+    return OUTPUT.with_name("sync_status.json")
+
+
+def read_sync_history() -> list[dict]:
+    try:
+        raw = json.loads(sync_history_path().read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    runs = raw.get("runs", []) if isinstance(raw, dict) else raw
+    return [run for run in runs if isinstance(run, dict)][:SYNC_HISTORY_LIMIT] if isinstance(runs, list) else []
+
+
+def sync_run_record(payload: dict, status: str = "success", attempted_at: str | None = None, message: str | None = None, workflow_url: str | None = None) -> dict:
+    report = payload.get("report", {})
+    record = {
+        "status": status,
+        "attemptedAt": attempted_at or payload.get("syncedAt"),
+        "syncedAt": payload.get("syncedAt") if status == "success" else None,
+        "bundles": report.get("bundles", len(payload.get("products", []))) if status == "success" else None,
+        "added": report.get("added", 0) if status == "success" else None,
+        "updated": report.get("updated", 0) if status == "success" else None,
+        "unchanged": report.get("unchanged", 0) if status == "success" else None,
+        "warnings": len(payload.get("warnings", [])) if status == "success" else None,
+        "errors": len(payload.get("errors", [])) if status == "success" else None,
+        "addedFolders": report.get("addedFolders", [])[:20] if status == "success" else [],
+        "updatedFolders": report.get("updatedFolders", [])[:20] if status == "success" else [],
+    }
+    if message:
+        record["message"] = message
+    if workflow_url:
+        record["workflowUrl"] = workflow_url
+    return record
+
+
+def write_json_atomic(path: Path, payload: dict) -> None:
+    path.parent.mkdir(exist_ok=True)
+    temporary = path.with_suffix(f"{path.suffix}.tmp")
+    temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    temporary.replace(path)
 
 
 @lru_cache(maxsize=512)
@@ -824,6 +871,18 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
         "missingAreaFolders":[product.get("folderName") for product in missing_area],
         "missingDimensionFolders":[product.get("folderName") for product in missing_dimensions],
     }
+    sync_run = sync_run_record(payload)
+    history = [sync_run] + [run for run in read_sync_history() if run.get("attemptedAt") != sync_run["attemptedAt"]]
+    history = history[:SYNC_HISTORY_LIMIT]
+    sync_state = {
+        "status": "success",
+        "attemptedAt": sync_timestamp,
+        "syncedAt": sync_timestamp,
+        "message": "Inventory sync completed.",
+        "run": sync_run,
+    }
+    payload["syncHistory"] = history
+    payload["syncStatus"] = sync_state
     temporary = OUTPUT.with_suffix(".json.tmp")
     temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     script_output = inventory_script_path()
@@ -831,6 +890,8 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
     script_temporary.write_text(inventory_script_contents(payload), encoding="utf-8")
     temporary.replace(OUTPUT)
     script_temporary.replace(script_output)
+    write_json_atomic(sync_history_path(), {"runs": history})
+    write_json_atomic(sync_status_path(), sync_state)
     return payload
 
 

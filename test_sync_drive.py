@@ -124,10 +124,21 @@ class MockedSyncTest(unittest.TestCase):
             ):
                 payload = sync_drive.sync_inventory("root")
 
-        old = next(product for product in payload["products"] if product["code"] == "K1000")
-        new = next(product for product in payload["products"] if product["code"] == "K2000")
-        self.assertEqual(old["addedAt"], "2026-09-01T12:00:00Z")
-        self.assertRegex(new["addedAt"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
+            old = next(product for product in payload["products"] if product["code"] == "K1000")
+            new = next(product for product in payload["products"] if product["code"] == "K2000")
+            history_path = output.with_name("sync_history.json")
+            status_path = output.with_name("sync_status.json")
+            self.assertEqual(old["addedAt"], "2026-09-01T12:00:00Z")
+            self.assertRegex(new["addedAt"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
+            self.assertEqual(payload["syncHistory"][0]["status"], "success")
+            self.assertEqual(payload["syncHistory"][0]["added"], 1)
+            self.assertTrue(history_path.exists())
+            self.assertTrue(status_path.exists())
+            self.assertEqual(
+                json.loads(history_path.read_text(encoding="utf-8"))["runs"][0]["updated"],
+                payload["report"]["updated"],
+            )
+            self.assertEqual(json.loads(status_path.read_text(encoding="utf-8"))["status"], "success")
 
     def test_packing_list_variants_provide_totals_and_dimensions(self):
         bruno = sync_drive.parse_packing_list(

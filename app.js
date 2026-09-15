@@ -59,6 +59,8 @@ Object.assign(translations.en,{sharedListStatus:'{available} of {requested} bund
 Object.assign(translations.tr,{sharedListStatus:'{requested} demetten {available} demet mevcut',sharedListMissing:'{missing} demet güncel katalogda bulunmuyor',returnToCatalogue:'Kataloğun tamamına dön'});
 Object.assign(translations.en,{reviewSelection:'Review selected bundles'});
 Object.assign(translations.tr,{reviewSelection:'Seçilen demetleri incele'});
+Object.assign(translations.en,{syncHistory:'Recent syncs',syncSuccess:'Success',syncFailed:'Failed',latestSyncFailed:'Latest sync failed',previousCatalogueKept:'The previous catalogue remains published.',viewWorkflow:'View workflow',noSyncHistory:'No sync history available'});
+Object.assign(translations.tr,{syncHistory:'Son senkronizasyonlar',syncSuccess:'Başarılı',syncFailed:'Başarısız',latestSyncFailed:'Son senkronizasyon başarısız',previousCatalogueKept:'Önceki katalog yayımlanmaya devam ediyor.',viewWorkflow:'İş akışını görüntüle',noSyncHistory:'Senkronizasyon geçmişi yok'});
 Object.assign(translations.en,{latestSync:'LATEST SYNC',syncBundlesChecked:'bundles checked',publicDriveSource:'Public Drive · read-only'});
 Object.assign(translations.tr,{latestSync:'SON SENKRONİZASYON',syncBundlesChecked:'demet kontrol edildi',publicDriveSource:'Herkese açık Drive · salt okunur'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
@@ -130,11 +132,11 @@ const auditSection=document.querySelector('.sync-audit'), auditPanel=document.qu
 const followupFilterSelect=document.querySelector('#followupFilter');
 const collectionBanner=document.querySelector('#collectionBanner'), collectionTitle=document.querySelector('#collectionTitle'), collectionSummary=document.querySelector('#collectionSummary'), clearCollectionButton=document.querySelector('#clearCollection'), shareCollectionButton=document.querySelector('#shareCollection');
 const presentationCollection=document.querySelector('#presentationCollection'), presentationCollectionName=document.querySelector('#presentationCollectionName'), presentationCollectionTitle=document.querySelector('#presentationCollectionTitle'), presentationCollectionSummary=document.querySelector('#presentationCollectionSummary'), presentationCollectionItems=document.querySelector('#presentationCollectionItems'), sharePresentationCollectionButton=document.querySelector('#sharePresentationCollection'), copyPresentationCollectionSummaryButton=document.querySelector('#copyPresentationCollectionSummary'), printPresentationCollectionButton=document.querySelector('#printPresentationCollection'), whatsappPresentationCollectionButton=document.querySelector('#whatsappPresentationCollection'), clearPresentationCollectionButton=document.querySelector('#clearPresentationCollection');
-const catalogueFreshness=document.querySelector('#catalogueFreshness'), latestSyncTitle=document.querySelector('#latestSyncTitle'), latestSyncSource=document.querySelector('#latestSyncSource'), latestSyncStats=document.querySelector('#latestSyncStats');
+const catalogueFreshness=document.querySelector('#catalogueFreshness'), latestSyncTitle=document.querySelector('#latestSyncTitle'), latestSyncSource=document.querySelector('#latestSyncSource'), latestSyncStats=document.querySelector('#latestSyncStats'), latestSyncHistoryRows=document.querySelector('#latestSyncHistoryRows'), syncFailureNote=document.querySelector('#syncFailureNote');
 const salesGate=document.querySelector('#salesGate'), salesGateForm=document.querySelector('#salesGateForm'), salesPasswordInput=document.querySelector('#salesPasswordInput'), salesGateError=document.querySelector('#salesGateError');
 const compareDialog=document.querySelector('#compareDialog'), compareContent=document.querySelector('#compareContent'), copyCompareButton=document.querySelector('#copyCompare');
 const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved'), shareProductButton=document.querySelector('#shareProduct');
-let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, auditFilter='all', salesQuickFilter='all', salesFollowupFilter='all', salesSearch='', salesSort='name', sharedCollectionActive=false, sharedCollectionTitle='', sharedCollectionKeys=new Set(), presentationSelection=new Set(), customerCollectionTitle='';
+let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, syncHistory=[], syncState=null, auditFilter='all', salesQuickFilter='all', salesFollowupFilter='all', salesSearch='', salesSort='name', sharedCollectionActive=false, sharedCollectionTitle='', sharedCollectionKeys=new Set(), presentationSelection=new Set(), customerCollectionTitle='';
 function readSharedCollection(){
   const url=new URL(location.href),values=url.searchParams.getAll('collection');
   if(!values.length)return;
@@ -512,19 +514,55 @@ function renderCatalogueFreshness(){
   catalogueFreshness.hidden=!freshnessMessage;
   catalogueFreshness.textContent=freshnessMessage;
 }
+function syncDateLabel(value){
+  const date=value?new Date(value):null;
+  return date&&!Number.isNaN(date.getTime())?date.toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'}):t('notProvided');
+}
+function fallbackSyncRun(){
+  if(!syncedAt)return null;
+  return {status:'success',attemptedAt:syncedAt,syncedAt, bundles:inventoryReport.bundles||products.length, added:inventoryReport.added||0, updated:inventoryReport.updated||0, unchanged:inventoryReport.unchanged||0, warnings:inventoryReport.warningCount||0, errors:inventoryReport.folderErrors||0, addedFolders:inventoryReport.addedFolders||[], updatedFolders:inventoryReport.updatedFolders||[]};
+}
+function syncRunDetails(run){
+  if(run.status==='failed')return run.message||t('previousCatalogueKept');
+  return `${t('added')}: ${run.added??0} · ${t('updated')}: ${run.updated??0} · ${t('unchanged')}: ${run.unchanged??0}`;
+}
+function syncRunChangedNames(run){
+  const added=(run.addedFolders||[]).map(name=>`+ ${name}`),updated=(run.updatedFolders||[]).map(name=>`↻ ${name}`);
+  return [...added,...updated].slice(0,3).join(' · ')+(added.length+updated.length>3?` + ${added.length+updated.length-3}`:'');
+}
+function renderSyncHistory(){
+  if(!latestSyncHistoryRows)return;
+  const fallback=fallbackSyncRun();
+  const records=(Array.isArray(syncHistory)&&syncHistory.length?syncHistory:[fallback].filter(Boolean)).slice(0,5);
+  if(!records.length){latestSyncHistoryRows.innerHTML=`<p class="sync-history-empty">${escapeHtml(t('noSyncHistory'))}</p>`;return}
+  latestSyncHistoryRows.innerHTML=records.map(run=>{
+    const failed=run.status==='failed', dateValue=run.attemptedAt||run.syncedAt, changedNames=syncRunChangedNames(run);
+    const date=dateValue?new Date(dateValue):null,datetime=date&&!Number.isNaN(date.getTime())?date.toISOString():'';
+    return `<div class="sync-history-row ${failed?'failed':'success'}"><div class="sync-history-row-head"><b>${escapeHtml(failed?t('syncFailed'):t('syncSuccess'))}</b><time${datetime?` datetime="${escapeHtml(datetime)}"`:''}>${escapeHtml(syncDateLabel(dateValue))}</time></div><span>${escapeHtml(syncRunDetails(run))}</span>${changedNames?`<small>${escapeHtml(changedNames)}</small>`:''}</div>`;
+  }).join('');
+}
 function renderLatestSync(){
   if(!latestSyncTitle||!latestSyncSource||!latestSyncStats)return;
-  const date=syncedAt?new Date(syncedAt):null;
-  const validDate=date&&!Number.isNaN(date.getTime());
-  latestSyncTitle.textContent=validDate?date.toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'}):t('notProvided');
-  latestSyncSource.textContent=validDate?`${t('publicDriveSource')} · ${inventoryReport.bundles||products.length} ${t('syncBundlesChecked')}`:'';
+  const fallback=fallbackSyncRun(), latestSuccess=(Array.isArray(syncHistory)?syncHistory.find(run=>run.status!=='failed'):null)||fallback;
+  const dateValue=latestSuccess?.syncedAt||syncedAt,date=dateValue?new Date(dateValue):null,validDate=date&&!Number.isNaN(date.getTime());
+  latestSyncTitle.textContent=validDate?syncDateLabel(dateValue):t('notProvided');
+  latestSyncSource.textContent=validDate?`${t('publicDriveSource')} · ${latestSuccess.bundles||products.length} ${t('syncBundlesChecked')}`:'';
   latestSyncStats.setAttribute('aria-label',t('latestSync'));
-  const report=inventoryReport||{};
+  const report=latestSuccess||{};
   latestSyncStats.innerHTML=[
-    [t('added'),report.added||0,'added'],
-    [t('updated'),report.updated||0,'updated'],
-    [t('unchanged'),report.unchanged||0,'unchanged'],
+    [t('added'),report.added??0,'added'],
+    [t('updated'),report.updated??0,'updated'],
+    [t('unchanged'),report.unchanged??0,'unchanged'],
   ].map(([label,value,className])=>`<span class="latest-sync-stat ${className}"><b>${escapeHtml(value)}</b><small>${escapeHtml(label)}</small></span>`).join('');
+  renderSyncHistory();
+  const failed=syncState?.status==='failed';
+  if(syncFailureNote){
+    syncFailureNote.hidden=!failed;
+    if(failed){
+      const workflowUrl=typeof syncState.workflowUrl==='string'&&syncState.workflowUrl.startsWith('https://github.com/')?syncState.workflowUrl:actionsWorkflowUrl;
+      syncFailureNote.innerHTML=`<strong>${escapeHtml(t('latestSyncFailed'))}</strong> · ${escapeHtml(syncDateLabel(syncState.attemptedAt))} · ${escapeHtml(syncState.message||t('previousCatalogueKept'))} <a href="${escapeHtml(workflowUrl)}" target="_blank" rel="noreferrer">${escapeHtml(t('viewWorkflow'))} ↗</a>`;
+    }else syncFailureNote.textContent='';
+  }
 }
 function qrCodeMarkup(url,label=t('scanToView'),className=''){
   const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=10&data=${encodeURIComponent(url)}`;
@@ -977,23 +1015,33 @@ function setSyncFeedback(data,prefix='Last sync'){
   syncStatus.title=detail||'';
 }
 
-async function loadInventory(){
-  try{
-    let data;
-    if(location.protocol==='file:'){
-      data=window.LUCRA_INVENTORY;
-      if(!data)throw new Error('No local inventory snapshot');
-    }else{
-      const response=await fetch(`data/inventory.json?ts=${Date.now()}`);
-      if(!response.ok)throw new Error('No synced inventory');
-      data=await response.json();
+    async function loadInventory(){
+      try{
+        let data,historyData=null,statusData=null;
+        if(location.protocol==='file:'){
+          data=window.LUCRA_INVENTORY;
+          if(!data)throw new Error('No local inventory snapshot');
+          historyData=data.syncHistory||null;
+          statusData=data.syncStatus||null;
+        }else{
+          const stamp=Date.now();
+          const inventoryResponse=await fetch(`data/inventory.json?ts=${stamp}`);
+          if(!inventoryResponse.ok)throw new Error('No synced inventory');
+          data=await inventoryResponse.json();
+          [historyData,statusData]=await Promise.all([
+            fetch(`data/sync_history.json?ts=${stamp}`).then(response=>response.ok?response.json():null).catch(()=>null),
+            fetch(`data/sync_status.json?ts=${stamp}`).then(response=>response.ok?response.json():null).catch(()=>null),
+          ]);
+        }
+        const historyRuns=Array.isArray(historyData)?historyData:historyData&&Array.isArray(historyData.runs)?historyData.runs:data.syncHistory;
+        syncHistory=Array.isArray(historyRuns)?historyRuns:[];
+        syncState=statusData||data.syncStatus||null;
+        products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));pruneShortlist();prunePresentationSelection();inventoryReport=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products);syncedAt=data.syncedAt;
+        syncStatus.innerHTML=`<i></i> ${products.length} bundles · ${new Date(syncedAt).toLocaleDateString()}`;
+        setSyncFeedback({...data,count:products.length},location.protocol==='file:'?'Local snapshot':isGithubPages?'Last published sync':'Last sync');
+      }catch(error){syncStatus.innerHTML='<i></i> Preview data';syncStatus.title='';syncFeedback.textContent='';syncHistory=[];syncState=null;}
+      render();
     }
-    products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));pruneShortlist();prunePresentationSelection();inventoryReport=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products);syncedAt=data.syncedAt;
-    syncStatus.innerHTML=`<i></i> ${products.length} bundles · ${new Date(syncedAt).toLocaleDateString()}`;
-    setSyncFeedback({...data,count:products.length},location.protocol==='file:'?'Local snapshot':isGithubPages?'Last published sync':'Last sync');
-  }catch(error){syncStatus.innerHTML='<i></i> Preview data';syncStatus.title='';syncFeedback.textContent='';}
-  render();
-}
 
 function openHashProduct(){
   const match=location.hash.match(/^#bundle-(.+)$/);if(!match)return;

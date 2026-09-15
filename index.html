@@ -120,6 +120,11 @@
             <span id="latestSyncSource"></span>
           </div>
           <div class="latest-sync-stats" id="latestSyncStats" aria-label="Latest sync changes"></div>
+          <details class="latest-sync-history">
+            <summary data-i18n="syncHistory">Recent syncs</summary>
+            <div id="latestSyncHistoryRows"></div>
+          </details>
+          <p class="sync-failure-note" id="syncFailureNote" role="status" aria-live="polite" hidden></p>
         </section>
         <div class="sales-quick-filters" role="group" aria-label="Quick data filters">
           <span data-i18n="quickFilters">Quick filters</span>

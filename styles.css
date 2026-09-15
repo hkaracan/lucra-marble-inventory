@@ -285,6 +285,32 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
   .latest-sync-stats{width:100%;justify-content:space-between;gap:8px}
 }
 
+/* Expandable sync history and a visible failed-run notice. */
+.latest-sync{flex-wrap:wrap}
+.latest-sync-history{position:relative;flex:0 0 auto;min-width:0}
+.latest-sync-history summary{list-style:none;color:var(--navy);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap}
+.latest-sync-history summary::-webkit-details-marker{display:none}
+.latest-sync-history summary::after{content:' +';color:var(--aqua)}
+.latest-sync-history[open] summary::after{content:' −'}
+#latestSyncHistoryRows{position:absolute;right:0;top:calc(100% + 8px);z-index:2;width:min(430px,calc(100vw - 48px));padding:8px;border:1px solid var(--line);background:white;box-shadow:0 12px 28px rgba(23,34,44,.12)}
+.sync-history-row{display:grid;gap:4px;padding:9px 8px;border-bottom:1px solid #edf2f3;font-size:10px}
+.sync-history-row:last-child{border-bottom:0}
+.sync-history-row-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sync-history-row-head b{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#398158}
+.sync-history-row.failed .sync-history-row-head b{color:var(--reserved)}
+.sync-history-row time{color:var(--muted);font-size:10px}
+.sync-history-row>span{color:var(--navy);line-height:1.35}
+.sync-history-row small{color:var(--muted);line-height:1.35;overflow-wrap:anywhere}
+.sync-history-empty{margin:4px 2px;color:var(--muted);font-size:10px}
+.sync-failure-note{flex:1 0 100%;margin:0;padding:8px 10px;border-left:3px solid var(--reserved);background:var(--reserved-bg);color:#7d4a21;font-size:10px;line-height:1.45}
+.sync-failure-note[hidden]{display:none}
+.sync-failure-note a{color:inherit;font-weight:700}
+@media(max-width:720px){
+  #latestSyncHistoryRows{left:0;right:auto;width:min(430px,calc(100vw - 40px))}
+  .latest-sync-history{align-self:flex-start}
+  .sync-failure-note{width:100%}
+}
+
 /* Presentation cards use a single, quiet add-to-list affordance. */
 body:not(.sales-mode) .card-collection-toggle{width:40px;height:40px;padding:0;justify-content:center;gap:0;border-radius:50%;font-size:18px;box-shadow:0 4px 14px rgba(23,34,44,.12)}
 body:not(.sales-mode) .card-collection-toggle>span:first-child{font-size:21px;line-height:1}
