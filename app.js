@@ -63,6 +63,8 @@ Object.assign(translations.en,{syncHistory:'Recent syncs',syncSuccess:'Success',
 Object.assign(translations.tr,{syncHistory:'Son senkronizasyonlar',syncSuccess:'Başarılı',syncFailed:'Başarısız',latestSyncFailed:'Son senkronizasyon başarısız',previousCatalogueKept:'Önceki katalog yayımlanmaya devam ediyor.',viewWorkflow:'İş akışını görüntüle',noSyncHistory:'Senkronizasyon geçmişi yok'});
 Object.assign(translations.en,{photoCheck:'Photo check',auditPhotoCheck:'Photo check',photoCheckDetail:'bundles with no photos, broken images, skipped folders, or slab/photo count differences',brokenImages:'broken images',driveFolder:'Drive folder',excelSource:'Excel source',openExcel:'Open Excel source'});
 Object.assign(translations.tr,{photoCheck:'Fotoğraf kontrolü',auditPhotoCheck:'Fotoğraf kontrolü',photoCheckDetail:'fotoğrafı olmayan, bozuk fotoğraflı, klasörü atlanan veya plaka/fotoğraf sayısı farklı demet',brokenImages:'bozuk fotoğraf',driveFolder:'Drive klasörü',excelSource:'Excel kaynağı',openExcel:'Excel kaynağını aç'});
+Object.assign(translations.en,{scanSharedList:'Scan to open this list',galleryLabel:'Product gallery',closeGallery:'Close gallery'});
+Object.assign(translations.tr,{scanSharedList:'Bu listeyi açmak için tarayın',galleryLabel:'Ürün galerisi',closeGallery:'Galeriyi kapat'});
 Object.assign(translations.en,{latestSync:'LATEST SYNC',syncBundlesChecked:'bundles checked',publicDriveSource:'Public Drive · read-only'});
 Object.assign(translations.tr,{latestSync:'SON SENKRONİZASYON',syncBundlesChecked:'demet kontrol edildi',publicDriveSource:'Herkese açık Drive · salt okunur'});
 try{language=localStorage.getItem('lucraLanguage')==='tr'?'tr':'en'}catch(error){}
@@ -132,7 +134,7 @@ const shortlistSelect=document.querySelector('#shortlistSelect'), newShortlistBu
 const healthSummary=document.querySelector('#healthSummary'), healthDetails=document.querySelector('#healthDetails'), toggleHealthButton=document.querySelector('#toggleHealth');
 const auditSection=document.querySelector('.sync-audit'), auditPanel=document.querySelector('#auditPanel'), auditRows=document.querySelector('#auditRows'), auditEmpty=document.querySelector('#auditEmpty'), auditCount=document.querySelector('#auditCount'), auditFilterSelect=document.querySelector('#auditFilter'), toggleAuditButton=document.querySelector('#toggleAudit'), exportAuditButton=document.querySelector('#exportAudit');
 const followupFilterSelect=document.querySelector('#followupFilter');
-const collectionBanner=document.querySelector('#collectionBanner'), collectionTitle=document.querySelector('#collectionTitle'), collectionSummary=document.querySelector('#collectionSummary'), clearCollectionButton=document.querySelector('#clearCollection'), shareCollectionButton=document.querySelector('#shareCollection');
+const collectionBanner=document.querySelector('#collectionBanner'), collectionTitle=document.querySelector('#collectionTitle'), collectionSummary=document.querySelector('#collectionSummary'), collectionQr=document.querySelector('#collectionQr'), collectionUpdated=document.querySelector('#collectionUpdated'), clearCollectionButton=document.querySelector('#clearCollection'), shareCollectionButton=document.querySelector('#shareCollection');
 const presentationCollection=document.querySelector('#presentationCollection'), presentationCollectionName=document.querySelector('#presentationCollectionName'), presentationCollectionTitle=document.querySelector('#presentationCollectionTitle'), presentationCollectionSummary=document.querySelector('#presentationCollectionSummary'), presentationCollectionItems=document.querySelector('#presentationCollectionItems'), sharePresentationCollectionButton=document.querySelector('#sharePresentationCollection'), copyPresentationCollectionSummaryButton=document.querySelector('#copyPresentationCollectionSummary'), printPresentationCollectionButton=document.querySelector('#printPresentationCollection'), whatsappPresentationCollectionButton=document.querySelector('#whatsappPresentationCollection'), clearPresentationCollectionButton=document.querySelector('#clearPresentationCollection');
 const catalogueFreshness=document.querySelector('#catalogueFreshness'), latestSyncTitle=document.querySelector('#latestSyncTitle'), latestSyncSource=document.querySelector('#latestSyncSource'), latestSyncStats=document.querySelector('#latestSyncStats'), latestSyncHistoryRows=document.querySelector('#latestSyncHistoryRows'), syncFailureNote=document.querySelector('#syncFailureNote');
 const salesGate=document.querySelector('#salesGate'), salesGateForm=document.querySelector('#salesGateForm'), salesPasswordInput=document.querySelector('#salesPasswordInput'), salesGateError=document.querySelector('#salesGateError');
@@ -515,6 +517,7 @@ function customerCollectionUrl(records,title=''){const url=setCollectionParams(n
 function publicBasePageUrl(){return isGithubPages?basePageUrl():publicSiteBase}
 function publicCustomerProductUrl(product){return `${publicBasePageUrl()}#bundle-${encodeURIComponent(productKey(product))}`}
 function publicCustomerCollectionUrl(records,title=''){const url=setCollectionParams(new URL(publicBasePageUrl()),records);if(title.trim())url.searchParams.set('title',title.trim());return url.toString()}
+function publicSharedCollectionUrl(){const url=new URL(publicBasePageUrl());sharedCollectionKeys.forEach(key=>url.searchParams.append('collection',key));if(sharedCollectionTitle.trim())url.searchParams.set('title',sharedCollectionTitle.trim());return url.toString()}
 function collectionStats(records){
   const slabs=records.reduce((sum,product)=>sum+(Number(product.pcs)||0),0),areas=records.filter(product=>product.sqm!=null&&Number.isFinite(Number(product.sqm))).reduce((sum,product)=>sum+Number(product.sqm),0);
   return [`${records.length} ${records.length===1?t('bundleSingular'):t('bundles')}`,slabs?`${slabs} ${t('slabs')}`:'',areas?`${areas.toFixed(2)} m²`:'',areas?`${t('approxWeight')}: ${Math.round(areas*58)} kg`:'' ].filter(Boolean).join(' · ');
@@ -588,14 +591,19 @@ function qrCodeMarkup(url,label=t('scanToView'),className=''){
   return `<div class="print-qr ${className}"><img src="${escapeHtml(qrUrl)}" alt="${escapeHtml(label)}" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden>${escapeHtml(label)}<small>${escapeHtml(url)}</small></span><b>${escapeHtml(label)}</b></div>`;
 }
 function renderCollectionBanner(){
-  if(!sharedCollectionActive){collectionBanner.hidden=true;return}
+  if(!sharedCollectionActive){collectionBanner.hidden=true;if(collectionQr)collectionQr.innerHTML='';if(collectionUpdated)collectionUpdated.textContent='';return}
   const available=products.filter(product=>sharedCollectionKeys.has(productKey(product)));
   const requested=sharedCollectionKeys.size,missing=Math.max(0,requested-available.length);
   const freshnessMessage=catalogueFreshnessMessage();
   collectionBanner.hidden=false;
   collectionBanner.classList.toggle('partial',missing>0);collectionBanner.classList.toggle('stale',Boolean(freshnessMessage));
   collectionTitle.textContent=sharedCollectionTitle||(available.length?collectionStats(available):t('sharedCollectionEmpty'));
-  collectionSummary.textContent=[message('sharedListStatus',{available:available.length,requested}),missing?message('sharedListMissing',{missing}):'',available.length?collectionStats(available):'',collectionUpdatedLabel(),freshnessMessage,t('sharedSelectionHint'),t('availabilityNote')].filter(Boolean).join(' · ');
+  collectionSummary.textContent=[message('sharedListStatus',{available:available.length,requested}),missing?message('sharedListMissing',{missing}):'',available.length?collectionStats(available):'',freshnessMessage,t('sharedSelectionHint'),t('availabilityNote')].filter(Boolean).join(' · ');
+  if(collectionQr){collectionQr.setAttribute('aria-label',t('scanSharedList'));collectionQr.innerHTML=qrCodeMarkup(publicSharedCollectionUrl(),t('scanSharedList'),'collection-qr')}
+  if(collectionUpdated){
+    const date=syncedAt?new Date(syncedAt):null,validDate=date&&!Number.isNaN(date.getTime());
+    collectionUpdated.innerHTML=validDate?`<span>${escapeHtml(t('lastUpdated'))}</span><time datetime="${escapeHtml(date.toISOString())}">${escapeHtml(syncDateLabel(syncedAt))}</time>`:`<span>${escapeHtml(t('lastUpdated'))}</span><time>${escapeHtml(t('notProvided'))}</time>`;
+  }
 }
 function clearSharedCollection(){
   sharedCollectionActive=false;sharedCollectionTitle='';sharedCollectionKeys.clear();document.body.classList.remove('shared-collection-mode');
@@ -608,7 +616,7 @@ function productSummary(product){
 function shortlistSummary(title='Lucra Marble shortlist'){
   return [title,...selectedProducts().map((product,index)=>`${index+1}. ${productSummary(product)}`)].join('\n\n');
 }
-function customerProductSummary(product,usePublicLink=false){
+function customerProductSummary(product,usePublicLink=false,includeDrive=false){
   const code=product.code&&product.code!=='—'?` (${product.code})`:'';
   const stock=product.pcs!=null?`${Number(product.pcs)} slabs`:'Bundle details available on request';
   const area=product.sqm!=null?` · ${Number(product.sqm).toFixed(2)} m²`:'';
@@ -621,7 +629,7 @@ function customerProductSummary(product,usePublicLink=false){
     dimensions,
     'Location: Denizli, Türkiye',
     `Photos & details: ${usePublicLink?publicCustomerProductUrl(product):customerProductUrl(product)}`,
-    `Google Drive folder: ${productDriveUrl(product)}`,
+    includeDrive?`Google Drive folder: ${productDriveUrl(product)}`:'',
   ].filter(Boolean).join('\n');
 }
 function customerCollectionSummary(records,title=''){
@@ -829,13 +837,14 @@ clearShortlistButton.addEventListener('click',()=>{shortlist.clear();saveShortli
 saveSalesNoteButton.addEventListener('click',()=>{if(!currentProduct)return;salesNotes[productKey(currentProduct)]={status:followupStatus.value,note:salesNote.value.trim(),updatedAt:new Date().toISOString()};try{localStorage.setItem('lucraSalesNotes',JSON.stringify(salesNotes))}catch(error){}noteSaved.textContent=t('saved');setTimeout(()=>noteSaved.textContent='',1600);renderSalesDashboard(filteredProducts())});
 
 const dialog=document.querySelector('#productDialog');
-const gallerySurface=document.querySelector('.gallery'), galleryImage=document.querySelector('#dialogImage'), galleryHint=document.querySelector('#galleryHint'), galleryLoadingLabel=document.querySelector('#galleryLoadingLabel'), galleryRetryButton=document.querySelector('#galleryRetry'), galleryZoomButton=document.querySelector('#galleryZoom'), galleryExpandButton=document.querySelector('#galleryExpand'), customerCta=document.querySelector('.customer-cta');
+const gallerySurface=document.querySelector('.gallery'), galleryImage=document.querySelector('#dialogImage'), galleryHint=document.querySelector('#galleryHint'), galleryLoadingLabel=document.querySelector('#galleryLoadingLabel'), galleryRetryButton=document.querySelector('#galleryRetry'), galleryZoomButton=document.querySelector('#galleryZoom'), galleryExpandButton=document.querySelector('#galleryExpand'), dialogCloseButton=document.querySelector('#dialogClose'), customerCta=document.querySelector('.customer-cta');
 const salesFollowupSection=document.querySelector('.sales-followup');
-let galleryPanX=0, galleryPanY=0, galleryPanning=false, galleryPanStart=null, gallerySwipeStart=null, galleryZoomScale=1.55, galleryPointers=new Map(), galleryPinchStart=null, galleryPreloadCache=new Map();
+let galleryPanX=0, galleryPanY=0, galleryPanning=false, galleryPanStart=null, gallerySwipeStart=null, galleryZoomScale=1.55, galleryPointers=new Map(), galleryPinchStart=null, galleryPreloadCache=new Map(), dialogReturnFocus=null;
 function moveGalleryImage(direction){
   if(!currentProduct?.images.length)return;
   imageIndex=(imageIndex+direction+currentProduct.images.length)%currentProduct.images.length;
   updateGallery();
+  requestAnimationFrame(()=>document.querySelector(direction<0?'#prevImage':'#nextImage')?.focus());
 }
 function compactGalleryLabel(label){
   return String(label??'').replace(/\bclose(?:[- ]?up)?\b/ig,'C').replace(/\bbookmatch(?:ed)?\b/ig,'BM').replace(/\blight\b/ig,'L').replace(/\bzoom\b/ig,'Z').replace(/[()]/g,'').replace(/\s+/g,' ').trim();
@@ -865,8 +874,10 @@ function preloadGalleryNeighbors(){
   });
 }
 function openProduct(id){
+  if(!dialog.open)dialogReturnFocus=document.activeElement;
   currentProduct=products.find(p=>productKey(p)===id); imageIndex=0;galleryPreloadCache.clear();
   if(!currentProduct)return;
+  dialogCloseButton.setAttribute('aria-label',t('closeGallery'));gallerySurface.setAttribute('aria-label',`${t('galleryLabel')}: ${currentProduct.name}`);
   document.querySelector('#dialogCode').textContent=currentProduct.code;
   document.querySelector('#dialogName').textContent=currentProduct.name;
   const hasPackingList=Boolean(currentProduct.packingList);
@@ -884,6 +895,7 @@ function openProduct(id){
   salesNote.value=followup.note;
   noteSaved.textContent='';
   updateGallery(); dialog.showModal();
+  requestAnimationFrame(()=>dialogCloseButton.focus());
 }
 function updateGallery(){
   const img=galleryImage;
@@ -895,15 +907,16 @@ function updateGallery(){
   if(currentProduct.images.length){img.loading='eager';img.fetchPriority='high';img.decoding='async';img.src=selected.src;img.alt=`${currentProduct.name} ${selected.type==='slab'?`slab ${selected.label}`:selected.label}`;img.style.background='';preloadGalleryNeighbors()}else{img.removeAttribute('src');img.alt='';img.style.background=currentProduct.stone}
   const galleryCount=document.querySelector('#galleryCount'),previousButton=document.querySelector('#prevImage'),nextButton=document.querySelector('#nextImage');
   galleryCount.textContent=currentProduct.images.length?`${t('photo')} ${imageIndex+1} ${t('of')} ${currentProduct.images.length} · ${selected.type==='slab'?`Slab ${slabLabel}`:selected.label}`:'Drive gallery';
-  galleryCount.setAttribute('aria-live','polite');previousButton.setAttribute('aria-label',t('previousPhoto'));nextButton.setAttribute('aria-label',t('nextPhoto'));
+  galleryCount.setAttribute('aria-live','polite');gallerySurface.setAttribute('aria-label',`${t('galleryLabel')}: ${currentProduct.name}`);previousButton.setAttribute('aria-label',t('previousPhoto'));nextButton.setAttribute('aria-label',t('nextPhoto'));
   previousButton.hidden=currentProduct.images.length<2;nextButton.hidden=currentProduct.images.length<2;
   const numbers=document.querySelector('#slabNumbers');
   const picker=document.querySelector('#slabPickerWrap');
   picker.hidden=currentProduct.images.length===0;
+  numbers.setAttribute('aria-label',`${t('jumpToSlab')}: ${currentProduct.name}`);
   const jumpTargets=currentProduct.images.reduce((targets,image,i)=>{if(!targets.some(target=>target.label===image.label&&target.type===image.type))targets.push({label:image.label,type:image.type,index:i});return targets},[]);
   const compact=dialog.classList.contains('gallery-focus');
   numbers.innerHTML=jumpTargets.map(target=>{const active=currentProduct.images[imageIndex]?.label===target.label&&currentProduct.images[imageIndex]?.type===target.type;const label=target.type==='slab'?`${t('viewSlab')} ${target.label}`:`${t('viewAdditional')} ${target.label}`;return `<button type="button" class="slab-number ${target.type==='extra'?'extra':''} ${active?'active':''}" data-index="${target.index}" data-full-label="${escapeHtml(target.label)}" aria-label="${escapeHtml(label)}" aria-pressed="${active}" title="${escapeHtml(target.label)}">${escapeHtml(compact?compactGalleryLabel(target.label):target.label)}</button>`}).join('');
-  numbers.querySelectorAll('.slab-number').forEach(button=>button.addEventListener('click',()=>{imageIndex=Number(button.dataset.index);updateGallery()}));
+  numbers.querySelectorAll('.slab-number').forEach(button=>button.addEventListener('click',()=>{imageIndex=Number(button.dataset.index);updateGallery();requestAnimationFrame(()=>numbers.querySelector('.active')?.focus())}));
   numbers.querySelector('.active')?.scrollIntoView({behavior:compact?'auto':'smooth',block:'nearest',inline:'center'});
 }
 document.querySelector('#prevImage').addEventListener('click',()=>moveGalleryImage(-1));
@@ -984,9 +997,14 @@ function finishGalleryPointer(event){
 galleryImage.addEventListener('pointerup',finishGalleryPointer);
 galleryImage.addEventListener('pointercancel',event=>{galleryPointers.delete(event.pointerId);stopGalleryPan();gallerySwipeStart=null;galleryPinchStart=null});
 galleryImage.addEventListener('pointerleave',event=>{if(galleryPanning&&!galleryImage.hasPointerCapture?.(event.pointerId))stopGalleryPan()});
-galleryExpandButton.addEventListener('click',()=>{const fullscreen=dialog.classList.toggle('gallery-focus');customerCta.hidden=fullscreen;salesFollowupSection.hidden=fullscreen;galleryExpandButton.textContent=fullscreen?'⤡ Exit':'⤢ Fullscreen';galleryExpandButton.title=fullscreen?t('exitFullscreen'):t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);updateGalleryZoomControl();updateGalleryJumpLabels()});
-dialog.addEventListener('keydown',event=>{if(!dialog.open||event.target.matches('input,textarea,select'))return;if(event.key==='ArrowLeft'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(-1)}if(event.key==='ArrowRight'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(1)}if(event.key.toLowerCase()==='z'){event.preventDefault();toggleGalleryZoom()}});
-dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');customerCta.hidden=false;salesFollowupSection.hidden=false;galleryExpandButton.textContent='⤢ Fullscreen';galleryExpandButton.title=t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);galleryPanX=0;galleryPanY=0;galleryZoomScale=1.55;galleryPointers.clear();galleryPinchStart=null;gallerySwipeStart=null;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';updateGalleryZoomControl()});
+function setGalleryFullscreen(fullscreen){
+  dialog.classList.toggle('gallery-focus',fullscreen);customerCta.hidden=fullscreen;salesFollowupSection.hidden=fullscreen;
+  galleryExpandButton.textContent=fullscreen?'⤡ Exit':'⤢ Fullscreen';galleryExpandButton.title=fullscreen?t('exitFullscreen'):t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);galleryExpandButton.setAttribute('aria-pressed',String(fullscreen));
+  gallerySurface.setAttribute('aria-label',`${t('galleryLabel')}: ${currentProduct?.name||''}${fullscreen?' · '+t('fullscreen'):''}`);updateGalleryZoomControl();updateGalleryJumpLabels();requestAnimationFrame(()=>galleryExpandButton.focus());
+}
+galleryExpandButton.addEventListener('click',()=>setGalleryFullscreen(!dialog.classList.contains('gallery-focus')));
+dialog.addEventListener('keydown',event=>{if(!dialog.open||event.target.matches('input,textarea,select'))return;if(event.key==='ArrowLeft'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(-1)}if(event.key==='ArrowRight'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(1)}if(event.key.toLowerCase()==='z'){event.preventDefault();toggleGalleryZoom()}if(event.key.toLowerCase()==='f'){event.preventDefault();setGalleryFullscreen(!dialog.classList.contains('gallery-focus'))}});
+dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');customerCta.hidden=false;salesFollowupSection.hidden=false;galleryExpandButton.textContent='⤢ Fullscreen';galleryExpandButton.title=t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);galleryExpandButton.setAttribute('aria-pressed','false');gallerySurface.setAttribute('aria-label',`${t('galleryLabel')}: ${currentProduct?.name||''}`);galleryPanX=0;galleryPanY=0;galleryZoomScale=1.55;galleryPointers.clear();galleryPinchStart=null;gallerySwipeStart=null;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';updateGalleryZoomControl();const returnFocus=dialogReturnFocus;dialogReturnFocus=null;if(returnFocus?.isConnected&&typeof returnFocus.focus==='function')requestAnimationFrame(()=>returnFocus.focus())});
 document.querySelector('#copyLink').addEventListener('click',async(e)=>{const url=customerProductUrl(currentProduct);await navigator.clipboard.writeText(url);e.currentTarget.textContent='Link copied';setTimeout(()=>e.currentTarget.textContent='Copy bundle link',1400)});
 shareProductButton.addEventListener('click',shareCustomerProduct);
 shareCollectionButton.addEventListener('click',shareCustomerCollection);

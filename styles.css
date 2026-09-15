@@ -210,7 +210,9 @@ body:not(.sales-mode) .catalog{padding-bottom:86px}
 
 /* Customer collection links */
 .collection-banner{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:-4px 0 24px;padding:16px 18px;border:1px solid #9fd8e3;background:#f1fafc}.collection-banner.partial,.collection-banner.stale{border-color:#e4c68f;background:#fffaf0}.collection-banner[hidden]{display:none}.collection-banner .eyebrow{margin:0 0 6px}.collection-banner strong{font:600 15px Manrope}.collection-banner>div>span{color:var(--muted);font-size:11px;line-height:1.5}.collection-banner .quiet-button{flex:0 0 auto;color:var(--navy);border:1px solid #b8dfe6;background:white}.collection-banner .quiet-button:hover{border-color:var(--aqua);background:#f8fdfe}
+.collection-banner-share{display:flex;align-items:center;gap:14px;flex:0 0 auto}.collection-banner-updated{display:grid;gap:3px;min-width:132px}.collection-banner-updated span{color:var(--muted);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}.collection-banner-updated time{color:var(--navy);font-size:11px;font-weight:700;line-height:1.35;white-space:nowrap}.collection-qr{display:grid;justify-items:center;gap:3px;width:68px}.collection-qr img{display:block;width:60px;height:60px;object-fit:contain;background:white;border:1px solid #dce5e9}.collection-qr b{color:var(--muted);font-size:8px;line-height:1.2;text-align:center;font-weight:700}.collection-qr span{color:var(--muted);font-size:8px;line-height:1.25;text-align:center;overflow-wrap:anywhere}.collection-qr span small{display:block;margin-top:3px;font-size:7px}
 @media(max-width:580px){.collection-banner{align-items:flex-start;flex-direction:column;gap:10px;margin:0 0 20px;padding:14px}.collection-banner .quiet-button{width:100%;text-align:left}}
+@media(max-width:580px){.collection-banner-share{width:100%;justify-content:flex-start}}
 
 /* Titled customer collections */
 .collection-title-field{display:grid;gap:4px;max-width:430px}.collection-title-field>span{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.08em}.collection-title-field input{width:100%;border:1px solid #b8dfe6;background:white;color:var(--ink);padding:9px 10px;border-radius:3px;font:13px "DM Sans";outline:0}.collection-title-field input:focus{border-color:var(--aqua);box-shadow:0 0 0 3px rgba(23,184,213,.12)}#presentationCollectionSummary{color:var(--navy);font-size:11px;font-weight:600}
@@ -320,3 +322,8 @@ body:not(.sales-mode) .card-collection-toggle{width:40px;height:40px;padding:0;j
 body:not(.sales-mode) .card-collection-toggle>span:first-child{font-size:21px;line-height:1}
 body:not(.sales-mode) .card-collection-toggle>span:last-child{display:none}
 @media(max-width:720px){body:not(.sales-mode) .card-collection-toggle{width:38px;height:38px;right:10px;top:10px}}
+
+/* High-contrast keyboard focus, especially over the fullscreen gallery. */
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline-color:#0e8396}
+.gallery-focus button:focus-visible,.gallery-focus a:focus-visible{outline:3px solid #fff;outline-offset:3px;box-shadow:0 0 0 6px rgba(23,184,213,.72)}
+.gallery-focus .gallery-count{border:1px solid rgba(255,255,255,.26)}
