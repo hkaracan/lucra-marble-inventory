@@ -3,6 +3,8 @@ const actionsWorkflowUrl = 'https://github.com/hkaracan/lucra-marble-inventory/a
 const publicSiteBase = 'https://hkaracan.github.io/lucra-marble-inventory/';
 const isGithubPages = /(^|\.)github\.io$/.test(location.hostname);
 const salesPassword = 'lucra123';
+const lucraQuoteEmail = 'emine@lucramarble.com';
+const lucraWhatsAppUrl = 'https://wa.me/905062288586';
 const names = [
   'Alaskan Blue K2970','Alexander Black K4987','Arabescato Imperiale K6235','Bianco Dolomite L1011','Breccia Montagna K3332','Bruno Perla K6029','Cafe Amore K6058','Ceppo Beige K5567','Ceppo Beige K6086','Ceppo Grey K3630','Crema Luna K6131','Diamond Grey M2878','Flinders White','Golden Roots K5080','Green Olive K3618','Ice Bloom K4132','Invisible Blue K3280','Karmania Traonyx K5809','Lilac Extra K3619','Marmara Equator K3514','MoonLight Grey K5147','Naturella K5171','Nebula Wave L1009','Nimbus White Veincut K6169','Polar White K6089','Porto Rosa L006','Red Jasper L1010','Red Travertine K5094','Reserved Velluto Onyx K3947','Rosso Levanto K6222','Rosso Levanto L1013','Rosso Levanto L1014','Silver Travertine Ham (Raw) K5301','Sunset Dolomite New','Terranova Ceppo K6044','Travertine L009','Tundra Grey','Van Gogh K3229','Vanilla Ice K5372','Vanilla K6130','Velluto Onyx Cross Cut K3653','Verde Levanto K5420'
 ];
@@ -757,7 +759,7 @@ async function copyText(text,button,successText){
   }catch(error){window.prompt('Copy this summary',text);button.textContent='Summary ready'}
   setTimeout(()=>button.textContent=original,1600);
 }
-function openWhatsApp(text){window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer')}
+function openWhatsApp(text){window.open(`${lucraWhatsAppUrl}?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer')}
 function renderCompare(){
   const selected=selectedProducts();
   compareContent.innerHTML=`<div class="compare-table-wrap"><table class="compare-table"><thead><tr><th>${escapeHtml(t('bundle'))}</th><th>${escapeHtml(t('status'))}</th><th>${escapeHtml(t('stock'))}</th><th>${escapeHtml(t('sizes'))}</th><th>${escapeHtml(t('packingList'))}</th><th>${escapeHtml(t('media'))}</th></tr></thead><tbody>${selected.map(product=>{
@@ -803,7 +805,7 @@ function requestProductQuote(){
   const code=currentProduct.code&&currentProduct.code!=='—'?` · ${currentProduct.code}`:'';
   const subject=`${t('quoteRequestSubject')} · Lucra Marble · ${currentProduct.name}${code}`;
   const body=customerQuoteRequest(currentProduct);
-  window.location.href=`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href=`mailto:${lucraQuoteEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 async function shareCustomerCollection(){
   const selected=selectedProducts();if(!selected.length)return;
