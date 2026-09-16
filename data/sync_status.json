@@ -1,19 +1,21 @@
 {
   "status": "success",
-  "attemptedAt": "2026-09-16T01:27:24Z",
-  "syncedAt": "2026-09-16T01:27:24Z",
+  "attemptedAt": "2026-09-16T07:43:00Z",
+  "syncedAt": "2026-09-16T07:43:00Z",
   "message": "Inventory sync completed.",
   "run": {
     "status": "success",
-    "attemptedAt": "2026-09-16T01:27:24Z",
-    "syncedAt": "2026-09-16T01:27:24Z",
-    "bundles": 54,
-    "added": 0,
+    "attemptedAt": "2026-09-16T07:43:00Z",
+    "syncedAt": "2026-09-16T07:43:00Z",
+    "bundles": 55,
+    "added": 1,
     "updated": 0,
     "unchanged": 54,
     "warnings": 2,
     "errors": 0,
-    "addedFolders": [],
+    "addedFolders": [
+      "Mystic Grey M2880"
+    ],
     "updatedFolders": []
   }
 }
