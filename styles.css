@@ -287,6 +287,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
 }
 @media(max-width:900px){.catalog-image-nav,.catalog-image-position{display:none!important}}
 
+.spec-note{display:block;margin-top:4px;color:var(--muted);font-size:10px;font-weight:400;line-height:1.35;max-width:190px}
+.enquiry-actions{margin-top:18px}
+.enquiry-actions .primary,.enquiry-actions .secondary{font-weight:700}
+
 /* Compact sync status for the sales dashboard. */
 .latest-sync{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 18px;padding:11px 13px;border:1px solid var(--line);background:white}
 .latest-sync-head{display:flex;align-items:baseline;gap:10px;min-width:0;flex-wrap:wrap}

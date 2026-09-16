@@ -247,7 +247,7 @@
         <dl class="specs">
           <div><dt data-i18n="totalSlabs">Total slabs</dt><dd id="dialogPcs"></dd></div>
           <div><dt data-i18n="totalArea">Total area</dt><dd id="dialogSqm"></dd></div>
-          <div><dt data-i18n="approxWeight">Approx. weight</dt><dd id="dialogWeight"></dd></div>
+          <div><dt data-i18n="approxWeight">Approx. weight</dt><dd><span id="dialogWeight"></span><small id="dialogWeightNote" class="spec-note"></small></dd></div>
           <div><dt data-i18n="dimensions">Dimensions</dt><dd id="dialogSize"></dd></div>
           <div><dt data-i18n="location">Location</dt><dd>Denizli, Türkiye</dd></div>
         </dl>
@@ -258,12 +258,15 @@
           <label><span data-i18n="salesNote">Sales note</span><textarea id="salesNote" rows="3" data-i18n-placeholder="salesNotePlaceholder" placeholder="Add a private note for your team"></textarea></label>
           <button id="saveSalesNote" class="secondary" type="button" data-i18n="saveNote">Save note</button>
         </section>
-        <p class="customer-cta" data-i18n="customerCta">Interested in this bundle? Share the page with your team or contact Lucra Marble for current pricing and availability.</p>
+        <p class="customer-cta" data-i18n="customerCta">Need current pricing or availability? Request a quote or ask Lucra on WhatsApp.</p>
+        <div class="dialog-actions enquiry-actions">
+          <button id="requestQuote" class="primary" type="button" data-i18n="requestQuote">Request a quote</button>
+          <button id="whatsappProduct" class="secondary" type="button" data-i18n="askLucraWhatsApp">Ask Lucra on WhatsApp</button>
+        </div>
         <div class="dialog-actions">
           <button id="copyLink" class="primary" type="button" data-i18n="copyLink">Copy bundle link</button>
           <button id="shareProduct" class="secondary" type="button" data-i18n="shareCustomer">Share customer link</button>
           <button id="printProduct" class="secondary" type="button" data-i18n="printSheet">Print bundle sheet</button>
-          <button id="whatsappProduct" class="secondary" type="button" data-i18n="whatsappCustomer">WhatsApp customer</button>
           <a id="openDrive" class="secondary customer-drive-link" target="_blank" rel="noreferrer" data-i18n="openDrive">Open in Drive</a>
         </div>
       </div>
@@ -302,6 +305,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260916-04"></script>
+  <script src="app.js?v=20260916-05"></script>
 </body>
 </html>

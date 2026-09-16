@@ -35,7 +35,8 @@ Object.assign(translations.en,{copyCollectionLink:'Copy collection link',collect
 Object.assign(translations.tr,{copyCollectionLink:'Koleksiyon bağlantısını kopyala',collectionLinkCopied:'Koleksiyon bağlantısı kopyalandı'});
 Object.assign(translations.en,{customerCollection:'YOUR LIST',customerCollectionHint:'Create a list to share or print for a customer.',addToCollection:'Add to list',removeFromCollection:'Remove from list',printCollection:'Print list',collectionSheet:'Customer list',collectionIntro:'A saved list from Lucra Marble.',collectionTitleLabel:'List title',whatsappCollection:'Send list via WhatsApp',copyCollectionLink:'Copy list link',collectionLinkCopied:'List link copied',sharedSelection:'SHARED LIST',sharedSelectionHint:'A shared list from Lucra Marble.',shareSelection:'Share list link',selectionShared:'List link copied'});
 Object.assign(translations.tr,{customerCollection:'LİSTENİZ',customerCollectionHint:'Müşteriyle paylaşmak veya yazdırmak için bir liste oluşturun.',addToCollection:'Listeye ekle',removeFromCollection:'Listeden çıkar',printCollection:'Listeyi yazdır',collectionSheet:'Müşteri listesi',collectionIntro:'Lucra Marble’dan kaydedilmiş liste.',collectionTitleLabel:'Liste başlığı',whatsappCollection:'Listeyi WhatsApp ile gönder',copyCollectionLink:'Liste bağlantısını kopyala',collectionLinkCopied:'Liste bağlantısı kopyalandı',sharedSelection:'PAYLAŞILAN LİSTE',sharedSelectionHint:'Lucra Marble’dan paylaşılan liste.',shareSelection:'Liste bağlantısını paylaş',selectionShared:'Liste bağlantısı kopyalandı'});
-Object.assign(translations.en,{approxWeight:'Approx. weight',weightNotAvailable:'Not available'});
+Object.assign(translations.en,{approxWeight:'Approx. weight',weightNotAvailable:'Weight unavailable',weightAssumption:'Estimated using 58 kg/m²; actual weight may vary.',weightUnavailableReason:'Weight unavailable because area is not listed.',requestQuote:'Request a quote',askLucraWhatsApp:'Ask Lucra on WhatsApp',quoteRequestSubject:'Quote request',quoteRequestReady:'Quote request ready'});
+Object.assign(translations.en,{customerCta:'Need current pricing or availability? Request a quote or ask Lucra on WhatsApp.'});
 Object.assign(translations.tr,{approxWeight:'Yaklaşık ağırlık',weightNotAvailable:'Belirtilmedi'});
 Object.assign(translations.en,{whatsappCustomer:'Send via WhatsApp'});
 Object.assign(translations.tr,{whatsappCustomer:'WhatsApp ile gönder'});
@@ -230,13 +231,15 @@ function productStock(product){
   return `${slabs}${area}`;
 }
 function productApproxWeight(product){
+  if(product?.sqm==null||product.sqm==='')return null;
   const area=Number(product.sqm);
-  return Number.isFinite(area)?area*58:null;
+  return Number.isFinite(area)&&area>0?area*58:null;
 }
 function productWeightLabel(product){
   const weight=productApproxWeight(product);
   return weight==null?t('weightNotAvailable'):`${Math.round(weight)} kg`;
 }
+function productWeightAssumption(product){return productApproxWeight(product)==null?t('weightUnavailableReason'):t('weightAssumption')}
 function isMysticGreyProduct(product){return /\bmystic\s+grey\b|\bM2880\b/i.test(`${product?.name||''} ${product?.folderName||''} ${product?.code||''}`)}
 function compactMysticImageLabel(value){
   const text=String(value??'').replace(/\.[^.]+$/,'').trim(),match=text.match(/(\d+)$/);
@@ -691,7 +694,7 @@ function clearSharedCollection(){
 }
 function productSummary(product){
   const packing=packingListSummary(product),media=productMediaSummary(product);
-  return `${product.name} ${product.code} — ${product.reserved?'Reserved':'Available'}\nStock: ${productStock(product)}\nApprox. weight: ${productWeightLabel(product)}\nSizes: ${productDimensions(product)}\nPacking list: ${packing.label} (${packing.detail})\nMedia: ${media.label} (${media.detail})\nDrive: ${productDriveUrl(product)}`;
+  return `${product.name} ${product.code} — ${product.reserved?'Reserved':'Available'}\nStock: ${productStock(product)}\nApprox. weight: ${productWeightLabel(product)}\nWeight basis: ${productWeightAssumption(product)}\nSizes: ${productDimensions(product)}\nPacking list: ${packing.label} (${packing.detail})\nMedia: ${media.label} (${media.detail})\nDrive: ${productDriveUrl(product)}`;
 }
 function shortlistSummary(title='Lucra Marble shortlist'){
   return [title,...selectedProducts().map((product,index)=>`${index+1}. ${productSummary(product)}`)].join('\n\n');
@@ -699,18 +702,30 @@ function shortlistSummary(title='Lucra Marble shortlist'){
 function customerProductSummary(product,usePublicLink=false,includeDrive=false){
   const code=product.code&&product.code!=='—'?` (${product.code})`:'';
   const stock=product.pcs!=null?countLabel(product.pcs,'slab','slabs'):'Bundle details available on request';
-  const area=product.sqm!=null?`${Number(product.sqm).toFixed(2)} m²`:t('areaNotProvided');
+  const area=product.sqm!=null?` · ${Number(product.sqm).toFixed(2)} m²`:` · ${t('areaNotProvided')}`;
   const dimensions=`Sizes: ${productDimensions(product)}`;
   return [
     `Lucra Marble · ${product.name}${code}`,
     product.reserved?'Currently reserved':'Available',
     `Stock: ${stock}${area}`,
     `Approx. weight: ${productWeightLabel(product)}`,
+    `Weight basis: ${productWeightAssumption(product)}`,
     dimensions,
     'Location: Denizli, Türkiye',
     `Photos & details: ${usePublicLink?publicCustomerProductUrl(product):customerProductUrl(product)}`,
     includeDrive?`Google Drive folder: ${productDriveUrl(product)}`:'',
   ].filter(Boolean).join('\n');
+}
+function customerQuoteRequest(product){
+  const code=product.code&&product.code!=='—'?` (${product.code})`:'';
+  return [
+    `Hello Lucra Marble,`,
+    `I would like to request a quote for ${product.name}${code}.`,
+    '',
+    customerProductSummary(product,true),
+    '',
+    'Please confirm current price, availability, and delivery information.',
+  ].join('\n');
 }
 function customerCollectionSummary(records,title=''){
   return [
@@ -782,6 +797,13 @@ async function shareCustomerProduct(){
     try{await navigator.share({title:`Lucra Marble · ${currentProduct.name}`,text:summary,url});return}catch(error){if(error?.name==='AbortError')return}
   }
   await copyText(summary,shareProductButton,t('copied'));
+}
+function requestProductQuote(){
+  if(!currentProduct)return;
+  const code=currentProduct.code&&currentProduct.code!=='—'?` · ${currentProduct.code}`:'';
+  const subject=`${t('quoteRequestSubject')} · Lucra Marble · ${currentProduct.name}${code}`;
+  const body=customerQuoteRequest(currentProduct);
+  window.location.href=`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 async function shareCustomerCollection(){
   const selected=selectedProducts();if(!selected.length)return;
@@ -995,6 +1017,7 @@ function openProduct(id){
   document.querySelector('#dialogPcs').textContent=currentProduct.pcs!=null?currentProduct.pcs:(hasPackingList?'Not listed':'No packing list');
   document.querySelector('#dialogSqm').textContent=currentProduct.sqm!=null?`${Number(currentProduct.sqm).toFixed(2)} m² · ${(Number(currentProduct.sqm)*10.7639).toFixed(0)} ft²`:(hasPackingList?t('areaNotProvided'):t('noPackingList'));
   document.querySelector('#dialogWeight').textContent=productWeightLabel(currentProduct);
+  document.querySelector('#dialogWeightNote').textContent=productWeightAssumption(currentProduct);
   document.querySelector('#dialogSize').textContent=currentProduct.dimensions?.length?productDimensions(currentProduct):(hasPackingList?t('sizeNotProvided'):t('noPackingList'));
   const status=document.querySelector('#dialogStatus');status.className=`status-badge ${currentProduct.reserved?'reserved':''}`;status.textContent=currentProduct.reserved?'Reserved':'Available';
   const packingSummary=packingListSummary(currentProduct);
@@ -1120,7 +1143,8 @@ document.querySelector('#copyLink').addEventListener('click',async(e)=>{const ur
 shareProductButton.addEventListener('click',shareCustomerProduct);
 shareCollectionButton.addEventListener('click',shareCustomerCollection);
 document.querySelector('#printProduct').addEventListener('click',()=>printProductSheet());
-document.querySelector('#whatsappProduct').addEventListener('click',()=>openWhatsApp(customerProductSummary(currentProduct)));
+document.querySelector('#requestQuote').addEventListener('click',requestProductQuote);
+document.querySelector('#whatsappProduct').addEventListener('click',()=>openWhatsApp(customerQuoteRequest(currentProduct)));
 document.querySelector('#compareClose').addEventListener('click',()=>compareDialog.close());
 document.querySelector('#closeCompare').addEventListener('click',()=>compareDialog.close());
 document.querySelector('#copyCompare').addEventListener('click',()=>copyText(shortlistSummary('Lucra Marble comparison'),copyCompareButton,'Copied'));
