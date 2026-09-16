@@ -1,7 +1,7 @@
 // Generated from inventory.json by sync_drive.py.
 window.LUCRA_INVENTORY = {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-16T12:00:34Z",
+  "syncedAt": "2026-09-16T12:43:53Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
@@ -12898,305 +12898,6 @@ window.LUCRA_INVENTORY = {
       }
     },
     {
-      "name": "Red Travertine",
-      "folderName": "Red Travertine K5094",
-      "folderId": "160HfP07BK6v_JOsn0F7_qzE071G_ubac",
-      "groupName": null,
-      "code": "K5094",
-      "reserved": false,
-      "finish": "Unfilled/Honed",
-      "pcs": 34,
-      "sqm": 183.98,
-      "dimensions": [
-        "176 × 306 cm",
-        "177 × 307 cm",
-        "178 × 308 cm"
-      ],
-      "lines": [
-        {
-          "block": "K50940202",
-          "finish": "Unfilled/Honed",
-          "material": "Red Travertine",
-          "widthCm": 177,
-          "heightCm": 307,
-          "pcs": 11,
-          "sqm": 59.77
-        },
-        {
-          "block": "",
-          "finish": "Unfilled/Honed",
-          "material": "Red Travertine",
-          "widthCm": 178,
-          "heightCm": 308,
-          "pcs": 1,
-          "sqm": 5.48
-        },
-        {
-          "block": "K50940302",
-          "finish": "Unfilled/Honed",
-          "material": "Red Travertine",
-          "widthCm": 177,
-          "heightCm": 307,
-          "pcs": 5,
-          "sqm": 27.17
-        },
-        {
-          "block": "",
-          "finish": "Unfilled/Honed",
-          "material": "Red Travertine",
-          "widthCm": 176,
-          "heightCm": 306,
-          "pcs": 7,
-          "sqm": 37.7
-        },
-        {
-          "block": "K50940402",
-          "finish": "Unfilled/Honed",
-          "material": "Red Travertine",
-          "widthCm": 176,
-          "heightCm": 306,
-          "pcs": 10,
-          "sqm": 53.86
-        }
-      ],
-      "images": [
-        {
-          "number": 13,
-          "label": "13",
-          "fileId": "1nh0cZbVrcb5j-jgqfSGoXUwe284FBbaX",
-          "name": "13.jpg"
-        },
-        {
-          "number": 14,
-          "label": "14",
-          "fileId": "17j59FDp_0sjYdvZF1AASUsXdnKoVGiJ6",
-          "name": "14.jpg"
-        },
-        {
-          "number": 15,
-          "label": "15",
-          "fileId": "1gRdRYYiTe_7SM6ayWPsjD0YtnHWD34mR",
-          "name": "15.jpg"
-        },
-        {
-          "number": 16,
-          "label": "16",
-          "fileId": "1MVHZ_V3icAhdbZq9FLNlTqFqcNiFEY7q",
-          "name": "16.jpg"
-        },
-        {
-          "number": 17,
-          "label": "17",
-          "fileId": "1JP33KR1vvvTvWUyII99e7pSpnffJeNRh",
-          "name": "17.jpg"
-        },
-        {
-          "number": 18,
-          "label": "18",
-          "fileId": "12iv-bp4xs2YmiidMoNeOvcBhq6fO78ZN",
-          "name": "18.jpg"
-        },
-        {
-          "number": 19,
-          "label": "19",
-          "fileId": "1sdgOUVm6olHyhAYweRCu6wnfaYwaAh_l",
-          "name": "19.jpg"
-        },
-        {
-          "number": 21,
-          "label": "21",
-          "fileId": "1tVfWR1eVTqoxuuqpYq0PQGn_Vqp6i87O",
-          "name": "21.jpg"
-        },
-        {
-          "number": 22,
-          "label": "22",
-          "fileId": "1tWQlPNUDKZJ7vXVd_GHm9dV9XXIC5M44",
-          "name": "22.jpg"
-        },
-        {
-          "number": 23,
-          "label": "23",
-          "fileId": "1PA0icz74TCjB3kbwZYJK-Cot4tZ7_sEJ",
-          "name": "23.jpg"
-        },
-        {
-          "number": 24,
-          "label": "24",
-          "fileId": "1a6f2N0iYThzuOtOWn5vz3HJlILvjWL7y",
-          "name": "24.jpg"
-        },
-        {
-          "number": 25,
-          "label": "25",
-          "fileId": "1-TWNi6MIO-jhaXI5xG9x1VItM8EgYtGG",
-          "name": "25.jpg"
-        },
-        {
-          "number": 26,
-          "label": "26",
-          "fileId": "13Bi746ig5m7XnbTenHYayCnMnOliNbY_",
-          "name": "26.jpg"
-        },
-        {
-          "number": 27,
-          "label": "27",
-          "fileId": "1NTZIk6qAs0vElBi4UVunxacGLWy6NrNN",
-          "name": "27.jpg"
-        },
-        {
-          "number": 28,
-          "label": "28",
-          "fileId": "1jiLK3oqTwxq0l5ATkvKi95SvyquF6vdg",
-          "name": "28.jpg"
-        },
-        {
-          "number": 29,
-          "label": "29",
-          "fileId": "1qtszu97VuJFXWBm0DFhPzJbwjhNQwr3G",
-          "name": "29.jpg"
-        },
-        {
-          "number": 31,
-          "label": "31",
-          "fileId": "14Ud-aASDcpVGOp78srmRNFMCKvxtV81B",
-          "name": "31.jpg"
-        },
-        {
-          "number": 32,
-          "label": "32",
-          "fileId": "1ytE09JyXz0CR9PhJmHRBNSVoujAOZt6T",
-          "name": "32.jpg"
-        },
-        {
-          "number": 33,
-          "label": "33",
-          "fileId": "1qtMRqAOaJ8wO3ooOAOCnfrUrT5s5JDXl",
-          "name": "33.jpg"
-        },
-        {
-          "number": 34,
-          "label": "34",
-          "fileId": "1J224ZXhf5GkPBTyDav1wJ5XeVzQlPacC",
-          "name": "34.jpg"
-        },
-        {
-          "number": 35,
-          "label": "35",
-          "fileId": "1CK9PTHW-GzK2fOto_-rATKJmNybNzO8L",
-          "name": "35.jpg"
-        },
-        {
-          "number": 36,
-          "label": "36",
-          "fileId": "1VM43KeiKO-TSknIKFFn3yLNwF-OSyK3A",
-          "name": "36.jpg"
-        },
-        {
-          "number": 37,
-          "label": "37",
-          "fileId": "1NBzV0h5IB_cz6qZFkQWaxH3N4On643Z3",
-          "name": "37.jpg"
-        },
-        {
-          "number": 38,
-          "label": "38",
-          "fileId": "12kdCWj_Pokh-GgoI0f60C9N0_P7gSBcv",
-          "name": "38.jpg"
-        },
-        {
-          "number": 39,
-          "label": "39",
-          "fileId": "1hvnj30lkmZpS99G3uyXyNmf1NIWCkhzx",
-          "name": "39.jpg"
-        },
-        {
-          "number": 40,
-          "label": "40",
-          "fileId": "10yxhaY4gsNqkqH0o-RW6nkBsQBpM1369",
-          "name": "40.jpg"
-        },
-        {
-          "number": 41,
-          "label": "41",
-          "fileId": "1_t1HXotthMn3VtGUQbJp70ViDpW3Yy7c",
-          "name": "41.jpg"
-        },
-        {
-          "number": 42,
-          "label": "42",
-          "fileId": "11Uc33wCe3Av5HCGIKAGTHcRcy6XkCbU_",
-          "name": "42.jpg"
-        },
-        {
-          "number": 43,
-          "label": "43",
-          "fileId": "1xi1xSLUHvGS5yo6Vpllb--MvD-dgL4-S",
-          "name": "43.jpg"
-        },
-        {
-          "number": 44,
-          "label": "44",
-          "fileId": "1PFV-0z3U0FGbyVn058U9BfdTqGx1FnhU",
-          "name": "44.jpg"
-        },
-        {
-          "number": 45,
-          "label": "45",
-          "fileId": "1IujU8qqqfyRpC3Y2wy3Yn0Hs_JE6WyYU",
-          "name": "45.jpg"
-        },
-        {
-          "number": 46,
-          "label": "46",
-          "fileId": "1He_knpQcdRsGh4_-yO8k_jBbkSeeOvw8",
-          "name": "46.jpg"
-        },
-        {
-          "number": 47,
-          "label": "47",
-          "fileId": "1LrsON9HJBRAMUBFKNjRVfcB2S0MMwmKN",
-          "name": "47.jpg"
-        }
-      ],
-      "extraImages": [
-        {
-          "label": "30 (27)",
-          "fileId": "1lMkwjMoAXuL0wWcLaJwtA1fPbDAvPixU",
-          "name": "30 (27).jpg"
-        }
-      ],
-      "videos": [],
-      "packingList": "K5480 Packing List.xlsx adlı dosyanın kopyası",
-      "packingListId": "170usntN9onut1Y0KvxoSNtIoE-XwxBnp",
-      "syncError": null,
-      "packingWarning": null,
-      "skippedPhotoFolders": [],
-      "sourceWarnings": [
-        {
-          "kind": "source-code-mismatch",
-          "folderCode": "K5094",
-          "packingCodes": [
-            "K5480"
-          ],
-          "message": "Folder code K5094 does not match packing-list name code(s): K5480."
-        }
-      ],
-      "photoCheck": {
-        "listedImages": 34,
-        "slabImages": 33,
-        "extraImages": 1,
-        "expectedSlabs": 34,
-        "missingNumbers": [
-          20,
-          30
-        ],
-        "countMismatch": true,
-        "skippedFolders": [],
-        "brokenImages": []
-      }
-    },
-    {
       "name": "Rosso Levanto",
       "folderName": "Rosso Levanto K6222",
       "folderId": "1SffR-LQV15XHGEwi5ilZHR8rsaSBk1KV",
@@ -19989,18 +19690,12 @@ window.LUCRA_INVENTORY = {
     }
   ],
   "errors": [],
-  "warnings": [
-    {
-      "folder": "Red Travertine K5094",
-      "kind": "source-code-mismatch",
-      "error": "Folder code K5094 does not match packing-list name code(s): K5480."
-    }
-  ],
+  "warnings": [],
   "report": {
-    "bundles": 56,
-    "added": 1,
-    "updated": 1,
-    "unchanged": 54,
+    "bundles": 55,
+    "added": 0,
+    "updated": 0,
+    "unchanged": 55,
     "missingPackingLists": 2,
     "unreadablePackingLists": 0,
     "missingImages": 0,
@@ -20008,16 +19703,12 @@ window.LUCRA_INVENTORY = {
     "missingDimensions": 2,
     "skippedPhotoFolders": 0,
     "photoCheckIssues": 0,
-    "photoCoverageNotes": 10,
-    "sourceMismatches": 1,
+    "photoCoverageNotes": 9,
+    "sourceMismatches": 0,
     "folderErrors": 0,
-    "warningCount": 1,
-    "addedFolders": [
-      "Astana Grey K6388"
-    ],
-    "updatedFolders": [
-      "Tundra Light K6138"
-    ],
+    "warningCount": 0,
+    "addedFolders": [],
+    "updatedFolders": [],
     "missingPackingListFolders": [
       "Rosso Levanto K6222",
       "Vanilla Ice K5372"
@@ -20038,7 +19729,6 @@ window.LUCRA_INVENTORY = {
       "Mystic Grey M2880",
       "Porto Rosa L006",
       "Red Jasper L1010",
-      "Red Travertine K5094",
       "Rosso Levanto L1013",
       "Silver Travertine Ham (Raw) K5301",
       "Travertine L009",
@@ -20050,18 +19740,28 @@ window.LUCRA_INVENTORY = {
       "Mystic Grey M2880",
       "Porto Rosa L006",
       "Red Jasper L1010",
-      "Red Travertine K5094",
       "Rosso Levanto L1013",
       "Silver Travertine Ham (Raw) K5301",
       "Travertine L009",
       "Tundra Grey K6155",
       "Tundra Light K6139"
     ],
-    "sourceMismatchFolders": [
-      "Red Travertine K5094"
-    ]
+    "sourceMismatchFolders": []
   },
   "syncHistory": [
+    {
+      "status": "success",
+      "attemptedAt": "2026-09-16T12:43:53Z",
+      "syncedAt": "2026-09-16T12:43:53Z",
+      "bundles": 55,
+      "added": 0,
+      "updated": 0,
+      "unchanged": 55,
+      "warnings": 0,
+      "errors": 0,
+      "addedFolders": [],
+      "updatedFolders": []
+    },
     {
       "status": "success",
       "attemptedAt": "2026-09-16T12:00:34Z",
@@ -20123,42 +19823,25 @@ window.LUCRA_INVENTORY = {
       "errors": 0,
       "addedFolders": [],
       "updatedFolders": []
-    },
-    {
-      "status": "success",
-      "attemptedAt": "2026-09-15T22:55:27Z",
-      "syncedAt": "2026-09-15T22:55:27Z",
-      "bundles": 54,
-      "added": 0,
-      "updated": 0,
-      "unchanged": 54,
-      "warnings": 2,
-      "errors": 0,
-      "addedFolders": [],
-      "updatedFolders": []
     }
   ],
   "syncStatus": {
     "status": "success",
-    "attemptedAt": "2026-09-16T12:00:34Z",
-    "syncedAt": "2026-09-16T12:00:34Z",
+    "attemptedAt": "2026-09-16T12:43:53Z",
+    "syncedAt": "2026-09-16T12:43:53Z",
     "message": "Inventory sync completed.",
     "run": {
       "status": "success",
-      "attemptedAt": "2026-09-16T12:00:34Z",
-      "syncedAt": "2026-09-16T12:00:34Z",
-      "bundles": 56,
-      "added": 1,
-      "updated": 1,
-      "unchanged": 54,
-      "warnings": 1,
+      "attemptedAt": "2026-09-16T12:43:53Z",
+      "syncedAt": "2026-09-16T12:43:53Z",
+      "bundles": 55,
+      "added": 0,
+      "updated": 0,
+      "unchanged": 55,
+      "warnings": 0,
       "errors": 0,
-      "addedFolders": [
-        "Astana Grey K6388"
-      ],
-      "updatedFolders": [
-        "Tundra Light K6138"
-      ]
+      "addedFolders": [],
+      "updatedFolders": []
     }
   }
 };
