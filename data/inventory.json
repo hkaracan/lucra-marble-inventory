@@ -1,6 +1,6 @@
 {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-16T09:04:58Z",
+  "syncedAt": "2026-09-16T12:00:34Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
@@ -863,6 +863,419 @@
         "skippedFolders": [],
         "brokenImages": []
       }
+    },
+    {
+      "name": "Astana Grey",
+      "folderName": "Astana Grey K6388",
+      "folderId": "17JC7HR3piXGgjO9xv70urVDoyJ-SmPFI",
+      "groupName": null,
+      "code": "K6388",
+      "reserved": false,
+      "finish": "Bookmatched/Honed",
+      "pcs": 47,
+      "sqm": 242.49,
+      "dimensions": [
+        "172 × 295 cm",
+        "174 × 296 cm",
+        "175 × 295 cm",
+        "176 × 294 cm",
+        "177 × 293 cm"
+      ],
+      "lines": [
+        {
+          "block": "K63880102",
+          "finish": "Bookmatched/Honed",
+          "material": "Astana Grey",
+          "widthCm": 174,
+          "heightCm": 296,
+          "pcs": 11,
+          "sqm": 56.65
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Astana Grey",
+          "widthCm": 172,
+          "heightCm": 295,
+          "pcs": 1,
+          "sqm": 5.07
+        },
+        {
+          "block": "K63880202",
+          "finish": "Bookmatched/Honed",
+          "material": "Astana Grey",
+          "widthCm": 174,
+          "heightCm": 296,
+          "pcs": 11,
+          "sqm": 56.65
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Astana Grey",
+          "widthCm": 174,
+          "heightCm": 296,
+          "pcs": 1,
+          "sqm": 5.15
+        },
+        {
+          "block": "K63880302",
+          "finish": "Bookmatched/Honed",
+          "material": "Astana Grey",
+          "widthCm": 174,
+          "heightCm": 296,
+          "pcs": 2,
+          "sqm": 10.3
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Astana Grey",
+          "widthCm": 175,
+          "heightCm": 295,
+          "pcs": 6,
+          "sqm": 30.98
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Astana Grey",
+          "widthCm": 176,
+          "heightCm": 294,
+          "pcs": 4,
+          "sqm": 20.7
+        },
+        {
+          "block": "K63880402",
+          "finish": "Bookmatched/Honed",
+          "material": "Astana Grey",
+          "widthCm": 176,
+          "heightCm": 294,
+          "pcs": 4,
+          "sqm": 20.7
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Astana Grey",
+          "widthCm": 177,
+          "heightCm": 293,
+          "pcs": 6,
+          "sqm": 31.12
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Honed",
+          "material": "Astana Grey",
+          "widthCm": 176,
+          "heightCm": 294,
+          "pcs": 1,
+          "sqm": 5.17
+        }
+      ],
+      "images": [
+        {
+          "number": 1,
+          "label": "1",
+          "fileId": "1D8Td6Z0EQOdwpuZntkszbvtu1x3GQFzZ",
+          "name": "1.jpg"
+        },
+        {
+          "number": 2,
+          "label": "2",
+          "fileId": "1Icqffw66vKe9eg2din8Z68LI1dt3x6fd",
+          "name": "2.jpg"
+        },
+        {
+          "number": 3,
+          "label": "3",
+          "fileId": "1m2kYnLic6AM8DSrGjxCLG6oQCl6zIoqY",
+          "name": "3.jpg"
+        },
+        {
+          "number": 4,
+          "label": "4",
+          "fileId": "1HJzunywOkCq9ftN6K6wv72bLbA31ONHE",
+          "name": "4.jpg"
+        },
+        {
+          "number": 5,
+          "label": "5",
+          "fileId": "1SD82Jq1981d9uaLDo1IG8ykRbwEwQm3F",
+          "name": "5.jpg"
+        },
+        {
+          "number": 6,
+          "label": "6",
+          "fileId": "1LcqbEtJ73MIFFkObnNztSKIHH6tK_CmB",
+          "name": "6.jpg"
+        },
+        {
+          "number": 7,
+          "label": "7",
+          "fileId": "1r6l-rQgtYhtfAUsiLeWFtesPkDGQu5M1",
+          "name": "7.jpg"
+        },
+        {
+          "number": 8,
+          "label": "8",
+          "fileId": "1len4P0y9Y-PnalsAG-yuFLYDgFoW4ZLC",
+          "name": "8.jpg"
+        },
+        {
+          "number": 9,
+          "label": "9",
+          "fileId": "1T87VauPboDBAR-bjfmCsgSKI5NYeWLdr",
+          "name": "9.jpg"
+        },
+        {
+          "number": 10,
+          "label": "10",
+          "fileId": "1HQ87vtX1CxX21_kpdcegnN-3nGtGmwTL",
+          "name": "10.jpg"
+        },
+        {
+          "number": 11,
+          "label": "11",
+          "fileId": "1Q-4gKbDN0tH3ThBOTWeOstWfvPkKjSOS",
+          "name": "11.jpg"
+        },
+        {
+          "number": 12,
+          "label": "12",
+          "fileId": "10sADlrYrrPO9hF2JNdIMXB9J_3c6Buwu",
+          "name": "12.jpg"
+        },
+        {
+          "number": 13,
+          "label": "13",
+          "fileId": "1JWn22Fw9OxQAJeAOqurbCAb_PL7owGmp",
+          "name": "13.jpg"
+        },
+        {
+          "number": 14,
+          "label": "14",
+          "fileId": "1PWUQOTxMnt4cAuXyllcCUuow864zVz9g",
+          "name": "14.jpg"
+        },
+        {
+          "number": 15,
+          "label": "15",
+          "fileId": "1ZMjySp-q3qmlNVSqhIT7AvcfLRYpnbNw",
+          "name": "15.jpg"
+        },
+        {
+          "number": 16,
+          "label": "16",
+          "fileId": "1ErMn3VM13zPmGkxE_kfeCTe_c_2_muMU",
+          "name": "16.jpg"
+        },
+        {
+          "number": 17,
+          "label": "17",
+          "fileId": "1G3GrUVpT5i26IXKUMdfFA0YmARwhmpa3",
+          "name": "17.jpg"
+        },
+        {
+          "number": 18,
+          "label": "18",
+          "fileId": "1higDKlH2vo6iF6CfQ2DJEJLwUvHqDrr-",
+          "name": "18.jpg"
+        },
+        {
+          "number": 19,
+          "label": "19",
+          "fileId": "1rNBbTzH41btnjDyPh7Jb3C8AmOeF5Bqf",
+          "name": "19.jpg"
+        },
+        {
+          "number": 20,
+          "label": "20",
+          "fileId": "1OoU27Z26qT_OD0PR9eW5vTOdb5i59M6K",
+          "name": "20.jpg"
+        },
+        {
+          "number": 21,
+          "label": "21",
+          "fileId": "1SfXXRscc_9-0KablTubF5xYXHeQJvqkJ",
+          "name": "21.jpg"
+        },
+        {
+          "number": 22,
+          "label": "22",
+          "fileId": "1yYX_Y3-4JDVZtNBg4n4wQyOQLxBD4-ZV",
+          "name": "22.jpg"
+        },
+        {
+          "number": 23,
+          "label": "23",
+          "fileId": "1fYbB0MDnljRGaoNETV4tlI6qaKp6H1FA",
+          "name": "23.jpg"
+        },
+        {
+          "number": 24,
+          "label": "24",
+          "fileId": "1fIpD1cwNJVsM4dKCR5Eh17dtWPqK14mc",
+          "name": "24.jpg"
+        },
+        {
+          "number": 25,
+          "label": "25",
+          "fileId": "1eLmHoWEBtXIKWdZ0rEdXaYTRLC_-LR5K",
+          "name": "25.jpg"
+        },
+        {
+          "number": 26,
+          "label": "26",
+          "fileId": "1QuxtoKhEbzvbHquZEdmsLrCEcNS90sd3",
+          "name": "26.jpg"
+        },
+        {
+          "number": 27,
+          "label": "27",
+          "fileId": "14k5SbV1a2zJgFSDVJpwU1ZAz9KPwVCwi",
+          "name": "27.jpg"
+        },
+        {
+          "number": 28,
+          "label": "28",
+          "fileId": "1Gp2hv7kDSjT8fOshwq28bqgjO3W3alyY",
+          "name": "28.jpg"
+        },
+        {
+          "number": 29,
+          "label": "29",
+          "fileId": "1czDgUJ1Faw1GosqzHivNZ_5t2qTM1zrD",
+          "name": "29.jpg"
+        },
+        {
+          "number": 30,
+          "label": "30",
+          "fileId": "1Zn5IIeAmsdzBJOOBrSPs1KShna-nS1rZ",
+          "name": "30.jpg"
+        },
+        {
+          "number": 31,
+          "label": "31",
+          "fileId": "1vRUSVi2mj6lGuryygMjwSU-GQ-vrvDkZ",
+          "name": "31.jpg"
+        },
+        {
+          "number": 32,
+          "label": "32",
+          "fileId": "1kJOkzymagUNDwIDhYIznJHsBxiKMz0Q3",
+          "name": "32.jpg"
+        },
+        {
+          "number": 33,
+          "label": "33",
+          "fileId": "1qlrZ4XRTKlA8sW8AvVpeCJzeQ5q20CtB",
+          "name": "33.jpg"
+        },
+        {
+          "number": 34,
+          "label": "34",
+          "fileId": "1N4O90lemOpUTDBEBBEhHOkN4FKYfUcOj",
+          "name": "34.jpg"
+        },
+        {
+          "number": 35,
+          "label": "35",
+          "fileId": "134ASnmSSzuIPagwswQFSSB5iFn9BC-bN",
+          "name": "35.jpg"
+        },
+        {
+          "number": 36,
+          "label": "36",
+          "fileId": "1_f5EcotueW5cEZUCWT8ijkE5at3Vpn8o",
+          "name": "36.jpg"
+        },
+        {
+          "number": 37,
+          "label": "37",
+          "fileId": "1OfDHptwGXFoEuKXWgfzJEGxnVGsJcBto",
+          "name": "37.jpg"
+        },
+        {
+          "number": 38,
+          "label": "38",
+          "fileId": "1P_XftIuwdcZQvVzXXzWfAaaa4TEadCvo",
+          "name": "38.jpg"
+        },
+        {
+          "number": 39,
+          "label": "39",
+          "fileId": "11EtvWX15V-SwXwhVWZPXCqQvN_pjm6CD",
+          "name": "39.jpg"
+        },
+        {
+          "number": 40,
+          "label": "40",
+          "fileId": "1R_KXZF8NHSo3sePNyK1-qZ332HfYFRfK",
+          "name": "40.jpg"
+        },
+        {
+          "number": 41,
+          "label": "41",
+          "fileId": "1wm59lFaLQOrp8aNjkQeeuflXjt4Y1Fe8",
+          "name": "41.jpg"
+        },
+        {
+          "number": 42,
+          "label": "42",
+          "fileId": "1IAhXDPbRndUywSP_-_Di3Us0c-oPZCc7",
+          "name": "42.jpg"
+        },
+        {
+          "number": 43,
+          "label": "43",
+          "fileId": "1zeiwnmOeMBkdHwze2q2Ob0PUtBa3z3J3",
+          "name": "43.jpg"
+        },
+        {
+          "number": 44,
+          "label": "44",
+          "fileId": "1FA9lO8PVol3Yk2HruVM-yP3F241siYzg",
+          "name": "44.jpg"
+        },
+        {
+          "number": 45,
+          "label": "45",
+          "fileId": "1X49dDBSnFss-HdAjqdnEqTBrBffo9C64",
+          "name": "45.jpg"
+        },
+        {
+          "number": 46,
+          "label": "46",
+          "fileId": "11DvEaYbWFjS8290rtN44BfrtP24jrTgk",
+          "name": "46.jpg"
+        },
+        {
+          "number": 47,
+          "label": "47",
+          "fileId": "1Ncf3iQUjsbhlBTSkLLK3QikKopE3IXB_",
+          "name": "47.jpg"
+        }
+      ],
+      "extraImages": [],
+      "videos": [],
+      "packingList": "K6388.xlsx",
+      "packingListId": "10Lxot5XMHFmb4xWnv66pK8pOZUAyh7Wv",
+      "syncError": null,
+      "packingWarning": null,
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 47,
+        "slabImages": 47,
+        "extraImages": 0,
+        "expectedSlabs": 47,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      },
+      "addedAt": "2026-09-16T12:00:34Z"
     },
     {
       "name": "Bianco Dolomite",
@@ -16825,11 +17238,11 @@
     },
     {
       "name": "Tundra Light",
-      "folderName": "Reserved - Tundra Light K6138",
+      "folderName": "Tundra Light K6138",
       "folderId": "1LDEYhatcp79VL59ksCrlCprBUQK3FJkk",
       "groupName": "Tundra Grey",
       "code": "K6138",
-      "reserved": true,
+      "reserved": false,
       "finish": "Bookmatched/Honed",
       "pcs": 61,
       "sqm": 359.16,
@@ -19583,10 +19996,10 @@
     }
   ],
   "report": {
-    "bundles": 55,
-    "added": 0,
-    "updated": 3,
-    "unchanged": 52,
+    "bundles": 56,
+    "added": 1,
+    "updated": 1,
+    "unchanged": 54,
     "missingPackingLists": 2,
     "unreadablePackingLists": 0,
     "missingImages": 0,
@@ -19598,11 +20011,11 @@
     "sourceMismatches": 1,
     "folderErrors": 0,
     "warningCount": 1,
-    "addedFolders": [],
+    "addedFolders": [
+      "Astana Grey K6388"
+    ],
     "updatedFolders": [
-      "Mystic Grey M2880",
-      "NebuLa Wave L009",
-      "Sunset Dlomite K3561"
+      "Tundra Light K6138"
     ],
     "missingPackingListFolders": [
       "Rosso Levanto K6222",
@@ -19648,6 +20061,23 @@
     ]
   },
   "syncHistory": [
+    {
+      "status": "success",
+      "attemptedAt": "2026-09-16T12:00:34Z",
+      "syncedAt": "2026-09-16T12:00:34Z",
+      "bundles": 56,
+      "added": 1,
+      "updated": 1,
+      "unchanged": 54,
+      "warnings": 1,
+      "errors": 0,
+      "addedFolders": [
+        "Astana Grey K6388"
+      ],
+      "updatedFolders": [
+        "Tundra Light K6138"
+      ]
+    },
     {
       "status": "success",
       "attemptedAt": "2026-09-16T09:04:58Z",
@@ -19705,41 +20135,28 @@
       "errors": 0,
       "addedFolders": [],
       "updatedFolders": []
-    },
-    {
-      "status": "success",
-      "attemptedAt": "2026-09-15T19:43:08Z",
-      "syncedAt": "2026-09-15T19:43:08Z",
-      "bundles": 54,
-      "added": 0,
-      "updated": 0,
-      "unchanged": 54,
-      "warnings": 2,
-      "errors": 0,
-      "addedFolders": [],
-      "updatedFolders": []
     }
   ],
   "syncStatus": {
     "status": "success",
-    "attemptedAt": "2026-09-16T09:04:58Z",
-    "syncedAt": "2026-09-16T09:04:58Z",
+    "attemptedAt": "2026-09-16T12:00:34Z",
+    "syncedAt": "2026-09-16T12:00:34Z",
     "message": "Inventory sync completed.",
     "run": {
       "status": "success",
-      "attemptedAt": "2026-09-16T09:04:58Z",
-      "syncedAt": "2026-09-16T09:04:58Z",
-      "bundles": 55,
-      "added": 0,
-      "updated": 3,
-      "unchanged": 52,
+      "attemptedAt": "2026-09-16T12:00:34Z",
+      "syncedAt": "2026-09-16T12:00:34Z",
+      "bundles": 56,
+      "added": 1,
+      "updated": 1,
+      "unchanged": 54,
       "warnings": 1,
       "errors": 0,
-      "addedFolders": [],
+      "addedFolders": [
+        "Astana Grey K6388"
+      ],
       "updatedFolders": [
-        "Mystic Grey M2880",
-        "NebuLa Wave L009",
-        "Sunset Dlomite K3561"
+        "Tundra Light K6138"
       ]
     }
   }

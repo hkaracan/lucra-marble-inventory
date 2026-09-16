@@ -1,23 +1,23 @@
 {
   "status": "success",
-  "attemptedAt": "2026-09-16T09:04:58Z",
-  "syncedAt": "2026-09-16T09:04:58Z",
+  "attemptedAt": "2026-09-16T12:00:34Z",
+  "syncedAt": "2026-09-16T12:00:34Z",
   "message": "Inventory sync completed.",
   "run": {
     "status": "success",
-    "attemptedAt": "2026-09-16T09:04:58Z",
-    "syncedAt": "2026-09-16T09:04:58Z",
-    "bundles": 55,
-    "added": 0,
-    "updated": 3,
-    "unchanged": 52,
+    "attemptedAt": "2026-09-16T12:00:34Z",
+    "syncedAt": "2026-09-16T12:00:34Z",
+    "bundles": 56,
+    "added": 1,
+    "updated": 1,
+    "unchanged": 54,
     "warnings": 1,
     "errors": 0,
-    "addedFolders": [],
+    "addedFolders": [
+      "Astana Grey K6388"
+    ],
     "updatedFolders": [
-      "Mystic Grey M2880",
-      "NebuLa Wave L009",
-      "Sunset Dlomite K3561"
+      "Tundra Light K6138"
     ]
   }
 }

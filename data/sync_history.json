@@ -2,6 +2,23 @@
   "runs": [
     {
       "status": "success",
+      "attemptedAt": "2026-09-16T12:00:34Z",
+      "syncedAt": "2026-09-16T12:00:34Z",
+      "bundles": 56,
+      "added": 1,
+      "updated": 1,
+      "unchanged": 54,
+      "warnings": 1,
+      "errors": 0,
+      "addedFolders": [
+        "Astana Grey K6388"
+      ],
+      "updatedFolders": [
+        "Tundra Light K6138"
+      ]
+    },
+    {
+      "status": "success",
       "attemptedAt": "2026-09-16T09:04:58Z",
       "syncedAt": "2026-09-16T09:04:58Z",
       "bundles": 55,
@@ -49,19 +66,6 @@
       "status": "success",
       "attemptedAt": "2026-09-15T22:55:27Z",
       "syncedAt": "2026-09-15T22:55:27Z",
-      "bundles": 54,
-      "added": 0,
-      "updated": 0,
-      "unchanged": 54,
-      "warnings": 2,
-      "errors": 0,
-      "addedFolders": [],
-      "updatedFolders": []
-    },
-    {
-      "status": "success",
-      "attemptedAt": "2026-09-15T19:43:08Z",
-      "syncedAt": "2026-09-15T19:43:08Z",
       "bundles": 54,
       "added": 0,
       "updated": 0,
