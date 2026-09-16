@@ -1,26 +1,38 @@
 name: Sync inventory
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
   schedule:
     - cron: '17 * * * *'
+      timezone: 'Europe/Istanbul'
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: lucra-inventory-sync
+  group: lucra-pages-deploy
   cancel-in-progress: false
 
 jobs:
   sync:
-    name: Read public Drive and publish catalogue
+    name: Read public Drive and deploy catalogue
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Check out catalogue
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
+
+      - name: Set up Pages
+        uses: actions/configure-pages@v5
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -34,7 +46,6 @@ jobs:
         run: python sync_drive.py
 
       - name: Add sync report to job summary
-        if: success()
         run: |
           python - <<'PY'
           import json
@@ -70,68 +81,21 @@ jobs:
               summary.write("\n".join(lines) + "\n")
           PY
 
-      - name: Record failed sync status
+      - name: Explain failed sync
         if: failure()
         run: |
-          python - <<'PY'
-          import json
-          import os
-          from datetime import datetime, timezone
-          from pathlib import Path
+          {
+            echo "## Inventory sync failed"
+            echo "The previous catalogue remains deployed. No repository files were overwritten."
+          } >> "$GITHUB_STEP_SUMMARY"
 
-          now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-          workflow_url = f"https://github.com/{os.environ.get('GITHUB_REPOSITORY', '')}/actions/runs/{os.environ.get('GITHUB_RUN_ID', '')}"
-          failed_run = {
-              "status": "failed",
-              "attemptedAt": now,
-              "syncedAt": None,
-              "bundles": None,
-              "added": None,
-              "updated": None,
-              "unchanged": None,
-              "warnings": None,
-              "errors": None,
-              "addedFolders": [],
-              "updatedFolders": [],
-              "message": "The sync failed. The previous catalogue remains published.",
-              "workflowUrl": workflow_url,
-          }
-          history_path = Path("data/sync_history.json")
-          try:
-              raw = json.loads(history_path.read_text(encoding="utf-8"))
-              runs = raw.get("runs", []) if isinstance(raw, dict) else raw
-          except (OSError, json.JSONDecodeError):
-              runs = []
-          runs = [failed_run] + [run for run in runs if isinstance(run, dict)]
-          status = {
-              "status": "failed",
-              "attemptedAt": now,
-              "syncedAt": None,
-              "message": failed_run["message"],
-              "workflowUrl": workflow_url,
-              "run": failed_run,
-          }
-          for path, payload in ((history_path, {"runs": runs[:5]}), (Path("data/sync_status.json"), status)):
-              temporary = path.with_suffix(f"{path.suffix}.tmp")
-              temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-              temporary.replace(path)
-          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
-              summary.write("## Inventory sync failed\nThe previous catalogue was kept. See the workflow run for details.\n")
-          PY
+      - name: Upload Pages artifact
+        if: success()
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
 
-      - name: Commit catalogue and sync status
-        if: always()
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/inventory.json data/inventory.js data/drive_overflow.json data/sync_history.json data/sync_status.json
-          if git diff --cached --quiet; then
-            echo "No catalogue or sync-status changes to publish."
-            exit 0
-          fi
-          if [ "${{ job.status }}" = "success" ]; then
-            git commit -m "Sync inventory from public Drive"
-          else
-            git commit -m "Record failed inventory sync"
-          fi
-          git push
+      - name: Deploy to GitHub Pages
+        if: success()
+        id: deployment
+        uses: actions/deploy-pages@v4
