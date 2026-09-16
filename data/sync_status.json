@@ -1,12 +1,12 @@
 {
   "status": "success",
-  "attemptedAt": "2026-09-15T22:55:27Z",
-  "syncedAt": "2026-09-15T22:55:27Z",
+  "attemptedAt": "2026-09-16T01:27:24Z",
+  "syncedAt": "2026-09-16T01:27:24Z",
   "message": "Inventory sync completed.",
   "run": {
     "status": "success",
-    "attemptedAt": "2026-09-15T22:55:27Z",
-    "syncedAt": "2026-09-15T22:55:27Z",
+    "attemptedAt": "2026-09-16T01:27:24Z",
+    "syncedAt": "2026-09-16T01:27:24Z",
     "bundles": 54,
     "added": 0,
     "updated": 0,

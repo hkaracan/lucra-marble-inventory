@@ -1,7 +1,7 @@
 // Generated from inventory.json by sync_drive.py.
 window.LUCRA_INVENTORY = {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-15T22:55:27Z",
+  "syncedAt": "2026-09-16T01:27:24Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
@@ -18964,6 +18964,19 @@ window.LUCRA_INVENTORY = {
   "syncHistory": [
     {
       "status": "success",
+      "attemptedAt": "2026-09-16T01:27:24Z",
+      "syncedAt": "2026-09-16T01:27:24Z",
+      "bundles": 54,
+      "added": 0,
+      "updated": 0,
+      "unchanged": 54,
+      "warnings": 2,
+      "errors": 0,
+      "addedFolders": [],
+      "updatedFolders": []
+    },
+    {
+      "status": "success",
       "attemptedAt": "2026-09-15T22:55:27Z",
       "syncedAt": "2026-09-15T22:55:27Z",
       "bundles": 54,
@@ -19025,13 +19038,13 @@ window.LUCRA_INVENTORY = {
   ],
   "syncStatus": {
     "status": "success",
-    "attemptedAt": "2026-09-15T22:55:27Z",
-    "syncedAt": "2026-09-15T22:55:27Z",
+    "attemptedAt": "2026-09-16T01:27:24Z",
+    "syncedAt": "2026-09-16T01:27:24Z",
     "message": "Inventory sync completed.",
     "run": {
       "status": "success",
-      "attemptedAt": "2026-09-15T22:55:27Z",
-      "syncedAt": "2026-09-15T22:55:27Z",
+      "attemptedAt": "2026-09-16T01:27:24Z",
+      "syncedAt": "2026-09-16T01:27:24Z",
       "bundles": 54,
       "added": 0,
       "updated": 0,
