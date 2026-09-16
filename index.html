@@ -83,7 +83,7 @@
       <p class="catalogue-freshness-public" id="publicCatalogueFreshness" role="status" aria-live="polite" hidden></p>
       <button id="advancedFiltersToggle" class="advanced-filters-toggle" type="button" aria-expanded="false"><span data-i18n="moreFilters">More filters</span><span aria-hidden="true">⌄</span></button>
       <div class="advanced-filters" id="advancedFilters" aria-label="More inventory filters">
-        <label><span data-i18n="sort">Sort</span> <select id="sortSelect"><option value="name" data-i18n="name">Name</option><option value="slabs" data-i18n="mostSlabs">Most slabs</option><option value="area" data-i18n="largestArea">Largest area</option></select></label>
+        <label><span data-i18n="sort">Sort</span> <select id="sortSelect"><option value="name" data-i18n="name">Name</option><option value="newest" data-i18n="newest">New to old</option><option value="oldest" data-i18n="oldest">Old to new</option><option value="slabs" data-i18n="mostSlabs">Most slabs</option><option value="area" data-i18n="largestArea">Largest area</option></select></label>
         <label><span data-i18n="minArea">Min m²</span> <input id="minArea" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0" /></label>
         <label><span data-i18n="maxArea">Max m²</span> <input id="maxArea" type="number" min="0" step="0.01" inputmode="decimal" placeholder="—" /></label>
         <label><span data-i18n="minSlabs">Min slabs</span> <input id="minSlabs" type="number" min="0" step="1" inputmode="numeric" placeholder="0" /></label>
@@ -301,6 +301,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260915-06"></script>
+  <script src="app.js?v=20260916-01"></script>
 </body>
 </html>
