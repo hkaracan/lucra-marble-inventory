@@ -276,6 +276,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
 .sales-freshness-badge{position:static;display:inline-flex;align-items:center;flex:0 0 auto;padding:4px 6px;border-radius:3px;box-shadow:none;font-size:9px;letter-spacing:.06em;white-space:nowrap}
 @media(max-width:580px){.freshness-badge{left:10px;bottom:10px;padding:6px 8px;font-size:9px}.sales-freshness-badge{font-size:8px;padding:3px 5px}}
 
+/* Desktop catalogue card slab navigation */
+.catalog-image-nav,.catalog-image-position{display:none}
+@media(min-width:901px){
+  .catalog-image-nav{display:grid;place-items:center;position:absolute;top:50%;z-index:4;width:38px;height:38px;transform:translateY(-50%);border:1px solid rgba(255,255,255,.72);border-radius:50%;background:rgba(23,34,44,.72);color:white;font:500 23px/1 "DM Sans";cursor:pointer;opacity:.94;transition:background .2s ease,opacity .2s ease,transform .2s ease}
+  .catalog-image-nav.prev{left:12px}
+  .catalog-image-nav.next{right:12px}
+  .catalog-image-nav:hover,.catalog-image-nav:focus-visible{background:var(--navy);opacity:1;outline:3px solid rgba(23,184,213,.48);outline-offset:2px}
+  .catalog-image-position{display:block;position:absolute;left:50%;bottom:12px;z-index:4;transform:translateX(-50%);padding:5px 8px;border-radius:20px;background:rgba(23,34,44,.72);color:white;font-size:10px;letter-spacing:.03em;white-space:nowrap;pointer-events:none}
+}
+@media(max-width:900px){.catalog-image-nav,.catalog-image-position{display:none!important}}
+
 /* Compact sync status for the sales dashboard. */
 .latest-sync{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 18px;padding:11px 13px;border:1px solid var(--line);background:white}
 .latest-sync-head{display:flex;align-items:baseline;gap:10px;min-width:0;flex-wrap:wrap}

@@ -41,7 +41,7 @@ Object.assign(translations.en,{whatsappCustomer:'Send via WhatsApp'});
 Object.assign(translations.tr,{whatsappCustomer:'WhatsApp ile gönder'});
 Object.assign(translations.en,{slabPhotos:'slab photos'});
 Object.assign(translations.tr,{slabPhotos:'plaka fotoğrafı'});
-Object.assign(translations.en,{photo:'Photo',of:'of',previousPhoto:'Previous photo',nextPhoto:'Next photo'});
+Object.assign(translations.en,{photo:'Photo',of:'of',previousPhoto:'Previous photo',nextPhoto:'Next photo',previousSlab:'Previous slab',nextSlab:'Next slab'});
 Object.assign(translations.tr,{photo:'Fotoğraf',of:'/',previousPhoto:'Önceki fotoğraf',nextPhoto:'Sonraki fotoğraf'});
 Object.assign(translations.en,{retryImage:'Retry image',retryingImage:'Retrying image…',imageLoading:'Loading image…',imageUnavailable:'This image is unavailable from the public Drive folder.',imageUnavailableShort:'Photo unavailable',viewSlab:'View slab',viewAdditional:'View additional image'});
 Object.assign(translations.tr,{retryImage:'Fotoğrafı yeniden dene',retryingImage:'Fotoğraf yeniden deneniyor…',imageLoading:'Fotoğraf yükleniyor…',imageUnavailable:'Bu fotoğraf herkese açık Drive klasöründen alınamıyor.',imageUnavailableShort:'Fotoğraf kullanılamıyor',viewSlab:'Plakayı görüntüle',viewAdditional:'Ek fotoğrafı görüntüle'});
@@ -156,6 +156,7 @@ const salesGate=document.querySelector('#salesGate'), salesGateForm=document.que
 const compareDialog=document.querySelector('#compareDialog'), compareContent=document.querySelector('#compareContent'), copyCompareButton=document.querySelector('#copyCompare');
 const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved'), shareProductButton=document.querySelector('#shareProduct');
 let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, syncHistory=[], syncState=null, auditFilter='all', salesQuickFilter='all', salesFollowupFilter='all', salesSearch='', salesSort='name', sharedCollectionActive=false, sharedCollectionTitle='', sharedCollectionKeys=new Set(), presentationSelection=new Set(), customerCollectionTitle='';
+const catalogImageIndexes=new Map();
 const brokenPhotoIdsByProduct=new Map(),verifiedPhotoIdsByProduct=new Map();
 const photoVerification={checked:0,failed:0,lastCheckedAt:null};
 let inventoryHealthRefreshTimer=null;
@@ -847,6 +848,31 @@ function setCatalogColumns(value){
   try{localStorage.setItem('lucraCatalogColumns',value)}catch(error){}
 }
 
+function catalogSlabImages(product){return (product.images||[]).filter(image=>image.type==='slab')}
+function catalogImageIndex(product,images){
+  const current=Number(catalogImageIndexes.get(productKey(product))||0);
+  return images.length?Math.min(Math.max(current,0),images.length-1):0;
+}
+function catalogImagePosition(image,index,total){return `Slab ${image?.label||index+1} · ${index+1} / ${total}`}
+function updateCatalogCardImage(card,product,direction){
+  const images=catalogSlabImages(product);
+  if(images.length<2)return;
+  const current=catalogImageIndex(product,images),next=(current+direction+images.length)%images.length,image=images[next];
+  catalogImageIndexes.set(productKey(product),next);
+  const imageElement=card.querySelector('img[data-catalog-image]'),container=card.querySelector('.card-image');
+  if(!imageElement||!container)return;
+  container.classList.remove('image-error','image-contained');
+  container.classList.toggle('is-loading',Boolean(image.src));
+  imageElement.classList.remove('loaded');
+  imageElement.dataset.photoFileId=image.fileId||'';
+  if(image.thumbSrc)imageElement.srcset=`${image.thumbSrc} 700w, ${image.src} 1400w`;
+  else imageElement.removeAttribute('srcset');
+  imageElement.src=image.thumbSrc||image.src;
+  imageElement.alt=`${product.name} slab ${image.label||next+1}`;
+  const position=card.querySelector('.catalog-image-position');
+  if(position)position.textContent=catalogImagePosition(image,next,images.length);
+}
+
 function render(){
   renderCollectionBanner();
   renderPresentationCollection();
@@ -854,16 +880,17 @@ function render(){
   count.textContent=`${visible.length} ${visible.length===1?t('bundleSingular'):t('bundles')}`;
   empty.hidden=visible.length>0;
   renderSalesDashboard(visible);
-  grid.innerHTML=visible.map((p,index)=>{const selected=presentationSelection.has(productKey(p));const image=p.images[0];const cardSrc=image?.thumbSrc||image?.src;const bundleLabel=p.code&&p.code!=='—'?` · ${t('bundle')} ${p.code}`:'';return `<article class="card" tabindex="0" aria-label="${escapeHtml(`${t('openGallery')}: ${p.name}${bundleLabel}`)}" aria-keyshortcuts="Enter Space" data-product-id="${escapeHtml(productKey(p))}">
-    <div class="card-image ${image?.src?'is-loading':''}"><div class="stone-placeholder" style="--stone:${p.stone}"></div>${image?.src?`<span class="image-loading-badge">${escapeHtml(t('imageLoading'))}</span><img data-product-id="${escapeHtml(productKey(p))}" data-photo-file-id="${escapeHtml(image.fileId||'')}" src="${escapeHtml(cardSrc)}" ${image.thumbSrc?`srcset="${escapeHtml(image.thumbSrc)} 700w, ${escapeHtml(image.src)} 1400w" sizes="(max-width:580px) calc(100vw - 40px), (max-width:900px) calc(50vw - 26px), calc(50vw - 26px)"`:''} alt="${escapeHtml(p.name)} slab" loading="${index<2?'eager':'lazy'}" fetchpriority="${index<2?'high':'low'}" decoding="async" onload="this.classList.add('loaded');const container=this.closest('.card-image');container.classList.remove('is-loading');const ratio=this.naturalWidth/this.naturalHeight;container.classList.toggle('image-contained',ratio<1.38||ratio>1.78)" onerror="this.remove();const container=this.closest('.card-image');container.classList.remove('is-loading');container.classList.add('image-error')"><span class="image-error-badge">${escapeHtml(t('imageUnavailableShort'))}</span>`:''}
+  grid.innerHTML=visible.map((p,index)=>{const selected=presentationSelection.has(productKey(p)),slabImages=catalogSlabImages(p),catalogIndex=catalogImageIndex(p,slabImages),image=slabImages.length?slabImages[catalogIndex]:p.images[0],cardSrc=image?.thumbSrc||image?.src,hasCatalogNav=slabImages.length>1,bundleLabel=p.code&&p.code!=='—'?` · ${t('bundle')} ${p.code}`:'';return `<article class="card" tabindex="0" aria-label="${escapeHtml(`${t('openGallery')}: ${p.name}${bundleLabel}`)}" aria-keyshortcuts="Enter Space" data-product-id="${escapeHtml(productKey(p))}">
+    <div class="card-image ${image?.src?'is-loading':''}"><div class="stone-placeholder" style="--stone:${p.stone}"></div>${image?.src?`<span class="image-loading-badge">${escapeHtml(t('imageLoading'))}</span><img data-catalog-image="true" data-product-id="${escapeHtml(productKey(p))}" data-photo-file-id="${escapeHtml(image.fileId||'')}" src="${escapeHtml(cardSrc)}" ${image.thumbSrc?`srcset="${escapeHtml(image.thumbSrc)} 700w, ${escapeHtml(image.src)} 1400w" sizes="(max-width:580px) calc(100vw - 40px), (max-width:900px) calc(50vw - 26px), calc(50vw - 26px)"`:''} alt="${escapeHtml(p.name)} slab ${escapeHtml(image.label||catalogIndex+1)}" loading="${index<2?'eager':'lazy'}" fetchpriority="${index<2?'high':'low'}" decoding="async" onload="this.classList.add('loaded');const container=this.closest('.card-image');container.classList.remove('is-loading');const ratio=this.naturalWidth/this.naturalHeight;container.classList.toggle('image-contained',ratio<1.38||ratio>1.78)" onerror="this.classList.add('image-failed');const container=this.closest('.card-image');container.classList.remove('is-loading');container.classList.add('image-error')"><span class="image-error-badge">${escapeHtml(t('imageUnavailableShort'))}</span>`:''}${hasCatalogNav?`<button type="button" class="catalog-image-nav prev" data-catalog-direction="-1" aria-label="${escapeHtml(`${t('previousSlab')} · ${p.name}`)}">‹</button><span class="catalog-image-position" aria-live="polite">${escapeHtml(catalogImagePosition(image,catalogIndex,slabImages.length))}</span><button type="button" class="catalog-image-nav next" data-catalog-direction="1" aria-label="${escapeHtml(`${t('nextSlab')} · ${p.name}`)}">›</button>`:''}
       <span class="status-badge ${p.reserved?'reserved':''}">${escapeHtml(p.reserved?t('reserved'):t('available'))}</span>${freshnessBadgeMarkup(p)}${sharedCollectionActive?'':`<button type="button" class="card-collection-toggle ${selected?'selected':''}" data-product-id="${escapeHtml(productKey(p))}" aria-pressed="${selected}" aria-label="${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))} ${escapeHtml(p.name)}${escapeHtml(bundleLabel)}"><span aria-hidden="true">${selected?'✓':'+'}</span><span>${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))}</span></button>`}</div>
     <div class="card-info"><div><h3>${escapeHtml(p.name)}</h3><p class="card-meta">${escapeHtml(productStock(p))}</p>${p.media?`<p class="card-media-meta">${escapeHtml(p.media)}</p>`:''}</div><span class="card-code">${escapeHtml(p.code&&p.code!=='—'?`${t('bundle')} ${p.code}`:t('notProvided'))}</span></div>
   </article>`}).join('');
   grid.querySelectorAll('img[data-photo-file-id]').forEach(image=>{
-    image.addEventListener('load',()=>markPhotoVerified(image.dataset.productId,image.dataset.photoFileId),{once:true});
-    image.addEventListener('error',()=>markPhotoBroken(image.dataset.productId,image.dataset.photoFileId),{once:true});
+    image.addEventListener('load',()=>markPhotoVerified(image.dataset.productId,image.dataset.photoFileId));
+    image.addEventListener('error',()=>markPhotoBroken(image.dataset.productId,image.dataset.photoFileId));
     if(image.complete){if(image.naturalWidth)markPhotoVerified(image.dataset.productId,image.dataset.photoFileId);else markPhotoBroken(image.dataset.productId,image.dataset.photoFileId)}
   });
+  grid.querySelectorAll('.catalog-image-nav').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();const card=button.closest('.card'),product=products.find(item=>productKey(item)===card?.dataset.productId);if(product)updateCatalogCardImage(card,product,Number(button.dataset.catalogDirection))}));
   grid.querySelectorAll('.card').forEach(card=>{const toggle=card.querySelector('.card-collection-toggle');toggle?.addEventListener('click',event=>{event.stopPropagation();togglePresentationSelection(card.dataset.productId,!presentationSelection.has(card.dataset.productId))});card.addEventListener('click',event=>{if(!event.target.closest('button'))openProduct(card.dataset.productId)});card.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('button')){e.preventDefault();openProduct(card.dataset.productId)}})});
 }
 
@@ -1204,7 +1231,7 @@ function fetchPublishedScriptSnapshot(){
         const historyRuns=Array.isArray(historyData)?historyData:historyData&&Array.isArray(historyData.runs)?historyData.runs:data.syncHistory;
         syncHistory=Array.isArray(historyRuns)?historyRuns:[];
         syncState=statusData||data.syncStatus||null;
-        brokenPhotoIdsByProduct.clear();verifiedPhotoIdsByProduct.clear();photoVerification.checked=0;photoVerification.failed=0;photoVerification.lastCheckedAt=null;
+        brokenPhotoIdsByProduct.clear();verifiedPhotoIdsByProduct.clear();catalogImageIndexes.clear();photoVerification.checked=0;photoVerification.failed=0;photoVerification.lastCheckedAt=null;
         products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));pruneShortlist();prunePresentationSelection();const reportedInventory=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products),sourceIssues=products.filter(product=>sourceMismatchInfo(product).hasIssue),photoIssues=products.filter(product=>photoCheck(product).hasIssue),photoCoverageNotes=products.filter(product=>imageAudit(product).mismatch);inventoryReport={...reportedInventory,photoCheckIssues:photoIssues.length,photoCoverageNotes:photoCoverageNotes.length,sourceMismatches:sourceIssues.length,sourceMismatchFolders:sourceIssues.map(product=>product.folderName)};syncedAt=data.syncedAt;
         syncStatus.innerHTML=`<i></i> ${products.length} bundles · ${new Date(syncedAt).toLocaleDateString()}`;
         setSyncFeedback({...data,count:products.length,report:inventoryReport},location.protocol==='file:'?inventorySource:isGithubPages?'Last published sync':'Last sync');
