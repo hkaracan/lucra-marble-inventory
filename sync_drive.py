@@ -40,6 +40,10 @@ PACKING_LIST_PATTERN = re.compile(r"\bpacking\s+list\b", re.I)
 BUNDLE_CODE_PATTERN = re.compile(r"(?:^|\s)([KLM]\d+)\s*$", re.I)
 SOURCE_CODE_PATTERN = re.compile(r"\b([KLM]\d+)\b", re.I)
 MYSTIC_GREY_PATTERN = re.compile(r"\bmystic\s+grey\b", re.I)
+DISPLAY_NAME_ALIASES = {
+    "nebula wave": "Nebula Wave",
+    "sunset dlomite": "Sunset Dolomite",
+}
 REQUEST_LOCK = threading.Lock()
 LAST_REQUEST_AT = 0.0
 MIN_REQUEST_GAP = 0.35
@@ -115,6 +119,11 @@ def source_codes(value: str | None) -> list[str]:
     return sorted({match.group(1).upper() for match in SOURCE_CODE_PATTERN.finditer(str(value or ""))})
 
 
+def canonical_display_name(value: str | None) -> str:
+    text = " ".join(str(value or "").split())
+    return DISPLAY_NAME_ALIASES.get(text.casefold(), text)
+
+
 def compact_mystic_image_label(value: str | None) -> str:
     """Use the trailing image sequence for the Mystic Grey gallery labels."""
     text = re.sub(r"\.[^.]+$", "", str(value or "").strip())
@@ -132,6 +141,12 @@ def source_code_warnings(folder_name: str, packing_name: str | None) -> list[dic
     if not folder_codes or not packing_codes:
         return []
     folder_code = folder_codes[-1]
+    if (
+        re.search(r"\bnebula\s+wave\b", folder_name, re.I)
+        and folder_code == "L009"
+        and "L1009" in packing_codes
+    ):
+        return []
     if folder_code in packing_codes:
         return []
     return [
@@ -687,7 +702,7 @@ def normalize_folder(folder: dict[str, str]) -> dict:
     clean_name = re.sub(r"^\s*reserved\b\s*(?:-\s*)?", "", folder_name, flags=re.I).strip()
     code_match = BUNDLE_CODE_PATTERN.search(clean_name)
     code = code_match.group(1).upper() if code_match else "—"
-    display_name = clean_name[: code_match.start()].strip() if code_match else clean_name
+    display_name = canonical_display_name(clean_name[: code_match.start()].strip() if code_match else clean_name)
     if "_items" in folder:
         items = folder["_items"]
     else:
@@ -706,14 +721,16 @@ def normalize_folder(folder: dict[str, str]) -> dict:
         nested_code = next((match.group(1).upper() for source in code_sources if (match := re.search(r"\b([KLM]\d+)\b", source, re.I))), None)
         if nested_code:
             code = nested_code
+    if display_name == "Nebula Wave" and "L1009" in source_codes(packing_name):
+        code = "L1009"
     if not display_name:
         # Code-only folders still need a useful customer-facing name. Packing
         # list material is authoritative and is a safe fallback when Drive
         # provides no material name in the folder title.
-        display_name = next(
+        display_name = canonical_display_name(next(
             (str(line.get("material") or "").strip() for line in packing.get("lines", []) if str(line.get("material") or "").strip()),
             code if code != "—" else clean_name,
-        )
+        ))
     source_warnings = source_code_warnings(folder_name, packing_name)
     finishes = sorted({line["finish"] for line in packing["lines"] if line.get("finish")})
     dimensions = sorted({f'{line["widthCm"]} × {line["heightCm"]} cm' for line in packing["lines"] if line.get("widthCm") and line.get("heightCm")})

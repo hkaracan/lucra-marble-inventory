@@ -375,6 +375,21 @@ class MockedSyncTest(unittest.TestCase):
         self.assertEqual(product["sourceWarnings"][0]["packingCodes"], ["K5480"])
         self.assertIn("K5094", product["sourceWarnings"][0]["message"])
 
+    def test_known_nebula_alias_uses_packing_code_and_clean_name(self):
+        folder = {
+            "id": "nebula-wave",
+            "name": "NebuLa Wave L009",
+            "_items": [{"id": "packing", "name": "Packing List L1009.xlsx"}],
+        }
+
+        with patch.object(sync_drive, "download_file", return_value=packing_list_bytes()):
+            product = sync_drive.normalize_folder(folder)
+
+        self.assertEqual(product["name"], "Nebula Wave")
+        self.assertEqual(product["code"], "L1009")
+        self.assertEqual(product["sourceWarnings"], [])
+        self.assertEqual(sync_drive.canonical_display_name("Sunset Dlomite"), "Sunset Dolomite")
+
 
 if __name__ == "__main__":
     unittest.main()
