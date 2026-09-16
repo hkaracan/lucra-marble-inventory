@@ -239,7 +239,38 @@ class MockedSyncTest(unittest.TestCase):
             }
         )
 
-        self.assertEqual([image["label"] for image in product["extraImages"]], ["1", "10", "42"])
+        self.assertEqual([image["label"] for image in product["images"]], ["1", "10", "42"])
+        self.assertEqual(product["extraImages"], [])
+
+    def test_mystic_grey_packing_list_and_images_match_44_slabs(self):
+        rows = [
+            ["Block Number", "PLAKA NO.", "Material Name", None, "Dimensions", None, "Pcs", "Sqm", "Bundle Pcs", "Bundle Sqm"],
+        ]
+        rows.extend(
+            [f"M2880-{((number - 1) // 11) + 1:02d}", number, "Bookmatched/Polished", "Mystic Grey", 198, 313, 1, 271.76 / 44, None, None]
+            for number in range(1, 45)
+        )
+        rows.append(["TOPLAM", None, None, None, None, None, 44, 271.76, 44, 271.76])
+        image_items = [
+            {"id": f"photo-{number}", "name": f"M(2880){number:08d}.jpg"}
+            for number in range(1, 45)
+            if number not in {7, 37}
+        ]
+        folder = {
+            "id": "mystic-grey",
+            "name": "Mystic Grey M2880",
+            "_items": [{"id": "packing", "name": "Mystic Grey M2880 Packing List.xlsx"}, *image_items],
+        }
+
+        with patch.object(sync_drive, "download_file", return_value=workbook_bytes(rows)):
+            product = sync_drive.normalize_folder(folder)
+
+        self.assertEqual(product["pcs"], 44)
+        self.assertEqual(product["sqm"], 271.76)
+        self.assertEqual(len(product["images"]), 42)
+        self.assertEqual(product["extraImages"], [])
+        self.assertEqual(product["photoCheck"]["missingNumbers"], [7, 37])
+        self.assertTrue(product["photoCheck"]["countMismatch"])
 
     def test_nested_bundle_folder_can_supply_packing_list_and_images(self):
         def fake_folder_items(folder_id, timeout=35, attempts=3):

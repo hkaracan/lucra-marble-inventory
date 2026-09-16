@@ -348,6 +348,12 @@ def _packing_mapping(rows: list[list]) -> dict | None:
         width_col = _find_column(headers, lambda header: header in {"width", "w"} or header.startswith("width "))
         height_col = _find_column(headers, lambda header: header in {"height", "h"} or header.startswith("height "))
         length_col = _find_column(headers, lambda header: header in {"length", "lenght", "l"} or header.startswith("length ") or header.startswith("lenght "))
+        dimensions_col = _find_column(headers, lambda header: header in {"dimension", "dimensions"} or header.startswith("dimension "))
+        if dimensions_col is not None:
+            # Merged Dimensions headers commonly span the next two cells.
+            # The first numeric column after the block/plate reference is
+            # therefore the width and the following one is the height.
+            width_col, height_col = dimensions_col, dimensions_col + 1
 
         # Some workbooks put T/W/L on the row below a merged NET SIZES header.
         for extra_row in rows[header_index + 1 : header_index + 4]:
@@ -386,9 +392,10 @@ def _packing_mapping(rows: list[list]) -> dict | None:
                     if height_col is None and len(dimension_cols) > 1:
                         height_col = dimension_cols[1]
                 if finish_col is None:
+                    first_measure_col = width_col if width_col is not None else numeric_cols[0]
                     text_cols = [
                         index
-                        for index in range(block_col + 1, numeric_cols[0])
+                        for index in range(block_col + 1, first_measure_col)
                         if str(sample[index] or "").strip()
                     ]
                     if len(text_cols) >= 2:
@@ -474,7 +481,7 @@ def parse_packing_list(content: bytes) -> dict:
         raw_material = cell_at(mapping["material"])
         raw_finish = cell_at(mapping["finish"])
         row_text = " ".join(str(cell or "").strip() for cell in cells if str(cell or "").strip())
-        is_total = bool(re.search(r"\b(?:grand\s+)?total\b|total\s+(?:sqm|m2|area)", row_text, re.I))
+        is_total = bool(re.search(r"\b(?:grand\s+)?total\b|\btoplam\b|total\s+(?:sqm|m2|area)", row_text, re.I))
         if is_total:
             total_pcs = _numeric(cell_at(mapping["pcs"]))
             total_sqm = _numeric(cell_at(mapping["sqm"]))
@@ -711,10 +718,23 @@ def normalize_folder(folder: dict[str, str]) -> dict:
         # first folder listing was temporarily slow.
         items = folder_items(folder["id"], timeout=35, attempts=3)
     slab_images, extra_images, videos, packing, packing_name, packing_file_id, skipped_photo_folders = collect_media(items)
-    slab_images.sort(key=lambda image: (image["number"], image.get("view", 0)))
     if MYSTIC_GREY_PATTERN.search(folder_name):
+        # Mystic Grey's authoritative packing list numbers slabs 1–44, while
+        # the Drive files use names such as M(2880)00000001.jpg. Convert those
+        # numbered files into slab media so the two sources can be compared;
+        # any genuinely named image remains an additional view.
+        mystic_slabs = []
+        mystic_extras = []
         for image in [*slab_images, *extra_images]:
-            image["label"] = compact_mystic_image_label(image.get("label") or image.get("name"))
+            label = compact_mystic_image_label(image.get("label") or image.get("name"))
+            image["label"] = label
+            if label.isdigit():
+                image["number"] = int(label)
+                mystic_slabs.append(image)
+            else:
+                mystic_extras.append(image)
+        slab_images, extra_images = mystic_slabs, mystic_extras
+    slab_images.sort(key=lambda image: (image["number"], image.get("view", 0)))
     packing = packing or {"lines": [], "totalPcs": len(slab_images) or None, "totalSqm": None}
     if code == "—":
         code_sources = [packing_name or ""] + [str(line.get("block") or "") for line in packing.get("lines", [])]
