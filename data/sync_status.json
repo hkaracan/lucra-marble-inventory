@@ -1,21 +1,23 @@
 {
   "status": "success",
-  "attemptedAt": "2026-09-16T07:43:00Z",
-  "syncedAt": "2026-09-16T07:43:00Z",
+  "attemptedAt": "2026-09-16T09:04:58Z",
+  "syncedAt": "2026-09-16T09:04:58Z",
   "message": "Inventory sync completed.",
   "run": {
     "status": "success",
-    "attemptedAt": "2026-09-16T07:43:00Z",
-    "syncedAt": "2026-09-16T07:43:00Z",
+    "attemptedAt": "2026-09-16T09:04:58Z",
+    "syncedAt": "2026-09-16T09:04:58Z",
     "bundles": 55,
-    "added": 1,
-    "updated": 0,
-    "unchanged": 54,
-    "warnings": 2,
+    "added": 0,
+    "updated": 3,
+    "unchanged": 52,
+    "warnings": 1,
     "errors": 0,
-    "addedFolders": [
-      "Mystic Grey M2880"
-    ],
-    "updatedFolders": []
+    "addedFolders": [],
+    "updatedFolders": [
+      "Mystic Grey M2880",
+      "NebuLa Wave L009",
+      "Sunset Dlomite K3561"
+    ]
   }
 }

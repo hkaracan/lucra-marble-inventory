@@ -1,7 +1,7 @@
 // Generated from inventory.json by sync_drive.py.
 window.LUCRA_INVENTORY = {
   "source": "https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z",
-  "syncedAt": "2026-09-16T07:43:00Z",
+  "syncedAt": "2026-09-16T09:04:58Z",
   "location": "Denizli, Türkiye",
   "products": [
     {
@@ -7982,675 +7982,673 @@ window.LUCRA_INVENTORY = {
       "groupName": null,
       "code": "M2880",
       "reserved": false,
-      "finish": "Natural stone",
-      "pcs": 88,
-      "sqm": 543.53,
+      "finish": "Bookmatched/Polished",
+      "pcs": 44,
+      "sqm": 271.76,
       "dimensions": [
-        "1 × 192 cm",
-        "10 × 197 cm",
-        "11 × 198 cm",
-        "12 × 197 cm",
-        "13 × 198 cm",
-        "14 × 198 cm",
-        "15 × 198 cm",
-        "16 × 198 cm",
-        "17 × 198 cm",
-        "18 × 198 cm",
-        "19 × 198 cm",
-        "2 × 197 cm",
-        "20 × 198 cm",
-        "21 × 197 cm",
-        "22 × 198 cm",
-        "23 × 197 cm",
-        "24 × 198 cm",
-        "25 × 199 cm",
-        "26 × 198 cm",
-        "27 × 197 cm",
-        "28 × 198 cm",
-        "29 × 198 cm",
-        "3 × 197 cm",
-        "30 × 198 cm",
-        "31 × 198 cm",
-        "32 × 198 cm",
-        "33 × 197 cm",
-        "34 × 197 cm",
-        "35 × 198 cm",
-        "36 × 198 cm",
-        "37 × 198 cm",
-        "38 × 197 cm",
-        "39 × 199 cm",
-        "4 × 199 cm",
-        "40 × 197 cm",
-        "41 × 197 cm",
-        "42 × 197 cm",
-        "43 × 197 cm",
-        "44 × 197 cm",
-        "5 × 197 cm",
-        "6 × 198 cm",
-        "7 × 198 cm",
-        "8 × 197 cm",
-        "9 × 198 cm"
+        "192 × 312 cm",
+        "197 × 311 cm",
+        "197 × 312 cm",
+        "197 × 313 cm",
+        "198 × 312 cm",
+        "198 × 313 cm",
+        "198 × 314 cm",
+        "199 × 312 cm",
+        "199 × 313 cm"
       ],
       "lines": [
         {
           "block": "M2880-01",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 1,
-          "heightCm": 192,
+          "finish": "Bookmatched/Polished",
+          "material": "1",
+          "widthCm": 192,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 5.9904
         },
         {
           "block": "M2880-01",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 2,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "2",
+          "widthCm": 197,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1661
         },
         {
           "block": "M2880-01",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 3,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "3",
+          "widthCm": 197,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1464
         },
         {
           "block": "M2880-01",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 4,
-          "heightCm": 199,
+          "finish": "Bookmatched/Polished",
+          "material": "4",
+          "widthCm": 199,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.2287
         },
         {
           "block": "M2880-01",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 5,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "5",
+          "widthCm": 197,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1661
         },
         {
           "block": "M2880-01",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 6,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "6",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-01",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 7,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "7",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-01",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 8,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "8",
+          "widthCm": 197,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1661
         },
         {
           "block": "M2880-01",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 9,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "9",
+          "widthCm": 198,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1776
         },
         {
           "block": "M2880-01",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 10,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "10",
+          "widthCm": 197,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1661
         },
         {
           "block": "M2880-01",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 11,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "11",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-02",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 12,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "12",
+          "widthCm": 197,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1661
         },
         {
           "block": "M2880-02",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 13,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "13",
+          "widthCm": 198,
+          "heightCm": 314,
           "pcs": 1,
           "sqm": 6.2172
         },
         {
           "block": "M2880-02",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 14,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "14",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-02",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 15,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "15",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-02",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 16,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "16",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-02",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 17,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "17",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-02",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 18,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "18",
+          "widthCm": 198,
+          "heightCm": 314,
           "pcs": 1,
           "sqm": 6.2172
         },
         {
           "block": "M2880-02",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 19,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "19",
+          "widthCm": 198,
+          "heightCm": 314,
           "pcs": 1,
           "sqm": 6.2172
         },
         {
           "block": "M2880-02",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 20,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "20",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-02",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 21,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "21",
+          "widthCm": 197,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1661
         },
         {
           "block": "M2880-02",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 22,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "22",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-03",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 23,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "23",
+          "widthCm": 197,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1464
         },
         {
           "block": "M2880-03",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 24,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "24",
+          "widthCm": 198,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1776
         },
         {
           "block": "M2880-03",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 25,
-          "heightCm": 199,
+          "finish": "Bookmatched/Polished",
+          "material": "25",
+          "widthCm": 199,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.2287
         },
         {
           "block": "M2880-03",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 26,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "26",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-03",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 27,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "27",
+          "widthCm": 197,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1464
         },
         {
           "block": "M2880-03",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 28,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "28",
+          "widthCm": 198,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1776
         },
         {
           "block": "M2880-03",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 29,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "29",
+          "widthCm": 198,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1776
         },
         {
           "block": "M2880-03",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 30,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "30",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-03",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 31,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "31",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-03",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 32,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "32",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-03",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 33,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "33",
+          "widthCm": 197,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1464
         },
         {
           "block": "M2880-04",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 34,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "34",
+          "widthCm": 197,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1464
         },
         {
           "block": "M2880-04",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 35,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "35",
+          "widthCm": 198,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1776
         },
         {
           "block": "M2880-04",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 36,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "36",
+          "widthCm": 198,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1776
         },
         {
           "block": "M2880-04",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 37,
-          "heightCm": 198,
+          "finish": "Bookmatched/Polished",
+          "material": "37",
+          "widthCm": 198,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1974
         },
         {
           "block": "M2880-04",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 38,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "38",
+          "widthCm": 197,
+          "heightCm": 311,
           "pcs": 1,
           "sqm": 6.1267
         },
         {
           "block": "M2880-04",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 39,
-          "heightCm": 199,
+          "finish": "Bookmatched/Polished",
+          "material": "39",
+          "widthCm": 199,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.2088
         },
         {
           "block": "M2880-04",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 40,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "40",
+          "widthCm": 197,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1661
         },
         {
           "block": "M2880-04",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 41,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "41",
+          "widthCm": 197,
+          "heightCm": 313,
           "pcs": 1,
           "sqm": 6.1661
         },
         {
           "block": "M2880-04",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 42,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "42",
+          "widthCm": 197,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1464
         },
         {
           "block": "M2880-04",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 43,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "43",
+          "widthCm": 197,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1464
         },
         {
           "block": "M2880-04",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": 44,
-          "heightCm": 197,
+          "finish": "Bookmatched/Polished",
+          "material": "44",
+          "widthCm": 197,
+          "heightCm": 312,
           "pcs": 1,
           "sqm": 6.1464
-        },
-        {
-          "block": "TOPLAM",
-          "finish": "",
-          "material": "Bookmatched/Polished",
-          "widthCm": null,
-          "heightCm": null,
-          "pcs": 44,
-          "sqm": 271.7641
         }
       ],
-      "images": [],
-      "extraImages": [
+      "images": [
         {
-          "label": "M(2880)00000001",
+          "label": "1",
           "fileId": "1IPy1AvPi4HZUxY2feO3_FuEE8jRH9rVZ",
-          "name": "M(2880)00000001.jpg"
+          "name": "M(2880)00000001.jpg",
+          "number": 1
         },
         {
-          "label": "M(2880)00000002",
+          "label": "2",
           "fileId": "1moy6HVV4oU5uhD8E0Qdaoj9q4ytY2FVe",
-          "name": "M(2880)00000002.jpg"
+          "name": "M(2880)00000002.jpg",
+          "number": 2
         },
         {
-          "label": "M(2880)00000003",
+          "label": "3",
           "fileId": "1-mKGgVlMRKURlhWx_1O_X3dCYoiVpo40",
-          "name": "M(2880)00000003.jpg"
+          "name": "M(2880)00000003.jpg",
+          "number": 3
         },
         {
-          "label": "M(2880)00000004",
+          "label": "4",
           "fileId": "1FcW3dAU78BCvZbkV5TcgxNNS1nMMt6lc",
-          "name": "M(2880)00000004.jpg"
+          "name": "M(2880)00000004.jpg",
+          "number": 4
         },
         {
-          "label": "M(2880)00000005",
+          "label": "5",
           "fileId": "14xbRyDqAreH_XBWjtKMCwKbO-4RAGb0I",
-          "name": "M(2880)00000005.jpg"
+          "name": "M(2880)00000005.jpg",
+          "number": 5
         },
         {
-          "label": "M(2880)00000006",
+          "label": "6",
           "fileId": "1ffTjQbOpLOZZd9Y-UpJXTqbotfDsEbwg",
-          "name": "M(2880)00000006.jpg"
+          "name": "M(2880)00000006.jpg",
+          "number": 6
         },
         {
-          "label": "M(2880)00000008",
+          "label": "8",
           "fileId": "1NnrxShn7MMP88L5xteYqi3PPfStACZBE",
-          "name": "M(2880)00000008.jpg"
+          "name": "M(2880)00000008.jpg",
+          "number": 8
         },
         {
-          "label": "M(2880)00000009",
+          "label": "9",
           "fileId": "11FIY4FBGLdjYn-UALQ2n9gnapW4x-ioJ",
-          "name": "M(2880)00000009.jpg"
+          "name": "M(2880)00000009.jpg",
+          "number": 9
         },
         {
-          "label": "M(2880)00000010",
+          "label": "10",
           "fileId": "1XA0EWWi5Y5UdEyVfVahyp6nKPxmiqU_8",
-          "name": "M(2880)00000010.jpg"
+          "name": "M(2880)00000010.jpg",
+          "number": 10
         },
         {
-          "label": "M(2880)00000011",
+          "label": "11",
           "fileId": "1NNvAjN3vyzUXoBfqTCVi2pvOfKyL0iKF",
-          "name": "M(2880)00000011.jpg"
+          "name": "M(2880)00000011.jpg",
+          "number": 11
         },
         {
-          "label": "M(2880)00000012",
+          "label": "12",
           "fileId": "13ipX5ecVhtlFbg_0RB9q3pScQnOHwiqQ",
-          "name": "M(2880)00000012.jpg"
+          "name": "M(2880)00000012.jpg",
+          "number": 12
         },
         {
-          "label": "M(2880)00000013",
+          "label": "13",
           "fileId": "1NJHfMZgKIYL9DzpN5ehOJyEDN7hFLC5d",
-          "name": "M(2880)00000013.jpg"
+          "name": "M(2880)00000013.jpg",
+          "number": 13
         },
         {
-          "label": "M(2880)00000014",
+          "label": "14",
           "fileId": "1khMjw_OYRxmZkcXYUeLLYb67j54q3TOI",
-          "name": "M(2880)00000014.jpg"
+          "name": "M(2880)00000014.jpg",
+          "number": 14
         },
         {
-          "label": "M(2880)00000015",
+          "label": "15",
           "fileId": "1UtyJDLtxg5j_Rrn_SsJCdu4ELj1uuUpj",
-          "name": "M(2880)00000015.jpg"
+          "name": "M(2880)00000015.jpg",
+          "number": 15
         },
         {
-          "label": "M(2880)00000016",
+          "label": "16",
           "fileId": "1CTuqp5lPJLV0_wAJrgruMgrAFPMcwY9b",
-          "name": "M(2880)00000016.jpg"
+          "name": "M(2880)00000016.jpg",
+          "number": 16
         },
         {
-          "label": "M(2880)00000017",
+          "label": "17",
           "fileId": "1Wz76VS6Q7AwDKRxrXM9v82DJNld_zp2V",
-          "name": "M(2880)00000017.jpg"
+          "name": "M(2880)00000017.jpg",
+          "number": 17
         },
         {
-          "label": "M(2880)00000018",
+          "label": "18",
           "fileId": "1zFp-YzInTKTYUHDMImjZjG_azRlqFzw-",
-          "name": "M(2880)00000018.jpg"
+          "name": "M(2880)00000018.jpg",
+          "number": 18
         },
         {
-          "label": "M(2880)00000019",
+          "label": "19",
           "fileId": "11jgotd0C3v_9EOhYWpb064LPuNU6yCUN",
-          "name": "M(2880)00000019.jpg"
+          "name": "M(2880)00000019.jpg",
+          "number": 19
         },
         {
-          "label": "M(2880)00000020",
+          "label": "20",
           "fileId": "1FEb0MjgqJlQngkUcv9nTb0UQtsqZZAQ5",
-          "name": "M(2880)00000020.jpg"
+          "name": "M(2880)00000020.jpg",
+          "number": 20
         },
         {
-          "label": "M(2880)00000021",
+          "label": "21",
           "fileId": "1F6aLb-AH5EJWrYOrLHRbZueAWTnPGu2v",
-          "name": "M(2880)00000021.jpg"
+          "name": "M(2880)00000021.jpg",
+          "number": 21
         },
         {
-          "label": "M(2880)00000022",
+          "label": "22",
           "fileId": "14cwWZoe7gpPbRhzG54bY_kw8b1LA0GA3",
-          "name": "M(2880)00000022.jpg"
+          "name": "M(2880)00000022.jpg",
+          "number": 22
         },
         {
-          "label": "M(2880)00000023",
+          "label": "23",
           "fileId": "1XAryJBL_-Xlh6YzXxxKZoV4bmSlwqkr7",
-          "name": "M(2880)00000023.jpg"
+          "name": "M(2880)00000023.jpg",
+          "number": 23
         },
         {
-          "label": "M(2880)00000024",
+          "label": "24",
           "fileId": "11ymnGmpHiK1hw7GHhUxehgAfymI3lhVf",
-          "name": "M(2880)00000024.jpg"
+          "name": "M(2880)00000024.jpg",
+          "number": 24
         },
         {
-          "label": "M(2880)00000025",
+          "label": "25",
           "fileId": "109D1lsxQMkGS2NEZO6BdEcqLiZYcef5t",
-          "name": "M(2880)00000025.jpg"
+          "name": "M(2880)00000025.jpg",
+          "number": 25
         },
         {
-          "label": "M(2880)00000026",
+          "label": "26",
           "fileId": "1ueQJEhtQrQ4N2HDL2MEnNXjwnEBLgHfD",
-          "name": "M(2880)00000026.jpg"
+          "name": "M(2880)00000026.jpg",
+          "number": 26
         },
         {
-          "label": "M(2880)00000027",
+          "label": "27",
           "fileId": "1creqir8svrNKco2n29FN5yhWHwiz4hEb",
-          "name": "M(2880)00000027.jpg"
+          "name": "M(2880)00000027.jpg",
+          "number": 27
         },
         {
-          "label": "M(2880)00000028",
+          "label": "28",
           "fileId": "1De_IGp1Jj5FFHRFe4Z_ngtLxc8gBkguf",
-          "name": "M(2880)00000028.jpg"
+          "name": "M(2880)00000028.jpg",
+          "number": 28
         },
         {
-          "label": "M(2880)00000029",
+          "label": "29",
           "fileId": "1nsSHQLq743mBiqbc3qbQWewl648Khm1q",
-          "name": "M(2880)00000029.jpg"
+          "name": "M(2880)00000029.jpg",
+          "number": 29
         },
         {
-          "label": "M(2880)00000030",
+          "label": "30",
           "fileId": "15SwriWeWAVy_M2ZE4YtFx3EP9eudeK7e",
-          "name": "M(2880)00000030.jpg"
+          "name": "M(2880)00000030.jpg",
+          "number": 30
         },
         {
-          "label": "M(2880)00000031",
+          "label": "31",
           "fileId": "1-TVfJFojk45SddkGqeB6hlrKP7XqNSWi",
-          "name": "M(2880)00000031.jpg"
+          "name": "M(2880)00000031.jpg",
+          "number": 31
         },
         {
-          "label": "M(2880)00000032",
+          "label": "32",
           "fileId": "1RFR3wiGoxI_dbylyCcbRmM3bmPC15l6a",
-          "name": "M(2880)00000032.jpg"
+          "name": "M(2880)00000032.jpg",
+          "number": 32
         },
         {
-          "label": "M(2880)00000033",
+          "label": "33",
           "fileId": "169sxSm6o7zws6bImTygAmDYZoctUGd2Q",
-          "name": "M(2880)00000033.jpg"
+          "name": "M(2880)00000033.jpg",
+          "number": 33
         },
         {
-          "label": "M(2880)00000034",
+          "label": "34",
           "fileId": "1C8Ze3bpRISDCpJb1mqMFXrPBFPj-B33B",
-          "name": "M(2880)00000034.jpg"
+          "name": "M(2880)00000034.jpg",
+          "number": 34
         },
         {
-          "label": "M(2880)00000035",
+          "label": "35",
           "fileId": "1gTTt1sOpc_j4-ucaH88uiEoizWRu7x1X",
-          "name": "M(2880)00000035.jpg"
+          "name": "M(2880)00000035.jpg",
+          "number": 35
         },
         {
-          "label": "M(2880)00000036",
+          "label": "36",
           "fileId": "1WVEy-GCdeZ9EzjJy2qsRlEp2OulJMMQ7",
-          "name": "M(2880)00000036.jpg"
+          "name": "M(2880)00000036.jpg",
+          "number": 36
         },
         {
-          "label": "M(2880)00000038",
+          "label": "38",
           "fileId": "1mLOasLa-I3N1qBhU87kB_EXhCijyIqmK",
-          "name": "M(2880)00000038.jpg"
+          "name": "M(2880)00000038.jpg",
+          "number": 38
         },
         {
-          "label": "M(2880)00000039",
+          "label": "39",
           "fileId": "1A8JtTXGrDQCLpM1yLD5U1KRg99_E0J5k",
-          "name": "M(2880)00000039.jpg"
+          "name": "M(2880)00000039.jpg",
+          "number": 39
         },
         {
-          "label": "M(2880)00000040",
+          "label": "40",
           "fileId": "1oKTkB7ErO3bjMQuhEhkFmtPLk8oLLuO6",
-          "name": "M(2880)00000040.jpg"
+          "name": "M(2880)00000040.jpg",
+          "number": 40
         },
         {
-          "label": "M(2880)00000041",
+          "label": "41",
           "fileId": "1vVK6nZeSlkYqCEvkOqhbZVKCsVCsUm1M",
-          "name": "M(2880)00000041.jpg"
+          "name": "M(2880)00000041.jpg",
+          "number": 41
         },
         {
-          "label": "M(2880)00000042",
+          "label": "42",
           "fileId": "1dSutos73oQk0hgqn1lFdTqRCOYO21V9b",
-          "name": "M(2880)00000042.jpg"
+          "name": "M(2880)00000042.jpg",
+          "number": 42
         },
         {
-          "label": "M(2880)00000043",
+          "label": "43",
           "fileId": "192t8nMsAvdt3KS50goaUItYxlxiGCZY3",
-          "name": "M(2880)00000043.jpg"
+          "name": "M(2880)00000043.jpg",
+          "number": 43
         },
         {
-          "label": "M(2880)00000044",
+          "label": "44",
           "fileId": "1SW-nnoRAni6QMgRqc5e1ZjajTIHMhOPH",
-          "name": "M(2880)00000044.jpg"
+          "name": "M(2880)00000044.jpg",
+          "number": 44
         }
       ],
+      "extraImages": [],
       "videos": [],
       "packingList": "Mystic Grey M2880 Packing List.xlsx",
       "packingListId": "15_ZiG5Tip7dggNQJGLw-ySda4g7-nJVp",
@@ -8660,10 +8658,13 @@ window.LUCRA_INVENTORY = {
       "sourceWarnings": [],
       "photoCheck": {
         "listedImages": 42,
-        "slabImages": 0,
-        "extraImages": 42,
-        "expectedSlabs": 88,
-        "missingNumbers": [],
+        "slabImages": 42,
+        "extraImages": 0,
+        "expectedSlabs": 44,
+        "missingNumbers": [
+          7,
+          37
+        ],
         "countMismatch": true,
         "skippedFolders": [],
         "brokenImages": []
@@ -8948,11 +8949,11 @@ window.LUCRA_INVENTORY = {
       }
     },
     {
-      "name": "NebuLa Wave",
+      "name": "Nebula Wave",
       "folderName": "NebuLa Wave L009",
       "folderId": "1o0BB5HG8xRwknAZ6zhabIUQLjdnhLrix",
       "groupName": null,
-      "code": "L009",
+      "code": "L1009",
       "reserved": false,
       "finish": "Bookmatched/Polished",
       "pcs": 39,
@@ -9313,16 +9314,7 @@ window.LUCRA_INVENTORY = {
       "syncError": null,
       "packingWarning": null,
       "skippedPhotoFolders": [],
-      "sourceWarnings": [
-        {
-          "kind": "source-code-mismatch",
-          "folderCode": "L009",
-          "packingCodes": [
-            "L1009"
-          ],
-          "message": "Folder code L009 does not match packing-list name code(s): L1009."
-        }
-      ],
+      "sourceWarnings": [],
       "photoCheck": {
         "listedImages": 47,
         "slabImages": 39,
@@ -13911,7 +13903,334 @@ window.LUCRA_INVENTORY = {
       }
     },
     {
-      "name": "Sunset Dlomite",
+      "name": "Sunset Dolomite",
+      "folderName": "Sunset Dolomite K1443",
+      "folderId": "103Os1aHtVytHIGnBSPV45p3he0AVdHYT",
+      "groupName": "Sunset Dolomite New",
+      "code": "K1443",
+      "reserved": false,
+      "finish": "Bookmatched/Polished",
+      "pcs": 22,
+      "sqm": 106.08,
+      "dimensions": [
+        "166 × 290 cm",
+        "166 × 291 cm",
+        "167 × 291 cm"
+      ],
+      "lines": [
+        {
+          "block": "K14430202",
+          "finish": "Bookmatched/Polished",
+          "material": "Sunset Dolomite",
+          "widthCm": 167,
+          "heightCm": 291,
+          "pcs": 1,
+          "sqm": 4.86
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Polished",
+          "material": "Sunset Dolomite",
+          "widthCm": 166,
+          "heightCm": 291,
+          "pcs": 7,
+          "sqm": 33.81
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Polished",
+          "material": "Sunset Dolomite",
+          "widthCm": 166,
+          "heightCm": 290,
+          "pcs": 2,
+          "sqm": 9.63
+        },
+        {
+          "block": "",
+          "finish": "Bookmatched/Polished",
+          "material": "Sunset Dolomite",
+          "widthCm": 166,
+          "heightCm": 291,
+          "pcs": 1,
+          "sqm": 4.83
+        },
+        {
+          "block": "K14430302",
+          "finish": "Bookmatched/Polished",
+          "material": "Sunset Dolomite",
+          "widthCm": 166,
+          "heightCm": 290,
+          "pcs": 11,
+          "sqm": 52.95
+        }
+      ],
+      "images": [
+        {
+          "number": 12,
+          "label": "12",
+          "fileId": "1Qd7m1dpImKkIV3NbCghDw5h8Eigc0qtV",
+          "name": "12.jpg"
+        },
+        {
+          "number": 13,
+          "label": "13",
+          "fileId": "10SxQMJ4h0wpVnBV62P3U0nt0RZ5HFOMw",
+          "name": "13.jpg"
+        },
+        {
+          "number": 14,
+          "label": "14",
+          "fileId": "1l7YnqGkAkhRXGUlxKVczaxxYR3O17n57",
+          "name": "14.jpg"
+        },
+        {
+          "number": 15,
+          "label": "15",
+          "fileId": "1LoxWclemqUPnbVSibACw3bUwm89_w7sJ",
+          "name": "15.jpg"
+        },
+        {
+          "number": 16,
+          "label": "16",
+          "fileId": "1_zGaSXRv2YyJ2zLlJQvnW3dsUIBxzyna",
+          "name": "16.jpg"
+        },
+        {
+          "number": 17,
+          "label": "17",
+          "fileId": "1HzKM3y-YCnIMvMLX1CkoMZ0rT9ejfhAp",
+          "name": "17.jpg"
+        },
+        {
+          "number": 18,
+          "label": "18",
+          "fileId": "1JRM2RvFBNXfpKr1SBkUzkyf9GiKCC0HE",
+          "name": "18.jpg"
+        },
+        {
+          "number": 19,
+          "label": "19",
+          "fileId": "1Bb_2NZzslXMZgH1qlmA7a8ZzR6cgI1S6",
+          "name": "19.jpg"
+        },
+        {
+          "number": 20,
+          "label": "20",
+          "fileId": "1rdPdW_dLBDugkQr0Ue7m-PzY-pFz8i93",
+          "name": "20.jpg"
+        },
+        {
+          "number": 21,
+          "label": "21",
+          "fileId": "1WV70Kl7L6sOHKDnJJNwiyA1LipEbDB2k",
+          "name": "21.jpg"
+        },
+        {
+          "number": 22,
+          "label": "22",
+          "fileId": "1qCP2p3msGglJLSr9-r-RLAJrGZDg6VHG",
+          "name": "22.jpg"
+        },
+        {
+          "number": 23,
+          "label": "23",
+          "fileId": "1--DfwmQ9AknEX3dd9c1pO1lRnhjN1eUN",
+          "name": "23.jpg"
+        },
+        {
+          "number": 24,
+          "label": "24",
+          "fileId": "1Z6ny4bTIpyRX-IhBc6bPSjzyVJkepYqQ",
+          "name": "24.jpg"
+        },
+        {
+          "number": 25,
+          "label": "25",
+          "fileId": "1wxTWBDpzjfef3cu36zoLStdVq9j0h4Ji",
+          "name": "25.jpg"
+        },
+        {
+          "number": 26,
+          "label": "26",
+          "fileId": "10_Gh_3Xrf6WfjbcbP3iM2FVg_CE0GwXf",
+          "name": "26.jpg"
+        },
+        {
+          "number": 27,
+          "label": "27",
+          "fileId": "1GEOxotV2zQJL1cYur2-WkNK-SEN8vi5O",
+          "name": "27.jpg"
+        },
+        {
+          "number": 28,
+          "label": "28",
+          "fileId": "1MaOsnucSADqG_sftNi1u4f53jrKiQW_m",
+          "name": "28.jpg"
+        },
+        {
+          "number": 29,
+          "label": "29",
+          "fileId": "10Iz7IAS78gHRPdEiG73uG8ZgOmbXiC69",
+          "name": "29.jpg"
+        },
+        {
+          "number": 30,
+          "label": "30",
+          "fileId": "1g-SGK-yMGLSpiqoEtluEq4h1g_c66mYl",
+          "name": "30.jpg"
+        },
+        {
+          "number": 31,
+          "label": "31",
+          "fileId": "1YQ7fLBT7Xia96MG47REPc36J2On6KFj9",
+          "name": "31.jpg"
+        },
+        {
+          "number": 32,
+          "label": "32",
+          "fileId": "1czlkIICeqk9y3zYewYfjU0H6g-yEYgg8",
+          "name": "32.jpg"
+        },
+        {
+          "number": 33,
+          "label": "33",
+          "fileId": "15QG_aGZFGcd2fmETy29W5ow0b3z145i4",
+          "name": "33.jpg"
+        }
+      ],
+      "extraImages": [
+        {
+          "label": "Bookmatch 1",
+          "fileId": "1zjxHZonm3IFAJEB-bagMUwi425Qowxzv",
+          "name": "Bookmatch 1.jpg"
+        },
+        {
+          "label": "Bookmatch 2",
+          "fileId": "1gvaJQuvi6VrUtFpLSU5AkTOUgMp8ndKq",
+          "name": "Bookmatch 2.jpg"
+        },
+        {
+          "label": "Bookmatch 3",
+          "fileId": "1mPtE3U90PArWvE_-s9Je5wzUIL6XG_I1",
+          "name": "Bookmatch 3.jpg"
+        },
+        {
+          "label": "Close (1)",
+          "fileId": "1fRvk94WUdFIIyEda-YydMajL0qHkEVAT",
+          "name": "Close (1).jpg"
+        },
+        {
+          "label": "Close (2)",
+          "fileId": "1yIHS32yZci_pkr0C_BhF27Zi2KrloE5Z",
+          "name": "Close (2).jpg"
+        },
+        {
+          "label": "Close (3)",
+          "fileId": "1RzRwEyIi7Idibjtsr--YTf1MhFi8dnAj",
+          "name": "Close (3).jpg"
+        },
+        {
+          "label": "Close (4)",
+          "fileId": "1HqjeikU0hCOsTi3sA9nfscxlzOlnzIrL",
+          "name": "Close (4).jpg"
+        },
+        {
+          "label": "Close (5)",
+          "fileId": "1JH9Dy1orhbuPs1b4wf6pZWbBoyxAR1uO",
+          "name": "Close (5).jpg"
+        },
+        {
+          "label": "Close (6)",
+          "fileId": "1ImTjfm3NKn4OjRlc38kURJANaCwB4p-d",
+          "name": "Close (6).jpg"
+        },
+        {
+          "label": "Close (7)",
+          "fileId": "12dDJu3i8KI8U8M93S6710dVPM8gEVBUy",
+          "name": "Close (7).jpg"
+        },
+        {
+          "label": "Close 1",
+          "fileId": "18nCbM39Q-gcmWUMazUIc-sQ_LNKGDvk2",
+          "name": "Close 1.jpg"
+        },
+        {
+          "label": "Close 2",
+          "fileId": "12VT1eqtm0Yk7o9w1Hd9dd5FWbIfdl-A-",
+          "name": "Close 2.jpg"
+        },
+        {
+          "label": "Close 3",
+          "fileId": "1xW8SUWcutg9i8eQRw4lEQmmpycCbsb_3",
+          "name": "Close 3.jpg"
+        },
+        {
+          "label": "Close 4",
+          "fileId": "1M6_Ajn6kV7l_5NevKJFH4LIjx2ZMPJ8a",
+          "name": "Close 4.jpg"
+        }
+      ],
+      "videos": [
+        {
+          "label": "Bookmatch Video 1",
+          "fileId": "1SPArx6AmKTYVxC-_PxWd9kwx4XQICGAk",
+          "name": "Bookmatch Video 1.mp4"
+        },
+        {
+          "label": "Bookmatch Video 2",
+          "fileId": "1P2EyBuyeZsRvM0Yh43AqiOMf9OKJSO-_",
+          "name": "Bookmatch Video 2.mp4"
+        },
+        {
+          "label": "Bookmatch Video 3",
+          "fileId": "1GRWd5IJSC7OJW71n5VLr05j0DrxlV4Hf",
+          "name": "Bookmatch Video 3.mp4"
+        },
+        {
+          "label": "Close (1)",
+          "fileId": "1UvuHmxdGUpuw5jd5VPLe40O3s4tkSE2f",
+          "name": "Close (1).mp4"
+        },
+        {
+          "label": "Close (2)",
+          "fileId": "1LwmUES7pMTko_oQTdDc7ggHEgVkHODEL",
+          "name": "Close (2).mp4"
+        },
+        {
+          "label": "movie (1)",
+          "fileId": "1p1hVQWZu_HmBsaQ66ZqEEmVJrAIR4Fou",
+          "name": "movie (1).mp4"
+        },
+        {
+          "label": "movie (2)",
+          "fileId": "1p3sqZUUG8bb_bo-gJLSI3gBoA6if-0WE",
+          "name": "movie (2).mp4"
+        },
+        {
+          "label": "movie (3)",
+          "fileId": "1G7UmswLbg0_VwxKdkeVK933rh1wS0b3o",
+          "name": "movie (3).mp4"
+        }
+      ],
+      "packingList": "Packing List K1443.xlsx",
+      "packingListId": "1CRvsej8w11VtubnK2-IpansMzQtrz98Z",
+      "syncError": null,
+      "packingWarning": null,
+      "skippedPhotoFolders": [],
+      "sourceWarnings": [],
+      "photoCheck": {
+        "listedImages": 36,
+        "slabImages": 22,
+        "extraImages": 14,
+        "expectedSlabs": 22,
+        "missingNumbers": [],
+        "countMismatch": false,
+        "skippedFolders": [],
+        "brokenImages": []
+      }
+    },
+    {
+      "name": "Sunset Dolomite",
       "folderName": "Sunset Dlomite K3561",
       "folderId": "15Qtk0BaVMdXioZJAqcrVv4I_qWgCM1PW",
       "groupName": "Sunset Dolomite New",
@@ -14488,333 +14807,6 @@ window.LUCRA_INVENTORY = {
         "missingNumbers": [
           45
         ],
-        "countMismatch": false,
-        "skippedFolders": [],
-        "brokenImages": []
-      }
-    },
-    {
-      "name": "Sunset Dolomite",
-      "folderName": "Sunset Dolomite K1443",
-      "folderId": "103Os1aHtVytHIGnBSPV45p3he0AVdHYT",
-      "groupName": "Sunset Dolomite New",
-      "code": "K1443",
-      "reserved": false,
-      "finish": "Bookmatched/Polished",
-      "pcs": 22,
-      "sqm": 106.08,
-      "dimensions": [
-        "166 × 290 cm",
-        "166 × 291 cm",
-        "167 × 291 cm"
-      ],
-      "lines": [
-        {
-          "block": "K14430202",
-          "finish": "Bookmatched/Polished",
-          "material": "Sunset Dolomite",
-          "widthCm": 167,
-          "heightCm": 291,
-          "pcs": 1,
-          "sqm": 4.86
-        },
-        {
-          "block": "",
-          "finish": "Bookmatched/Polished",
-          "material": "Sunset Dolomite",
-          "widthCm": 166,
-          "heightCm": 291,
-          "pcs": 7,
-          "sqm": 33.81
-        },
-        {
-          "block": "",
-          "finish": "Bookmatched/Polished",
-          "material": "Sunset Dolomite",
-          "widthCm": 166,
-          "heightCm": 290,
-          "pcs": 2,
-          "sqm": 9.63
-        },
-        {
-          "block": "",
-          "finish": "Bookmatched/Polished",
-          "material": "Sunset Dolomite",
-          "widthCm": 166,
-          "heightCm": 291,
-          "pcs": 1,
-          "sqm": 4.83
-        },
-        {
-          "block": "K14430302",
-          "finish": "Bookmatched/Polished",
-          "material": "Sunset Dolomite",
-          "widthCm": 166,
-          "heightCm": 290,
-          "pcs": 11,
-          "sqm": 52.95
-        }
-      ],
-      "images": [
-        {
-          "number": 12,
-          "label": "12",
-          "fileId": "1Qd7m1dpImKkIV3NbCghDw5h8Eigc0qtV",
-          "name": "12.jpg"
-        },
-        {
-          "number": 13,
-          "label": "13",
-          "fileId": "10SxQMJ4h0wpVnBV62P3U0nt0RZ5HFOMw",
-          "name": "13.jpg"
-        },
-        {
-          "number": 14,
-          "label": "14",
-          "fileId": "1l7YnqGkAkhRXGUlxKVczaxxYR3O17n57",
-          "name": "14.jpg"
-        },
-        {
-          "number": 15,
-          "label": "15",
-          "fileId": "1LoxWclemqUPnbVSibACw3bUwm89_w7sJ",
-          "name": "15.jpg"
-        },
-        {
-          "number": 16,
-          "label": "16",
-          "fileId": "1_zGaSXRv2YyJ2zLlJQvnW3dsUIBxzyna",
-          "name": "16.jpg"
-        },
-        {
-          "number": 17,
-          "label": "17",
-          "fileId": "1HzKM3y-YCnIMvMLX1CkoMZ0rT9ejfhAp",
-          "name": "17.jpg"
-        },
-        {
-          "number": 18,
-          "label": "18",
-          "fileId": "1JRM2RvFBNXfpKr1SBkUzkyf9GiKCC0HE",
-          "name": "18.jpg"
-        },
-        {
-          "number": 19,
-          "label": "19",
-          "fileId": "1Bb_2NZzslXMZgH1qlmA7a8ZzR6cgI1S6",
-          "name": "19.jpg"
-        },
-        {
-          "number": 20,
-          "label": "20",
-          "fileId": "1rdPdW_dLBDugkQr0Ue7m-PzY-pFz8i93",
-          "name": "20.jpg"
-        },
-        {
-          "number": 21,
-          "label": "21",
-          "fileId": "1WV70Kl7L6sOHKDnJJNwiyA1LipEbDB2k",
-          "name": "21.jpg"
-        },
-        {
-          "number": 22,
-          "label": "22",
-          "fileId": "1qCP2p3msGglJLSr9-r-RLAJrGZDg6VHG",
-          "name": "22.jpg"
-        },
-        {
-          "number": 23,
-          "label": "23",
-          "fileId": "1--DfwmQ9AknEX3dd9c1pO1lRnhjN1eUN",
-          "name": "23.jpg"
-        },
-        {
-          "number": 24,
-          "label": "24",
-          "fileId": "1Z6ny4bTIpyRX-IhBc6bPSjzyVJkepYqQ",
-          "name": "24.jpg"
-        },
-        {
-          "number": 25,
-          "label": "25",
-          "fileId": "1wxTWBDpzjfef3cu36zoLStdVq9j0h4Ji",
-          "name": "25.jpg"
-        },
-        {
-          "number": 26,
-          "label": "26",
-          "fileId": "10_Gh_3Xrf6WfjbcbP3iM2FVg_CE0GwXf",
-          "name": "26.jpg"
-        },
-        {
-          "number": 27,
-          "label": "27",
-          "fileId": "1GEOxotV2zQJL1cYur2-WkNK-SEN8vi5O",
-          "name": "27.jpg"
-        },
-        {
-          "number": 28,
-          "label": "28",
-          "fileId": "1MaOsnucSADqG_sftNi1u4f53jrKiQW_m",
-          "name": "28.jpg"
-        },
-        {
-          "number": 29,
-          "label": "29",
-          "fileId": "10Iz7IAS78gHRPdEiG73uG8ZgOmbXiC69",
-          "name": "29.jpg"
-        },
-        {
-          "number": 30,
-          "label": "30",
-          "fileId": "1g-SGK-yMGLSpiqoEtluEq4h1g_c66mYl",
-          "name": "30.jpg"
-        },
-        {
-          "number": 31,
-          "label": "31",
-          "fileId": "1YQ7fLBT7Xia96MG47REPc36J2On6KFj9",
-          "name": "31.jpg"
-        },
-        {
-          "number": 32,
-          "label": "32",
-          "fileId": "1czlkIICeqk9y3zYewYfjU0H6g-yEYgg8",
-          "name": "32.jpg"
-        },
-        {
-          "number": 33,
-          "label": "33",
-          "fileId": "15QG_aGZFGcd2fmETy29W5ow0b3z145i4",
-          "name": "33.jpg"
-        }
-      ],
-      "extraImages": [
-        {
-          "label": "Bookmatch 1",
-          "fileId": "1zjxHZonm3IFAJEB-bagMUwi425Qowxzv",
-          "name": "Bookmatch 1.jpg"
-        },
-        {
-          "label": "Bookmatch 2",
-          "fileId": "1gvaJQuvi6VrUtFpLSU5AkTOUgMp8ndKq",
-          "name": "Bookmatch 2.jpg"
-        },
-        {
-          "label": "Bookmatch 3",
-          "fileId": "1mPtE3U90PArWvE_-s9Je5wzUIL6XG_I1",
-          "name": "Bookmatch 3.jpg"
-        },
-        {
-          "label": "Close (1)",
-          "fileId": "1fRvk94WUdFIIyEda-YydMajL0qHkEVAT",
-          "name": "Close (1).jpg"
-        },
-        {
-          "label": "Close (2)",
-          "fileId": "1yIHS32yZci_pkr0C_BhF27Zi2KrloE5Z",
-          "name": "Close (2).jpg"
-        },
-        {
-          "label": "Close (3)",
-          "fileId": "1RzRwEyIi7Idibjtsr--YTf1MhFi8dnAj",
-          "name": "Close (3).jpg"
-        },
-        {
-          "label": "Close (4)",
-          "fileId": "1HqjeikU0hCOsTi3sA9nfscxlzOlnzIrL",
-          "name": "Close (4).jpg"
-        },
-        {
-          "label": "Close (5)",
-          "fileId": "1JH9Dy1orhbuPs1b4wf6pZWbBoyxAR1uO",
-          "name": "Close (5).jpg"
-        },
-        {
-          "label": "Close (6)",
-          "fileId": "1ImTjfm3NKn4OjRlc38kURJANaCwB4p-d",
-          "name": "Close (6).jpg"
-        },
-        {
-          "label": "Close (7)",
-          "fileId": "12dDJu3i8KI8U8M93S6710dVPM8gEVBUy",
-          "name": "Close (7).jpg"
-        },
-        {
-          "label": "Close 1",
-          "fileId": "18nCbM39Q-gcmWUMazUIc-sQ_LNKGDvk2",
-          "name": "Close 1.jpg"
-        },
-        {
-          "label": "Close 2",
-          "fileId": "12VT1eqtm0Yk7o9w1Hd9dd5FWbIfdl-A-",
-          "name": "Close 2.jpg"
-        },
-        {
-          "label": "Close 3",
-          "fileId": "1xW8SUWcutg9i8eQRw4lEQmmpycCbsb_3",
-          "name": "Close 3.jpg"
-        },
-        {
-          "label": "Close 4",
-          "fileId": "1M6_Ajn6kV7l_5NevKJFH4LIjx2ZMPJ8a",
-          "name": "Close 4.jpg"
-        }
-      ],
-      "videos": [
-        {
-          "label": "Bookmatch Video 1",
-          "fileId": "1SPArx6AmKTYVxC-_PxWd9kwx4XQICGAk",
-          "name": "Bookmatch Video 1.mp4"
-        },
-        {
-          "label": "Bookmatch Video 2",
-          "fileId": "1P2EyBuyeZsRvM0Yh43AqiOMf9OKJSO-_",
-          "name": "Bookmatch Video 2.mp4"
-        },
-        {
-          "label": "Bookmatch Video 3",
-          "fileId": "1GRWd5IJSC7OJW71n5VLr05j0DrxlV4Hf",
-          "name": "Bookmatch Video 3.mp4"
-        },
-        {
-          "label": "Close (1)",
-          "fileId": "1UvuHmxdGUpuw5jd5VPLe40O3s4tkSE2f",
-          "name": "Close (1).mp4"
-        },
-        {
-          "label": "Close (2)",
-          "fileId": "1LwmUES7pMTko_oQTdDc7ggHEgVkHODEL",
-          "name": "Close (2).mp4"
-        },
-        {
-          "label": "movie (1)",
-          "fileId": "1p1hVQWZu_HmBsaQ66ZqEEmVJrAIR4Fou",
-          "name": "movie (1).mp4"
-        },
-        {
-          "label": "movie (2)",
-          "fileId": "1p3sqZUUG8bb_bo-gJLSI3gBoA6if-0WE",
-          "name": "movie (2).mp4"
-        },
-        {
-          "label": "movie (3)",
-          "fileId": "1G7UmswLbg0_VwxKdkeVK933rh1wS0b3o",
-          "name": "movie (3).mp4"
-        }
-      ],
-      "packingList": "Packing List K1443.xlsx",
-      "packingListId": "1CRvsej8w11VtubnK2-IpansMzQtrz98Z",
-      "syncError": null,
-      "packingWarning": null,
-      "skippedPhotoFolders": [],
-      "sourceWarnings": [],
-      "photoCheck": {
-        "listedImages": 36,
-        "slabImages": 22,
-        "extraImages": 14,
-        "expectedSlabs": 22,
-        "missingNumbers": [],
         "countMismatch": false,
         "skippedFolders": [],
         "brokenImages": []
@@ -19586,11 +19578,6 @@ window.LUCRA_INVENTORY = {
   "errors": [],
   "warnings": [
     {
-      "folder": "NebuLa Wave L009",
-      "kind": "source-code-mismatch",
-      "error": "Folder code L009 does not match packing-list name code(s): L1009."
-    },
-    {
       "folder": "Red Travertine K5094",
       "kind": "source-code-mismatch",
       "error": "Folder code K5094 does not match packing-list name code(s): K5480."
@@ -19598,9 +19585,9 @@ window.LUCRA_INVENTORY = {
   ],
   "report": {
     "bundles": 55,
-    "added": 1,
-    "updated": 0,
-    "unchanged": 54,
+    "added": 0,
+    "updated": 3,
+    "unchanged": 52,
     "missingPackingLists": 2,
     "unreadablePackingLists": 0,
     "missingImages": 0,
@@ -19609,13 +19596,15 @@ window.LUCRA_INVENTORY = {
     "skippedPhotoFolders": 0,
     "photoCheckIssues": 0,
     "photoCoverageNotes": 10,
-    "sourceMismatches": 2,
+    "sourceMismatches": 1,
     "folderErrors": 0,
-    "warningCount": 2,
-    "addedFolders": [
-      "Mystic Grey M2880"
+    "warningCount": 1,
+    "addedFolders": [],
+    "updatedFolders": [
+      "Mystic Grey M2880",
+      "NebuLa Wave L009",
+      "Sunset Dlomite K3561"
     ],
-    "updatedFolders": [],
     "missingPackingListFolders": [
       "Rosso Levanto K6222",
       "Vanilla Ice K5372"
@@ -19656,11 +19645,27 @@ window.LUCRA_INVENTORY = {
       "Tundra Light K6139"
     ],
     "sourceMismatchFolders": [
-      "NebuLa Wave L009",
       "Red Travertine K5094"
     ]
   },
   "syncHistory": [
+    {
+      "status": "success",
+      "attemptedAt": "2026-09-16T09:04:58Z",
+      "syncedAt": "2026-09-16T09:04:58Z",
+      "bundles": 55,
+      "added": 0,
+      "updated": 3,
+      "unchanged": 52,
+      "warnings": 1,
+      "errors": 0,
+      "addedFolders": [],
+      "updatedFolders": [
+        "Mystic Grey M2880",
+        "NebuLa Wave L009",
+        "Sunset Dlomite K3561"
+      ]
+    },
     {
       "status": "success",
       "attemptedAt": "2026-09-16T07:43:00Z",
@@ -19714,61 +19719,29 @@ window.LUCRA_INVENTORY = {
       "errors": 0,
       "addedFolders": [],
       "updatedFolders": []
-    },
-    {
-      "status": "success",
-      "attemptedAt": "2026-09-15T15:35:18Z",
-      "syncedAt": "2026-09-15T15:35:18Z",
-      "bundles": 54,
-      "added": 0,
-      "updated": 54,
-      "unchanged": 0,
-      "warnings": 2,
-      "errors": 0,
-      "addedFolders": [],
-      "updatedFolders": [
-        "Alaskan Blue K2970",
-        "Alexander Black K4987",
-        "Arabescato Imperiale K6235",
-        "Bianco Dolomite L1011",
-        "Breccia Montagna K3332",
-        "Bruno Perla K6029",
-        "Cafe Amore K6058",
-        "Ceppo Beige K5567",
-        "Ceppo Beige K6086",
-        "Ceppo Grey K3630",
-        "Crema Luna K6131",
-        "Diamond Grey M2878",
-        "Flinders White K3167",
-        "Flinders White K3491",
-        "Giallo Siena Dolomite K1442",
-        "Golden Roots K5080",
-        "Green Olive K3618",
-        "Ice Bloom K4132",
-        "Invisible Blue K3280",
-        "Karmania Traonyx K5809"
-      ]
     }
   ],
   "syncStatus": {
     "status": "success",
-    "attemptedAt": "2026-09-16T07:43:00Z",
-    "syncedAt": "2026-09-16T07:43:00Z",
+    "attemptedAt": "2026-09-16T09:04:58Z",
+    "syncedAt": "2026-09-16T09:04:58Z",
     "message": "Inventory sync completed.",
     "run": {
       "status": "success",
-      "attemptedAt": "2026-09-16T07:43:00Z",
-      "syncedAt": "2026-09-16T07:43:00Z",
+      "attemptedAt": "2026-09-16T09:04:58Z",
+      "syncedAt": "2026-09-16T09:04:58Z",
       "bundles": 55,
-      "added": 1,
-      "updated": 0,
-      "unchanged": 54,
-      "warnings": 2,
+      "added": 0,
+      "updated": 3,
+      "unchanged": 52,
+      "warnings": 1,
       "errors": 0,
-      "addedFolders": [
-        "Mystic Grey M2880"
-      ],
-      "updatedFolders": []
+      "addedFolders": [],
+      "updatedFolders": [
+        "Mystic Grey M2880",
+        "NebuLa Wave L009",
+        "Sunset Dlomite K3561"
+      ]
     }
   }
 };
