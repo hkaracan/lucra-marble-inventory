@@ -220,6 +220,13 @@ function productWeightLabel(product){
   const weight=productApproxWeight(product);
   return weight==null?t('weightNotAvailable'):`${Math.round(weight)} kg`;
 }
+function isMysticGreyProduct(product){return /\bmystic\s+grey\b|\bM2880\b/i.test(`${product?.name||''} ${product?.folderName||''} ${product?.code||''}`)}
+function compactMysticImageLabel(value){
+  const text=String(value??'').replace(/\.[^.]+$/,'').trim(),match=text.match(/(\d+)$/);
+  if(!match)return text;
+  const digits=match[1],number=Number(digits);
+  return number<10?String(number):digits.slice(-2);
+}
 
 function productDimensions(product){
   if(product.dimensions?.length)return product.dimensions.join(' · ');
@@ -1059,8 +1066,9 @@ compareDialog.addEventListener('click',event=>{if(event.target===compareDialog)c
 function normalizeLiveProduct(p,i){
   const mediaUrl=(fileId,size=1400)=>location.protocol==='file:'||isGithubPages?`https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w${size}`:`/api/media?id=${encodeURIComponent(fileId)}&size=${size}`;
   const imageSources=fileId=>({src:mediaUrl(fileId),thumbSrc:mediaUrl(fileId,700)});
-  const slabImages=(p.images||[]).map(image=>({...imageSources(image.fileId),label:String(image.label??image.number),type:'slab'}));
-  const extras=(p.extraImages||[]).map(image=>({...imageSources(image.fileId),label:image.label||'Detail',type:'extra'}));
+  const mysticGrey=isMysticGreyProduct(p);
+  const slabImages=(p.images||[]).map(image=>({...imageSources(image.fileId),label:String(mysticGrey?compactMysticImageLabel(image.label??image.name??image.number):image.label??image.number),type:'slab'}));
+  const extras=(p.extraImages||[]).map(image=>({...imageSources(image.fileId),label:mysticGrey?compactMysticImageLabel(image.label||image.name):image.label||'Detail',type:'extra'}));
   return {...p,size:p.dimensions?.length?(p.dimensions.length===1?p.dimensions[0]:`${p.dimensions[0]} + ${p.dimensions.length-1} sizes`):'See packing list',images:[...slabImages,...extras],slabImageCount:slabImages.length,extraImageCount:extras.length,stone:stones[i%stones.length],media:[slabImages.length?countLabel(slabImages.length,'slabPhoto','slabPhotos'):null,extras.length?countLabel(extras.length,'extraView','extraViews'):null,p.videos?.length?countLabel(p.videos.length,'video','videos'):null].filter(Boolean).join(' · ')};
 }
 

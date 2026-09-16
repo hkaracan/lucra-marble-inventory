@@ -39,6 +39,7 @@ CAMERA_IMAGE_PATTERN = re.compile(r"^(?:IMG|DSC|PXL)[ _-]?\d+\.(?:jpe?g|png|webp
 PACKING_LIST_PATTERN = re.compile(r"\bpacking\s+list\b", re.I)
 BUNDLE_CODE_PATTERN = re.compile(r"(?:^|\s)([KLM]\d+)\s*$", re.I)
 SOURCE_CODE_PATTERN = re.compile(r"\b([KLM]\d+)\b", re.I)
+MYSTIC_GREY_PATTERN = re.compile(r"\bmystic\s+grey\b", re.I)
 REQUEST_LOCK = threading.Lock()
 LAST_REQUEST_AT = 0.0
 MIN_REQUEST_GAP = 0.35
@@ -112,6 +113,17 @@ def is_l1014_folder(name: str) -> bool:
 
 def source_codes(value: str | None) -> list[str]:
     return sorted({match.group(1).upper() for match in SOURCE_CODE_PATTERN.finditer(str(value or ""))})
+
+
+def compact_mystic_image_label(value: str | None) -> str:
+    """Use the trailing image sequence for the Mystic Grey gallery labels."""
+    text = re.sub(r"\.[^.]+$", "", str(value or "").strip())
+    match = re.search(r"(\d+)$", text)
+    if not match:
+        return text
+    digits = match.group(1)
+    number = int(digits)
+    return str(number) if number < 10 else digits[-2:]
 
 
 def source_code_warnings(folder_name: str, packing_name: str | None) -> list[dict[str, object]]:
@@ -685,6 +697,9 @@ def normalize_folder(folder: dict[str, str]) -> dict:
         items = folder_items(folder["id"], timeout=35, attempts=3)
     slab_images, extra_images, videos, packing, packing_name, packing_file_id, skipped_photo_folders = collect_media(items)
     slab_images.sort(key=lambda image: (image["number"], image.get("view", 0)))
+    if MYSTIC_GREY_PATTERN.search(folder_name):
+        for image in [*slab_images, *extra_images]:
+            image["label"] = compact_mystic_image_label(image.get("label") or image.get("name"))
     packing = packing or {"lines": [], "totalPcs": len(slab_images) or None, "totalSqm": None}
     if code == "—":
         code_sources = [packing_name or ""] + [str(line.get("block") or "") for line in packing.get("lines", [])]

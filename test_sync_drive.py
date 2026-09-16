@@ -226,6 +226,21 @@ class MockedSyncTest(unittest.TestCase):
         self.assertEqual([image["number"] for image in slabs], [1, 2])
         self.assertEqual([image["label"] for image in extras], ["3"])
 
+    def test_mystic_grey_image_labels_use_the_trailing_sequence_number(self):
+        product = sync_drive.normalize_folder(
+            {
+                "id": "mystic-grey",
+                "name": "Mystic Grey M2880",
+                "_items": [
+                    {"id": "image-1", "name": "M(2880)00000001.jpg"},
+                    {"id": "image-2", "name": "M(2880)00000010.jpg"},
+                    {"id": "image-3", "name": "M(2880)00000042.jpg"},
+                ],
+            }
+        )
+
+        self.assertEqual([image["label"] for image in product["extraImages"]], ["1", "10", "42"])
+
     def test_nested_bundle_folder_can_supply_packing_list_and_images(self):
         def fake_folder_items(folder_id, timeout=35, attempts=3):
             return [
