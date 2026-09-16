@@ -350,3 +350,36 @@ body:not(.sales-mode) .card-collection-toggle>span:last-child{display:none}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline-color:#0e8396}
 .gallery-focus button:focus-visible,.gallery-focus a:focus-visible{outline:3px solid #fff;outline-offset:3px;box-shadow:0 0 0 6px rgba(23,184,213,.72)}
 .gallery-focus .gallery-count{border:1px solid rgba(255,255,255,.26)}
+
+/* Keep active catalogue filters visible and individually removable. */
+.active-filter-chips{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:-18px 0 24px;padding:0 0 1px}
+.active-filter-chips[hidden]{display:none}
+.active-filter-label{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #b8dce3;border-radius:100px;background:#f1fafc;color:#24788c;padding:7px 9px;font:600 11px "DM Sans",sans-serif;cursor:pointer}
+.filter-chip:hover,.filter-chip:focus-visible{border-color:var(--aqua);background:#e5f6f9}
+@media(max-width:720px){.active-filter-chips{margin:-8px 0 18px;gap:6px}.filter-chip{padding:6px 8px;font-size:10px}}
+
+/* Shortlist quote request form. */
+.quote-dialog{width:min(760px,94vw);max-height:92vh}
+.quote-shell{padding:42px 38px 34px;overflow:auto}
+.quote-shell h2{font:500 30px/1.15 Manrope;margin:0 0 10px;letter-spacing:-.04em}
+.quote-hint{margin:0 0 24px;color:var(--muted);font-size:13px;line-height:1.55}
+.quote-items-section h3{margin:0 0 9px;color:var(--navy);font:700 11px "DM Sans";letter-spacing:.08em;text-transform:uppercase}
+.quote-items{border:1px solid var(--line);background:var(--mist)}
+.quote-item{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:12px 14px;background:white}
+.quote-item+.quote-item{border-top:1px solid var(--line)}
+.quote-item>div{min-width:0}
+.quote-item strong{display:block;font:600 14px Manrope;overflow-wrap:anywhere}
+.quote-item small{display:block;margin-top:3px;color:var(--muted);font-size:10px;line-height:1.4}
+.quote-item label{display:grid;gap:5px;flex:0 0 104px;color:var(--muted);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.quote-item input,.quote-form-grid input,.quote-full-field input,.quote-full-field textarea{width:100%;border:1px solid var(--line);border-radius:3px;background:white;color:var(--ink);padding:10px;font:13px "DM Sans";outline:0}
+.quote-item input:focus,.quote-form-grid input:focus,.quote-full-field input:focus,.quote-full-field textarea:focus{border-color:var(--aqua);box-shadow:0 0 0 3px rgba(23,184,213,.12)}
+.quote-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.quote-form-grid label,.quote-full-field{display:grid;gap:6px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.quote-full-field{margin-top:14px}
+.quote-full-field textarea{resize:vertical;line-height:1.45}
+.quote-error{min-height:18px;margin:12px 0 0;color:var(--reserved);font-size:11px;line-height:1.4}
+.quote-actions{align-items:center;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}
+.quote-actions button{flex:0 0 auto!important}
+.quote-actions .primary,.quote-actions .secondary{padding:11px 13px}
+@media(max-width:580px){.quote-dialog{width:calc(100vw - 24px);max-height:94vh}.quote-shell{padding:38px 20px 24px}.quote-form-grid{grid-template-columns:1fr;gap:12px}.quote-item{align-items:flex-start;gap:12px;padding:11px}.quote-item label{flex-basis:92px}.quote-actions{align-items:stretch;flex-direction:column}.quote-actions button{width:100%}}

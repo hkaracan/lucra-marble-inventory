@@ -92,8 +92,9 @@
         <label><span data-i18n="size">Size</span> <input id="dimensionFilter" type="search" data-i18n-placeholder="sizePlaceholder" placeholder="e.g. 190 × 290" /></label>
         <label><span data-i18n="packing">Packing</span> <select id="packingFilter"><option value="all" data-i18n="allData">All data</option><option value="connected" data-i18n="connected">Connected</option><option value="partial" data-i18n="fileFound">File found</option><option value="missing" data-i18n="missing">Missing</option></select></label>
         <label><span data-i18n="photos">Photos</span> <select id="mediaFilter"><option value="all" data-i18n="allPhotos">All photos</option><option value="with-images" data-i18n="withImages">With images</option><option value="missing" data-i18n="missingImages">Missing images</option></select></label>
-        <button id="clearFilters" class="quiet-button" type="button" data-i18n="clearFilters">Clear filters</button>
+        <button id="clearFilters" class="quiet-button" type="button" data-i18n="resetAll">Reset all</button>
       </div>
+      <div id="activeFilterChips" class="active-filter-chips" aria-label="Active filters" aria-live="polite" hidden></div>
       <p class="sync-feedback sales-only" id="syncFeedback" role="status" aria-live="polite"></p>
 
       <section class="presentation-collection" id="presentationCollection" hidden aria-labelledby="presentationCollectionTitle">
@@ -110,6 +111,8 @@
         </div>
         <div class="presentation-collection-actions">
           <button id="sharePresentationCollection" class="secondary" type="button" disabled data-i18n="copyCollectionLink">Copy list link</button>
+          <button id="openPresentationCollection" class="secondary" type="button" disabled data-i18n="openListLink">Open list link</button>
+          <button id="requestPresentationQuote" class="primary" type="button" disabled data-i18n="requestQuoteFromList">Request a quote</button>
           <button id="copyPresentationCollectionSummary" class="secondary" type="button" disabled data-i18n="copyCollectionSummary">Copy list summary</button>
           <button id="printPresentationCollection" class="primary" type="button" disabled data-i18n="printCollection">Print list</button>
           <button id="whatsappPresentationCollection" class="secondary" type="button" disabled data-i18n="whatsappCollection">Send list via WhatsApp</button>
@@ -265,6 +268,7 @@
         </div>
         <div class="dialog-actions">
           <button id="copyLink" class="primary" type="button" data-i18n="copyLink">Copy bundle link</button>
+          <a id="openProductLink" class="secondary" target="_blank" rel="noopener noreferrer" data-i18n="openLink">Open link</a>
           <button id="shareProduct" class="secondary" type="button" data-i18n="shareCustomer">Share customer link</button>
           <button id="printProduct" class="secondary" type="button" data-i18n="printSheet">Print bundle sheet</button>
           <a id="openDrive" class="secondary customer-drive-link" target="_blank" rel="noreferrer" data-i18n="openDrive">Open in Drive</a>
@@ -304,7 +308,36 @@
     </div>
   </dialog>
 
+  <dialog id="shortlistQuoteDialog" class="quote-dialog" aria-labelledby="shortlistQuoteTitle">
+    <div class="quote-shell">
+      <button class="dialog-close" id="shortlistQuoteClose" type="button" aria-label="Close quote request">×</button>
+      <p class="eyebrow" data-i18n="shortlist">SHORTLIST</p>
+      <h2 id="shortlistQuoteTitle" data-i18n="shortlistQuoteTitle">Request a quote</h2>
+      <p class="quote-hint" data-i18n="shortlistQuoteHint">Send one enquiry for the selected bundles, quantities, delivery destination, and contact details.</p>
+      <form id="shortlistQuoteForm">
+        <section class="quote-items-section" aria-labelledby="selectedQuoteBundlesTitle">
+          <h3 id="selectedQuoteBundlesTitle" data-i18n="selectedQuoteBundles">Selected bundles</h3>
+          <div id="shortlistQuoteItems" class="quote-items"></div>
+        </section>
+        <div class="quote-form-grid">
+          <label><span data-i18n="contactName">Contact name</span><input id="quoteContactName" name="contactName" type="text" autocomplete="name" required /></label>
+          <label><span data-i18n="company">Company</span><input id="quoteCompany" name="company" type="text" autocomplete="organization" /></label>
+          <label><span data-i18n="email">Email</span><input id="quoteEmail" name="email" type="email" autocomplete="email" required /></label>
+          <label><span data-i18n="phone">Phone / WhatsApp</span><input id="quotePhone" name="phone" type="tel" autocomplete="tel" required /></label>
+        </div>
+        <label class="quote-full-field"><span data-i18n="deliveryDestination">Delivery destination</span><input id="quoteDelivery" name="delivery" type="text" data-i18n-placeholder="deliveryPlaceholder" placeholder="City, country, or delivery address" autocomplete="street-address" required /></label>
+        <label class="quote-full-field"><span data-i18n="quoteNotes">Additional notes</span><textarea id="quoteNotes" name="notes" rows="3" data-i18n-placeholder="quoteNotesPlaceholder" placeholder="Project timing, finish, or other requirements"></textarea></label>
+        <p class="quote-error" id="shortlistQuoteError" role="alert" aria-live="polite"></p>
+        <div class="dialog-actions quote-actions">
+          <button id="emailShortlistQuote" class="primary" type="submit" data-i18n="emailQuoteRequest">Email quote request</button>
+          <button id="whatsappShortlistQuote" class="secondary" type="button" data-i18n="whatsappQuoteRequest">Send request via WhatsApp</button>
+          <button id="closeShortlistQuote" class="quiet-button" type="button" data-i18n="cancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260916-06"></script>
+  <script src="app.js?v=20260916-09"></script>
 </body>
 </html>

@@ -74,6 +74,8 @@ Object.assign(translations.en,{skipToCatalogue:'Skip to catalogue',searchLabel:'
 Object.assign(translations.tr,{skipToCatalogue:'Kataloğa geç',searchLabel:'Malzeme veya paket kodu ara',inventoryFiltersLabel:'Envanter filtreleri',catalogViewLabel:'Katalog düzeni',updatedAt:'Güncelleme: {date}',copyListLink:'Liste bağlantısını kopyala',listLinkCopied:'Liste bağlantısı kopyalandı',openGallery:'Ürün galerisini aç',areaNotProvided:'Alan belirtilmedi',sizeNotProvided:'Ölçü belirtilmedi',slab:'plaka',slabPhoto:'plaka fotoğrafı',extraView:'ek görünüm',extraViews:'ek görünüm',video:'video',videos:'video'});
 Object.assign(translations.en,{sharedListMetaTitle:'Shared slab list',sharedListMetaDescription:'View a shared Lucra Marble slab list from Denizli, Türkiye.'});
 Object.assign(translations.tr,{sharedListMetaTitle:'Paylaşılan plaka listesi',sharedListMetaDescription:'Denizli, Türkiye’den paylaşılan Lucra Marble plaka listesini görüntüleyin.'});
+Object.assign(translations.en,{resetAll:'Reset all',activeFilters:'Active filters',removeFilter:'Remove filter',searchFilter:'Search',statusFilter:'Status',sortFilter:'Sort',minAreaFilter:'Min m²',maxAreaFilter:'Max m²',minSlabsFilter:'Min slabs',maxSlabsFilter:'Max slabs',sizeFilter:'Size',packingFilter:'Packing',photosFilter:'Photos'});
+Object.assign(translations.en,{quoteFromShortlist:'Request a quote',requestQuoteFromList:'Request a quote',shortlistQuoteTitle:'Request a quote',shortlistQuoteHint:'Send one enquiry for the selected bundles, quantities, delivery destination, and contact details.',selectedQuoteBundles:'Selected bundles',quantity:'Quantity',contactName:'Contact name',company:'Company',email:'Email',phone:'Phone / WhatsApp',deliveryDestination:'Delivery destination',deliveryPlaceholder:'City, country, or delivery address',quoteNotes:'Additional notes',quoteNotesPlaceholder:'Project timing, finish, or other requirements',emailQuoteRequest:'Email quote request',whatsappQuoteRequest:'Send request via WhatsApp',quoteRequestMissingSelection:'Select at least one bundle first.',quoteRequestMissingQuantity:'Enter a quantity of at least 1 for every bundle.',quoteRequestMissingFields:'Please complete the required fields.',quoteRequestPrepared:'Quote request ready',openLink:'Open link',openListLink:'Open list link'});
 function t(key){return translations[language][key]??translations.en[key]??key}
 function message(key,values){return Object.entries(values).reduce((text,[name,value])=>text.replaceAll(`{${name}}`,String(value)),t(key))}
 function countLabel(count,singularKey,pluralKey=singularKey){const value=Number(count)||0;return `${value} ${value===1?t(singularKey):t(pluralKey)}`}
@@ -140,25 +142,27 @@ let products=assignBundleKeys(fallbackProducts), currentFilter='all', currentPro
 let catalogColumns='2';
 try{const storedColumns=localStorage.getItem('lucraCatalogColumns');if(['2','3','4'].includes(storedColumns))catalogColumns=storedColumns}catch(error){}
 document.body.classList.add(`catalog-columns-${catalogColumns}`);
-const grid=document.querySelector('#productGrid'), search=document.querySelector('#searchInput'), count=document.querySelector('#resultCount'), empty=document.querySelector('#emptyState'), syncStatus=document.querySelector('#syncStatus'), syncFeedback=document.querySelector('#syncFeedback');
+const grid=document.querySelector('#productGrid'), search=document.querySelector('#searchInput'), count=document.querySelector('#resultCount'), empty=document.querySelector('#emptyState'), syncStatus=document.querySelector('#syncStatus'), syncFeedback=document.querySelector('#syncFeedback'), activeFilterChips=document.querySelector('#activeFilterChips');
 const catalogView=document.querySelector('.catalog-view'), catalogViewButtons=document.querySelectorAll('.catalog-view-button');
 const salesKpis=document.querySelector('#salesKpis'), salesRows=document.querySelector('#salesRows'), salesFilterNote=document.querySelector('#salesFilterNote'), salesSearchInput=document.querySelector('#salesSearchInput'), salesSortSelect=document.querySelector('#salesSortSelect');
 const sortSelect=document.querySelector('#sortSelect'), syncButton=document.querySelector('#syncButton');
 const minArea=document.querySelector('#minArea'), maxArea=document.querySelector('#maxArea'), minSlabs=document.querySelector('#minSlabs'), maxSlabs=document.querySelector('#maxSlabs'), dimensionFilter=document.querySelector('#dimensionFilter'), packingFilter=document.querySelector('#packingFilter'), mediaFilter=document.querySelector('#mediaFilter'), clearFiltersButton=document.querySelector('#clearFilters');
 const advancedFiltersToggle=document.querySelector('#advancedFiltersToggle');
 const showMissingPacking=document.querySelector('#showMissingPacking');
-const shortlistCount=document.querySelector('#shortlistCount'), compareSelectedButton=document.querySelector('#compareSelected'), copyShortlistButton=document.querySelector('#copyShortlist'), whatsappShortlistButton=document.querySelector('#whatsappShortlist'), exportShortlistButton=document.querySelector('#exportShortlist'), exportVisibleButton=document.querySelector('#exportVisible'), clearShortlistButton=document.querySelector('#clearShortlist');
+const shortlistCount=document.querySelector('#shortlistCount'), compareSelectedButton=document.querySelector('#compareSelected'), copyShortlistButton=document.querySelector('#copyShortlist'), shareCollectionButton=document.querySelector('#shareCollection'), whatsappShortlistButton=document.querySelector('#whatsappShortlist'), exportShortlistButton=document.querySelector('#exportShortlist'), exportVisibleButton=document.querySelector('#exportVisible'), clearShortlistButton=document.querySelector('#clearShortlist');
 const shortlistSelect=document.querySelector('#shortlistSelect'), newShortlistButton=document.querySelector('#newShortlist'), renameShortlistButton=document.querySelector('#renameShortlist'), deleteShortlistButton=document.querySelector('#deleteShortlist');
 const healthSummary=document.querySelector('#healthSummary'), healthDetails=document.querySelector('#healthDetails'), toggleHealthButton=document.querySelector('#toggleHealth');
 const auditSection=document.querySelector('.sync-audit'), auditPanel=document.querySelector('#auditPanel'), auditRows=document.querySelector('#auditRows'), auditEmpty=document.querySelector('#auditEmpty'), auditCount=document.querySelector('#auditCount'), auditFilterSelect=document.querySelector('#auditFilter'), toggleAuditButton=document.querySelector('#toggleAudit'), exportAuditButton=document.querySelector('#exportAudit');
 const followupFilterSelect=document.querySelector('#followupFilter');
-const collectionBanner=document.querySelector('#collectionBanner'), collectionTitle=document.querySelector('#collectionTitle'), collectionSummary=document.querySelector('#collectionSummary'), collectionQr=document.querySelector('#collectionQr'), collectionUpdated=document.querySelector('#collectionUpdated'), copySharedCollectionLink=document.querySelector('#copySharedCollectionLink'), clearCollectionButton=document.querySelector('#clearCollection'), shareCollectionButton=document.querySelector('#shareCollection');
-const presentationCollection=document.querySelector('#presentationCollection'), presentationCollectionName=document.querySelector('#presentationCollectionName'), presentationCollectionTitle=document.querySelector('#presentationCollectionTitle'), presentationCollectionSummary=document.querySelector('#presentationCollectionSummary'), presentationCollectionItems=document.querySelector('#presentationCollectionItems'), sharePresentationCollectionButton=document.querySelector('#sharePresentationCollection'), copyPresentationCollectionSummaryButton=document.querySelector('#copyPresentationCollectionSummary'), printPresentationCollectionButton=document.querySelector('#printPresentationCollection'), whatsappPresentationCollectionButton=document.querySelector('#whatsappPresentationCollection'), clearPresentationCollectionButton=document.querySelector('#clearPresentationCollection');
+const collectionBanner=document.querySelector('#collectionBanner'), collectionTitle=document.querySelector('#collectionTitle'), collectionSummary=document.querySelector('#collectionSummary'), collectionQr=document.querySelector('#collectionQr'), collectionUpdated=document.querySelector('#collectionUpdated'), copySharedCollectionLink=document.querySelector('#copySharedCollectionLink'), clearCollectionButton=document.querySelector('#clearCollection');
+const presentationCollection=document.querySelector('#presentationCollection'), presentationCollectionName=document.querySelector('#presentationCollectionName'), presentationCollectionTitle=document.querySelector('#presentationCollectionTitle'), presentationCollectionSummary=document.querySelector('#presentationCollectionSummary'), presentationCollectionItems=document.querySelector('#presentationCollectionItems'), sharePresentationCollectionButton=document.querySelector('#sharePresentationCollection'), openPresentationCollectionButton=document.querySelector('#openPresentationCollection'), requestPresentationQuoteButton=document.querySelector('#requestPresentationQuote'), copyPresentationCollectionSummaryButton=document.querySelector('#copyPresentationCollectionSummary'), printPresentationCollectionButton=document.querySelector('#printPresentationCollection'), whatsappPresentationCollectionButton=document.querySelector('#whatsappPresentationCollection'), clearPresentationCollectionButton=document.querySelector('#clearPresentationCollection');
 const catalogueFreshness=document.querySelector('#catalogueFreshness'), publicCatalogueFreshness=document.querySelector('#publicCatalogueFreshness'), latestSyncTitle=document.querySelector('#latestSyncTitle'), latestSyncSource=document.querySelector('#latestSyncSource'), latestSyncStats=document.querySelector('#latestSyncStats'), latestSyncHistoryRows=document.querySelector('#latestSyncHistoryRows'), syncFailureNote=document.querySelector('#syncFailureNote');
 const salesGate=document.querySelector('#salesGate'), salesGateForm=document.querySelector('#salesGateForm'), salesPasswordInput=document.querySelector('#salesPasswordInput'), salesGateError=document.querySelector('#salesGateError');
 const compareDialog=document.querySelector('#compareDialog'), compareContent=document.querySelector('#compareContent'), copyCompareButton=document.querySelector('#copyCompare');
+const shortlistQuoteDialog=document.querySelector('#shortlistQuoteDialog'), shortlistQuoteForm=document.querySelector('#shortlistQuoteForm'), shortlistQuoteItems=document.querySelector('#shortlistQuoteItems'), shortlistQuoteError=document.querySelector('#shortlistQuoteError'), closeShortlistQuoteButton=document.querySelector('#closeShortlistQuote'), shortlistQuoteCloseButton=document.querySelector('#shortlistQuoteClose'), whatsappShortlistQuoteButton=document.querySelector('#whatsappShortlistQuote');
+const openProductLink=document.querySelector('#openProductLink');
 const followupStatus=document.querySelector('#followupStatus'), salesNote=document.querySelector('#salesNote'), saveSalesNoteButton=document.querySelector('#saveSalesNote'), noteSaved=document.querySelector('#noteSaved'), shareProductButton=document.querySelector('#shareProduct');
-let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, syncHistory=[], syncState=null, auditFilter='all', salesQuickFilter='all', salesFollowupFilter='all', salesSearch='', salesSort='name', sharedCollectionActive=false, sharedCollectionTitle='', sharedCollectionKeys=new Set(), presentationSelection=new Set(), customerCollectionTitle='';
+let showMissingPackingValue=true, shortlist=new Set(), shortlistLists={}, activeShortlistName='Sales shortlist', salesNotes={}, inventoryReport={}, syncHistory=[], syncState=null, auditFilter='all', salesQuickFilter='all', salesFollowupFilter='all', salesSearch='', salesSort='name', sharedCollectionActive=false, sharedCollectionTitle='', sharedCollectionKeys=new Set(), presentationSelection=new Set(), customerCollectionTitle='', quoteRequestRecords=[];
 const catalogImageIndexes=new Map();
 const brokenPhotoIdsByProduct=new Map(),verifiedPhotoIdsByProduct=new Map();
 const photoVerification={checked:0,failed:0,lastCheckedAt:null};
@@ -206,12 +210,13 @@ if(isGithubPages){
   syncButton.title='Open the manual GitHub Actions sync workflow';
 }
 function numberFilterValue(input){const value=Number(input.value);return input.value.trim()!==''&&Number.isFinite(value)?value:null}
+function normalizeDimensionText(value){return String(value??'').toLowerCase().replace(/(?:centimeters?|cm)/g,'').replace(/[×✕✖*]/g,'x').replace(/\s*x\s*/g,'x').replace(/\s+/g,'').trim()}
 function filteredProducts(){
-  const q=search.value.trim().toLowerCase(),dimensionQuery=dimensionFilter.value.trim().toLowerCase();
+  const q=search.value.trim().toLowerCase(),dimensionQuery=normalizeDimensionText(dimensionFilter.value);
   const minAreaValue=numberFilterValue(minArea),maxAreaValue=numberFilterValue(maxArea),minSlabsValue=numberFilterValue(minSlabs),maxSlabsValue=numberFilterValue(maxSlabs);
   const visible=products.filter(p=>{
     const text=`${p.name} ${p.code} ${p.groupName||''}`.toLowerCase();
-    const dimensions=(p.dimensions||[]).join(' ').toLowerCase();
+    const dimensions=normalizeDimensionText((p.dimensions||[]).join(' '));
     const area=p.sqm==null||p.sqm===''?null:Number(p.sqm),slabs=p.pcs==null||p.pcs===''?null:Number(p.pcs),packingClass=packingListSummary(p).className,hasImages=Boolean(p.images?.length);
     return (!sharedCollectionActive||sharedCollectionKeys.has(productKey(p)))&&(currentFilter==='all'||(currentFilter==='reserved'?p.reserved:currentFilter==='recent'?Boolean(bundleFreshness(p)):!p.reserved))&&text.includes(q)&&(!dimensionQuery||dimensions.includes(dimensionQuery))&&(minAreaValue===null||(Number.isFinite(area)&&area>=minAreaValue))&&(maxAreaValue===null||(Number.isFinite(area)&&area<=maxAreaValue))&&(minSlabsValue===null||(Number.isFinite(slabs)&&slabs>=minSlabsValue))&&(maxSlabsValue===null||(Number.isFinite(slabs)&&slabs<=maxSlabsValue))&&(packingFilter.value==='all'||packingClass===packingFilter.value)&&(mediaFilter.value==='all'||(mediaFilter.value==='with-images'?hasImages&&!p.skippedPhotoFolders?.length:!hasImages));
   });
@@ -564,6 +569,7 @@ function selectedPresentationProducts(){return products.filter(product=>presenta
 function savePresentationSelection(){try{localStorage.setItem('lucraCustomerCollection',JSON.stringify([...presentationSelection]))}catch(error){}}
 function prunePresentationSelection(){const valid=new Set(products.map(product=>productKey(product)));let changed=false;presentationSelection.forEach(key=>{if(!valid.has(key)){presentationSelection.delete(key);changed=true}});if(changed)savePresentationSelection()}
 function togglePresentationSelection(id,selected){if(selected)presentationSelection.add(id);else presentationSelection.delete(id);savePresentationSelection();render()}
+function commitCustomerCollectionTitle(){customerCollectionTitle=customerCollectionTitle.trim();presentationCollectionName.value=customerCollectionTitle;try{localStorage.setItem('lucraCustomerCollectionTitle',customerCollectionTitle)}catch(error){}renderPresentationCollection();return customerCollectionTitle}
 function renderPresentationCollection(){
   const selected=selectedPresentationProducts();
   presentationCollection.hidden=document.body.classList.contains('sales-mode')||selected.length===0;
@@ -573,6 +579,9 @@ function renderPresentationCollection(){
   presentationCollectionItems.innerHTML=selected.map(product=>`<span><span class="collection-review-copy"><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.code&&product.code!=='—'?product.code:t('bundle'))} · ${escapeHtml(product.reserved?t('reserved'):t('available'))}</small></span><button class="collection-review-remove" type="button" data-product-id="${escapeHtml(productKey(product))}" aria-label="${escapeHtml(t('removeFromCollection'))} ${escapeHtml(product.name)}" title="${escapeHtml(t('removeFromCollection'))}">×</button></span>`).join('');
   presentationCollectionItems.querySelectorAll('.collection-review-remove').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();togglePresentationSelection(button.dataset.productId,false)}));
   sharePresentationCollectionButton.disabled=selected.length===0;
+  openPresentationCollectionButton.disabled=selected.length===0;
+  requestPresentationQuoteButton.disabled=selected.length===0;
+  openPresentationCollectionButton.dataset.url=selected.length?publicCustomerCollectionUrl(selected,customerCollectionTitle):'';
   copyPresentationCollectionSummaryButton.disabled=selected.length===0;
   printPresentationCollectionButton.disabled=selected.length===0;
   whatsappPresentationCollectionButton.disabled=selected.length===0;
@@ -751,6 +760,78 @@ function customerShortlistSummary(){
     'Please contact us for pricing, availability confirmation, and delivery information.',
   ].join('\n\n');
 }
+function renderShortlistQuoteItems(records=quoteRequestRecords){
+  shortlistQuoteItems.innerHTML=records.map(product=>{
+    const code=product.code&&product.code!=='—'?` · ${product.code}`:'';
+    return `<div class="quote-item"><div><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(`${productStock(product)}${code}`)}</small></div><label><span>${escapeHtml(t('quantity'))}</span><input type="number" min="1" step="1" value="1" inputmode="numeric" required data-quote-quantity="${escapeHtml(productKey(product))}" aria-label="${escapeHtml(`${t('quantity')} · ${product.name}`)}"></label></div>`;
+  }).join('');
+}
+function openShortlistQuoteDialog(records=selectedPresentationProducts()){
+  const selected=records;
+  if(!selected.length)return;
+  quoteRequestRecords=selected;
+  renderShortlistQuoteItems(selected);
+  shortlistQuoteError.textContent='';
+  shortlistQuoteDialog.showModal();
+  requestAnimationFrame(()=>shortlistQuoteForm.querySelector('input')?.focus());
+}
+function collectShortlistQuoteRequest(){
+  const selected=quoteRequestRecords.length?quoteRequestRecords:selectedPresentationProducts();
+  if(!selected.length){shortlistQuoteError.textContent=t('quoteRequestMissingSelection');return null}
+  const quantityInputs=[...shortlistQuoteItems.querySelectorAll('[data-quote-quantity]')];
+  const items=selected.map(product=>{
+    const input=quantityInputs.find(item=>item.dataset.quoteQuantity===productKey(product));
+    return {product,quantity:Number(input?.value)};
+  });
+  if(items.some(item=>!Number.isInteger(item.quantity)||item.quantity<1)){
+    shortlistQuoteError.textContent=t('quoteRequestMissingQuantity');
+    return null;
+  }
+  if(!shortlistQuoteForm.checkValidity()){
+    shortlistQuoteError.textContent=t('quoteRequestMissingFields');
+    shortlistQuoteForm.reportValidity();
+    return null;
+  }
+  const formData=new FormData(shortlistQuoteForm);
+  return {selected,items,contactName:String(formData.get('contactName')||'').trim(),company:String(formData.get('company')||'').trim(),email:String(formData.get('email')||'').trim(),phone:String(formData.get('phone')||'').trim(),delivery:String(formData.get('delivery')||'').trim(),notes:String(formData.get('notes')||'').trim()};
+}
+function shortlistQuoteRequestMessage(request){
+  return [
+    'Hello Lucra Marble,',
+    '',
+    'I would like to request a quote for the following bundles:',
+    ...request.items.map((item,index)=>{
+      const code=item.product.code&&item.product.code!=='—'?` (${item.product.code})`:'';
+      return `${index+1}. Required quantity: ${item.quantity} · ${item.product.name}${code}\n   Stock reference: ${productStock(item.product)}\n   Product page: ${publicCustomerProductUrl(item.product)}`;
+    }),
+    '',
+    'Customer details:',
+    `Name: ${request.contactName}`,
+    request.company?`Company: ${request.company}`:'',
+    `Email: ${request.email}`,
+    `Phone / WhatsApp: ${request.phone}`,
+    `Delivery destination: ${request.delivery}`,
+    request.notes?`Additional notes: ${request.notes}`:'',
+    '',
+    `Shared list reference: ${publicCustomerCollectionUrl(request.selected)}`,
+    '',
+    'Please confirm current pricing, availability, and delivery information.',
+  ].filter(Boolean).join('\n');
+}
+function submitShortlistQuoteRequest(event){
+  event.preventDefault();
+  const request=collectShortlistQuoteRequest();
+  if(!request)return;
+  const subject=`${t('quoteRequestSubject')} · ${request.items.length} ${t('bundles')} · Lucra Marble`;
+  shortlistQuoteDialog.close();
+  window.location.href=`mailto:${lucraQuoteEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(shortlistQuoteRequestMessage(request))}`;
+}
+function sendShortlistQuoteViaWhatsApp(){
+  const request=collectShortlistQuoteRequest();
+  if(!request)return;
+  shortlistQuoteDialog.close();
+  openWhatsApp(shortlistQuoteRequestMessage(request));
+}
 async function copyText(text,button,successText){
   const original=button.textContent;
   try{
@@ -848,6 +929,7 @@ function printCollectionMarkup(records){
   return `<div class="print-collection-page"><header class="print-collection-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(customerCollectionTitle||t('collectionSheet'))}</h1><p>${escapeHtml(t('collectionIntro'))}</p></div><div class="print-collection-header-side"><div class="print-sheet-label">${escapeHtml(`${records.length} ${t('selectedBundles')}`)}</div>${qrCodeMarkup(collectionUrl)}</div></header><section class="print-collection-grid">${cards}</section><p class="print-collection-footer">${escapeHtml(`${t('availabilityNote')} ${t('contactForPricing')}`)}</p></div>`;
 }
 function printPresentationCollection(){
+  commitCustomerCollectionTitle();
   const selected=selectedPresentationProducts();if(!selected.length)return;
   let sheet=document.querySelector('#printCollectionSheet');
   if(!sheet){sheet=document.createElement('div');sheet.id='printCollectionSheet';sheet.className='print-collection';document.body.appendChild(sheet)}
@@ -897,6 +979,60 @@ function updateCatalogCardImage(card,product,direction){
   if(position)position.textContent=catalogImagePosition(image,next,images.length);
 }
 
+function setCatalogStatusFilter(value){
+  currentFilter=value;
+  document.querySelectorAll('.filter').forEach(filter=>{
+    const active=filter.dataset.filter===value;
+    filter.classList.toggle('active',active);
+    filter.setAttribute('aria-pressed',String(active));
+  });
+}
+function activeFilterEntries(){
+  const entries=[],query=search.value.trim();
+  if(query)entries.push({key:'search',label:`${t('searchFilter')}: ${query}`});
+  if(currentFilter!=='all'){
+    const button=document.querySelector(`.filter[data-filter="${currentFilter}"]`);
+    entries.push({key:'status',label:`${t('statusFilter')}: ${button?.textContent.trim()||currentFilter}`});
+  }
+  if(sortSelect.value!=='name')entries.push({key:'sort',label:`${t('sortFilter')}: ${sortSelect.options[sortSelect.selectedIndex]?.textContent||sortSelect.value}`});
+  [[minArea,'minAreaFilter'],[maxArea,'maxAreaFilter'],[minSlabs,'minSlabsFilter'],[maxSlabs,'maxSlabsFilter']].forEach(([input,key])=>{if(input.value.trim())entries.push({key:input.id,label:`${t(key)}: ${input.value.trim()}`})});
+  if(dimensionFilter.value.trim())entries.push({key:'dimension',label:`${t('sizeFilter')}: ${dimensionFilter.value.trim()}`});
+  if(packingFilter.value!=='all')entries.push({key:'packing',label:`${t('packingFilter')}: ${packingFilter.options[packingFilter.selectedIndex]?.textContent||packingFilter.value}`});
+  if(mediaFilter.value!=='all')entries.push({key:'media',label:`${t('photosFilter')}: ${mediaFilter.options[mediaFilter.selectedIndex]?.textContent||mediaFilter.value}`});
+  return entries;
+}
+function renderActiveFilterChips(){
+  if(!activeFilterChips)return;
+  const entries=activeFilterEntries();
+  activeFilterChips.hidden=entries.length===0;
+  activeFilterChips.innerHTML=entries.length?`<span class="active-filter-label">${escapeHtml(t('activeFilters'))}</span>${entries.map(entry=>`<button type="button" class="filter-chip" data-clear-filter="${escapeHtml(entry.key)}" aria-label="${escapeHtml(`${t('removeFilter')}: ${entry.label}`)}">${escapeHtml(entry.label)} <span aria-hidden="true">×</span></button>`).join('')}`:'';
+}
+function clearSingleFilter(key){
+  if(key==='search')search.value='';
+  else if(key==='status')setCatalogStatusFilter('all');
+  else if(key==='sort')sortSelect.value='name';
+  else{
+    const controls={minArea,maxArea,minSlabs,maxSlabs,dimension:dimensionFilter,packing:packingFilter,media:mediaFilter};
+    const control=controls[key];
+    if(control)control.value=key==='packing'||key==='media'?'all':'';
+  }
+  render();
+}
+function resetAllFilters(){
+  search.value='';
+  setCatalogStatusFilter('all');
+  sortSelect.value='name';
+  [minArea,maxArea,minSlabs,maxSlabs,dimensionFilter].forEach(input=>input.value='');
+  packingFilter.value='all';
+  mediaFilter.value='all';
+  document.body.classList.remove('filters-open');
+  advancedFiltersToggle.setAttribute('aria-expanded','false');
+  const label=advancedFiltersToggle.querySelector('[data-i18n]');
+  if(label)label.textContent=t('moreFilters');
+  advancedFiltersToggle.lastElementChild.textContent='⌄';
+  render();
+}
+
 function render(){
   renderCollectionBanner();
   renderPresentationCollection();
@@ -904,6 +1040,7 @@ function render(){
   count.textContent=`${visible.length} ${visible.length===1?t('bundleSingular'):t('bundles')}`;
   empty.hidden=visible.length>0;
   renderSalesDashboard(visible);
+  renderActiveFilterChips();
   grid.innerHTML=visible.map((p,index)=>{const selected=presentationSelection.has(productKey(p)),slabImages=catalogSlabImages(p),catalogIndex=catalogImageIndex(p,slabImages),image=slabImages.length?slabImages[catalogIndex]:p.images[0],cardSrc=image?.thumbSrc||image?.src,hasCatalogNav=slabImages.length>1,bundleLabel=p.code&&p.code!=='—'?` · ${t('bundle')} ${p.code}`:'';return `<article class="card" tabindex="0" aria-label="${escapeHtml(`${t('openGallery')}: ${p.name}${bundleLabel}`)}" aria-keyshortcuts="Enter Space" data-product-id="${escapeHtml(productKey(p))}">
     <div class="card-image ${image?.src?'is-loading':''}"><div class="stone-placeholder" style="--stone:${p.stone}"></div>${image?.src?`<span class="image-loading-badge">${escapeHtml(t('imageLoading'))}</span><img data-catalog-image="true" data-product-id="${escapeHtml(productKey(p))}" data-photo-file-id="${escapeHtml(image.fileId||'')}" src="${escapeHtml(cardSrc)}" ${image.thumbSrc?`srcset="${escapeHtml(image.thumbSrc)} 700w, ${escapeHtml(image.src)} 1400w" sizes="(max-width:580px) calc(100vw - 40px), (max-width:900px) calc(50vw - 26px), calc(50vw - 26px)"`:''} alt="${escapeHtml(p.name)} slab ${escapeHtml(image.label||catalogIndex+1)}" loading="${index<2?'eager':'lazy'}" fetchpriority="${index<2?'high':'low'}" decoding="async" onload="this.classList.add('loaded');const container=this.closest('.card-image');container.classList.remove('is-loading');const ratio=this.naturalWidth/this.naturalHeight;container.classList.toggle('image-contained',ratio<1.38||ratio>1.78)" onerror="this.classList.add('image-failed');const container=this.closest('.card-image');container.classList.remove('is-loading');container.classList.add('image-error')"><span class="image-error-badge">${escapeHtml(t('imageUnavailableShort'))}</span>`:''}${hasCatalogNav?`<button type="button" class="catalog-image-nav prev" data-catalog-direction="-1" aria-label="${escapeHtml(`${t('previousSlab')} · ${p.name}`)}">‹</button><span class="catalog-image-position" aria-live="polite">${escapeHtml(catalogImagePosition(image,catalogIndex,slabImages.length))}</span><button type="button" class="catalog-image-nav next" data-catalog-direction="1" aria-label="${escapeHtml(`${t('nextSlab')} · ${p.name}`)}">›</button>`:''}
       <span class="status-badge ${p.reserved?'reserved':''}">${escapeHtml(p.reserved?t('reserved'):t('available'))}</span>${freshnessBadgeMarkup(p)}${sharedCollectionActive?'':`<button type="button" class="card-collection-toggle ${selected?'selected':''}" data-product-id="${escapeHtml(productKey(p))}" aria-pressed="${selected}" aria-label="${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))} ${escapeHtml(p.name)}${escapeHtml(bundleLabel)}"><span aria-hidden="true">${selected?'✓':'+'}</span><span>${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))}</span></button>`}</div>
@@ -918,19 +1055,20 @@ function render(){
   grid.querySelectorAll('.card').forEach(card=>{const toggle=card.querySelector('.card-collection-toggle');toggle?.addEventListener('click',event=>{event.stopPropagation();togglePresentationSelection(card.dataset.productId,!presentationSelection.has(card.dataset.productId))});card.addEventListener('click',event=>{if(!event.target.closest('button'))openProduct(card.dataset.productId)});card.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('button')){e.preventDefault();openProduct(card.dataset.productId)}})});
 }
 
-document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.filter.active').classList.remove('active');btn.classList.add('active');document.querySelectorAll('.filter').forEach(filter=>filter.setAttribute('aria-pressed',String(filter===btn)));currentFilter=btn.dataset.filter;render()}));
+document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{setCatalogStatusFilter(btn.dataset.filter);render()}));
 catalogViewButtons.forEach(button=>button.addEventListener('click',()=>setCatalogColumns(button.dataset.columns)));
 search.addEventListener('input',render);
 sortSelect.addEventListener('change',render);
 [minArea,maxArea,minSlabs,maxSlabs,dimensionFilter,packingFilter,mediaFilter].forEach(input=>input.addEventListener(input.tagName==='SELECT'?'change':'input',render));
-clearFiltersButton.addEventListener('click',()=>{minArea.value='';maxArea.value='';minSlabs.value='';maxSlabs.value='';dimensionFilter.value='';packingFilter.value='all';mediaFilter.value='all';render()});
+clearFiltersButton.addEventListener('click',resetAllFilters);
+activeFilterChips?.addEventListener('click',event=>{const chip=event.target.closest('[data-clear-filter]');if(chip)clearSingleFilter(chip.dataset.clearFilter)});
 clearCollectionButton.addEventListener('click',clearSharedCollection);
 copySharedCollectionLink?.addEventListener('click',()=>{if(sharedCollectionActive)copyText(publicSharedCollectionUrl(),copySharedCollectionLink,t('listLinkCopied'))});
-presentationCollectionName.addEventListener('input',event=>{customerCollectionTitle=event.currentTarget.value.trim();try{localStorage.setItem('lucraCustomerCollectionTitle',customerCollectionTitle)}catch(error){}renderPresentationCollection()});
-sharePresentationCollectionButton.addEventListener('click',async()=>{const selected=selectedPresentationProducts();if(!selected.length)return;const title=customerCollectionTitle.trim(),url=publicCustomerCollectionUrl(selected,title);await copyText(url,sharePresentationCollectionButton,t('collectionLinkCopied'))});
-copyPresentationCollectionSummaryButton.addEventListener('click',()=>{const selected=selectedPresentationProducts();if(selected.length)copyText(customerCollectionSummary(selected,customerCollectionTitle.trim()),copyPresentationCollectionSummaryButton,t('collectionSummaryCopied'))});
+presentationCollectionName.addEventListener('input',event=>{customerCollectionTitle=event.currentTarget.value;renderPresentationCollection()});
+sharePresentationCollectionButton.addEventListener('click',async()=>{const selected=selectedPresentationProducts();if(!selected.length)return;const title=commitCustomerCollectionTitle(),url=publicCustomerCollectionUrl(selected,title);await copyText(url,sharePresentationCollectionButton,t('collectionLinkCopied'))});
+copyPresentationCollectionSummaryButton.addEventListener('click',()=>{const selected=selectedPresentationProducts();if(selected.length)copyText(customerCollectionSummary(selected,commitCustomerCollectionTitle()),copyPresentationCollectionSummaryButton,t('collectionSummaryCopied'))});
 printPresentationCollectionButton.addEventListener('click',printPresentationCollection);
-whatsappPresentationCollectionButton.addEventListener('click',()=>{const selected=selectedPresentationProducts();if(selected.length)openWhatsApp(customerCollectionSummary(selected,customerCollectionTitle.trim()))});
+whatsappPresentationCollectionButton.addEventListener('click',()=>{const selected=selectedPresentationProducts();if(selected.length)openWhatsApp(customerCollectionSummary(selected,commitCustomerCollectionTitle()))});
 clearPresentationCollectionButton.addEventListener('click',()=>{presentationSelection.clear();savePresentationSelection();render()});
 advancedFiltersToggle.addEventListener('click',()=>{const open=document.body.classList.toggle('filters-open');advancedFiltersToggle.setAttribute('aria-expanded',String(open));advancedFiltersToggle.querySelector('[data-i18n]').textContent=t(open?'hideFilters':'moreFilters');advancedFiltersToggle.lastElementChild.textContent=open?'⌃':'⌄'});
 showMissingPacking.addEventListener('change',event=>{showMissingPackingValue=event.currentTarget.checked;try{localStorage.setItem('lucraShowMissingPacking',showMissingPackingValue?'1':'0')}catch(error){}render()});
@@ -968,6 +1106,10 @@ whatsappShortlistButton.addEventListener('click',()=>openWhatsApp(customerShortl
 exportShortlistButton.addEventListener('click',downloadShortlist);
 exportVisibleButton.addEventListener('click',downloadVisible);
 clearShortlistButton.addEventListener('click',()=>{shortlist.clear();saveShortlist();render()});
+shortlistQuoteForm.addEventListener('submit',submitShortlistQuoteRequest);
+whatsappShortlistQuoteButton.addEventListener('click',sendShortlistQuoteViaWhatsApp);
+closeShortlistQuoteButton.addEventListener('click',()=>shortlistQuoteDialog.close());
+shortlistQuoteCloseButton.addEventListener('click',()=>shortlistQuoteDialog.close());
 saveSalesNoteButton.addEventListener('click',()=>{if(!currentProduct)return;salesNotes[productKey(currentProduct)]={status:followupStatus.value,note:salesNote.value.trim(),updatedAt:new Date().toISOString()};try{localStorage.setItem('lucraSalesNotes',JSON.stringify(salesNotes))}catch(error){}noteSaved.textContent=t('saved');setTimeout(()=>noteSaved.textContent='',1600);renderSalesDashboard(filteredProducts())});
 
 const dialog=document.querySelector('#productDialog');
@@ -1011,6 +1153,7 @@ function openProduct(id){
   if(!dialog.open)dialogReturnFocus=document.activeElement;
   currentProduct=products.find(p=>productKey(p)===id); imageIndex=0;galleryPreloadCache.clear();
   if(!currentProduct)return;
+  openProductLink.href=customerProductUrl(currentProduct);
   updateShareMetadata(currentProduct);
   dialogCloseButton.setAttribute('aria-label',t('closeGallery'));gallerySurface.setAttribute('aria-label',`${t('galleryLabel')}: ${currentProduct.name}`);
   document.querySelector('#dialogCode').textContent=currentProduct.code;
@@ -1142,6 +1285,9 @@ galleryExpandButton.addEventListener('click',()=>setGalleryFullscreen(!dialog.cl
 dialog.addEventListener('keydown',event=>{if(!dialog.open||event.target.matches('input,textarea,select'))return;if(event.key==='ArrowLeft'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(-1)}if(event.key==='ArrowRight'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(1)}if(event.key.toLowerCase()==='z'){event.preventDefault();toggleGalleryZoom()}if(event.key.toLowerCase()==='f'){event.preventDefault();setGalleryFullscreen(!dialog.classList.contains('gallery-focus'))}});
 dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');customerCta.hidden=false;salesFollowupSection.hidden=false;galleryExpandButton.textContent='⤢ Fullscreen';galleryExpandButton.title=t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);galleryExpandButton.setAttribute('aria-pressed','false');gallerySurface.setAttribute('aria-label',`${t('galleryLabel')}: ${currentProduct?.name||''}`);galleryPanX=0;galleryPanY=0;galleryZoomScale=1.55;galleryPointers.clear();galleryPinchStart=null;gallerySwipeStart=null;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';updateGalleryZoomControl();updateShareMetadata();const returnFocus=dialogReturnFocus;dialogReturnFocus=null;if(returnFocus?.isConnected&&typeof returnFocus.focus==='function')requestAnimationFrame(()=>returnFocus.focus())});
 document.querySelector('#copyLink').addEventListener('click',async(e)=>{const url=customerProductUrl(currentProduct);await navigator.clipboard.writeText(url);e.currentTarget.textContent='Link copied';setTimeout(()=>e.currentTarget.textContent='Copy bundle link',1400)});
+openPresentationCollectionButton.addEventListener('click',()=>{const selected=selectedPresentationProducts();if(selected.length){const title=commitCustomerCollectionTitle();window.open(publicCustomerCollectionUrl(selected,title),'_blank','noopener,noreferrer')}});
+requestPresentationQuoteButton.addEventListener('click',()=>openShortlistQuoteDialog());
+openProductLink.addEventListener('click',event=>{if(!currentProduct){event.preventDefault();return}openProductLink.href=customerProductUrl(currentProduct)});
 shareProductButton.addEventListener('click',shareCustomerProduct);
 shareCollectionButton.addEventListener('click',shareCustomerCollection);
 document.querySelector('#printProduct').addEventListener('click',()=>printProductSheet());
