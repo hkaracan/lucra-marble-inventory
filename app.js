@@ -87,8 +87,10 @@ function productThumbnailImage(product){
   const named=images.find(image=>['kapak','cover','thumbnail'].includes(thumbnailNameStem(image.name)));
   if(named)return named;
   if(product?.thumbnailFileId){const synced=images.find(image=>image.fileId===product.thumbnailFileId);if(synced)return synced}
-  const slabFive=images.find(image=>image.type==='slab'&&Number(image.label)===5);
-  return slabFive||images.find(image=>image.type==='slab')||images[0]||null;
+  const numberedSlabs=images.filter(image=>image.type==='slab'&&Number(image.label)>0);
+  const slabsAtOrAfterFive=numberedSlabs.filter(image=>Number(image.label)>=5).sort((a,b)=>Number(a.label)-Number(b.label));
+  const slabsBeforeFive=numberedSlabs.filter(image=>Number(image.label)<5).sort((a,b)=>Number(b.label)-Number(a.label));
+  return slabsAtOrAfterFive[0]||slabsBeforeFive[0]||images.find(image=>image.type==='slab')||images[0]||null;
 }
 function updateShareMetadata(product=null){
   const productTitle=product?`Lucra Marble · ${product.name}${product.code&&product.code!=='—'?` · ${product.code}`:''}`:'';
@@ -988,6 +990,10 @@ function catalogImageIndex(product,images){
   const preferredIndex=preferred?.type==='slab'?images.findIndex(image=>image.fileId===preferred.fileId):-1;
   return preferredIndex>=0?preferredIndex:0;
 }
+function catalogCardImage(product){
+  const slabImages=catalogSlabImages(product),catalogIndex=catalogImageIndex(product,slabImages),preferred=productThumbnailImage(product);
+  return catalogImageIndexes.has(productKey(product))?(slabImages[catalogIndex]||preferred||product.images?.[0]):(preferred||slabImages[catalogIndex]||product.images?.[0]);
+}
 function catalogImagePosition(image,index,total){return image?.type==='slab'?`Slab ${image?.label||index+1} · ${index+1} / ${total}`:(image?.label||image?.name||'Thumbnail')}
 function updateCatalogCardImage(card,product,direction){
   const images=catalogSlabImages(product);
@@ -1182,7 +1188,9 @@ function openProduct(id){
   if(!dialog.open)dialogReturnFocus=document.activeElement;
   const candidate=products.find(p=>productKey(p)===id);
   if(candidate&&!document.body.classList.contains('sales-mode')&&!isCustomerVisible(candidate))return;
-  currentProduct=candidate; imageIndex=0;galleryPreloadCache.clear();
+  const cardImage=candidate?catalogCardImage(candidate):null;
+  const matchingImageIndex=candidate?.images?.findIndex(image=>Boolean(cardImage)&&((cardImage.fileId&&image.fileId===cardImage.fileId)||(!cardImage.fileId&&cardImage.src&&image.src===cardImage.src)))??-1;
+  currentProduct=candidate; imageIndex=matchingImageIndex>=0?matchingImageIndex:0;galleryPreloadCache.clear();
   if(!currentProduct)return;
   openProductLink.href=customerProductUrl(currentProduct);
   updateShareMetadata(currentProduct);

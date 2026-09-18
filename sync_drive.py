@@ -151,9 +151,15 @@ def select_thumbnail_image(slab_images: list[dict], extra_images: list[dict]) ->
     named = next((image for image in all_images if is_named_thumbnail(image)), None)
     if named:
         return named, "named"
-    slab_five = next((image for image in slab_images if int(image.get("number", 0) or 0) == 5), None)
-    if slab_five:
-        return slab_five, "slab-5"
+    numbered_slabs = [image for image in slab_images if int(image.get("number", 0) or 0) > 0]
+    slabs_at_or_after_five = [image for image in numbered_slabs if int(image["number"]) >= 5]
+    if slabs_at_or_after_five:
+        preferred = min(slabs_at_or_after_five, key=lambda image: (int(image["number"]), image.get("view", 0)))
+        return preferred, "nearest-slab-5"
+    slabs_before_five = [image for image in numbered_slabs if int(image["number"]) < 5]
+    if slabs_before_five:
+        preferred = max(slabs_before_five, key=lambda image: (int(image["number"]), -image.get("view", 0)))
+        return preferred, "nearest-slab-5"
     first_slab = slab_images[0] if slab_images else None
     if first_slab:
         return first_slab, "first-slab"

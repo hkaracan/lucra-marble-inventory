@@ -256,7 +256,33 @@ class MockedSyncTest(unittest.TestCase):
 
         self.assertEqual(product["thumbnailFileId"], "slab-5")
         self.assertEqual(product["thumbnailLabel"], "5")
-        self.assertEqual(product["thumbnailSource"], "slab-5")
+        self.assertEqual(product["thumbnailSource"], "nearest-slab-5")
+
+    def test_product_thumbnail_prefers_the_nearest_available_slab_at_or_after_five(self):
+        selected, source = sync_drive.select_thumbnail_image(
+            [
+                {"number": 1, "label": "1", "fileId": "slab-1"},
+                {"number": 4, "label": "4", "fileId": "slab-4"},
+                {"number": 6, "label": "6", "fileId": "slab-6"},
+                {"number": 12, "label": "12", "fileId": "slab-12"},
+            ],
+            [],
+        )
+
+        self.assertEqual(selected["fileId"], "slab-6")
+        self.assertEqual(source, "nearest-slab-5")
+
+    def test_product_thumbnail_uses_nearest_lower_slab_when_no_later_slab_exists(self):
+        selected, source = sync_drive.select_thumbnail_image(
+            [
+                {"number": 1, "label": "1", "fileId": "slab-1"},
+                {"number": 4, "label": "4", "fileId": "slab-4"},
+            ],
+            [],
+        )
+
+        self.assertEqual(selected["fileId"], "slab-4")
+        self.assertEqual(source, "nearest-slab-5")
 
     def test_mystic_grey_image_labels_use_the_trailing_sequence_number(self):
         product = sync_drive.normalize_folder(
