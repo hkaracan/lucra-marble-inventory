@@ -226,6 +226,38 @@ class MockedSyncTest(unittest.TestCase):
         self.assertEqual([image["number"] for image in slabs], [1, 2])
         self.assertEqual([image["label"] for image in extras], ["3"])
 
+    def test_product_thumbnail_prefers_named_photo_over_slab_five(self):
+        product = sync_drive.normalize_folder(
+            {
+                "id": "thumbnail-product",
+                "name": "Thumbnail Stone K9000",
+                "_items": [
+                    {"id": f"slab-{number}", "name": f"{number}.jpg"}
+                    for number in range(1, 7)
+                ]
+                + [{"id": "cover", "name": "COVER.jpg"}],
+            }
+        )
+
+        self.assertEqual(product["thumbnailFileId"], "cover")
+        self.assertEqual(product["thumbnailSource"], "named")
+
+    def test_product_thumbnail_falls_back_to_slab_five(self):
+        product = sync_drive.normalize_folder(
+            {
+                "id": "slab-five-product",
+                "name": "Numbered Stone K9001",
+                "_items": [
+                    {"id": f"slab-{number}", "name": f"{number}.jpg"}
+                    for number in range(1, 7)
+                ],
+            }
+        )
+
+        self.assertEqual(product["thumbnailFileId"], "slab-5")
+        self.assertEqual(product["thumbnailLabel"], "5")
+        self.assertEqual(product["thumbnailSource"], "slab-5")
+
     def test_mystic_grey_image_labels_use_the_trailing_sequence_number(self):
         product = sync_drive.normalize_folder(
             {

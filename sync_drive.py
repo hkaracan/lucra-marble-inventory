@@ -36,6 +36,7 @@ IMAGE_PATTERN = re.compile(r"\.(jpe?g|png|webp|heic|heif)$", re.I)
 VIDEO_PATTERN = re.compile(r"\.(mp4|mov|webm)$", re.I)
 FILE_PATTERN = re.compile(r"\.(jpe?g|png|webp|heic|heif|mp4|mov|webm|xlsx?)$", re.I)
 CAMERA_IMAGE_PATTERN = re.compile(r"^(?:IMG|DSC|PXL)[ _-]?\d+\.(?:jpe?g|png|webp|heic|heif)$", re.I)
+THUMBNAIL_STEM_PATTERN = re.compile(r"^(?:kapak|cover|thumbnail)$", re.I)
 PACKING_LIST_PATTERN = re.compile(r"\bpacking\s+list\b", re.I)
 BUNDLE_CODE_PATTERN = re.compile(r"(?:^|\s)([KLM]\d+)\s*$", re.I)
 SOURCE_CODE_PATTERN = re.compile(r"\b([KLM]\d+)\b", re.I)
@@ -133,6 +134,30 @@ def compact_mystic_image_label(value: str | None) -> str:
     digits = match.group(1)
     number = int(digits)
     return str(number) if number < 10 else digits[-2:]
+
+
+def thumbnail_stem(value: str | None) -> str:
+    """Return a filename stem normalized for thumbnail matching."""
+    return re.sub(r"\.[^.]+$", "", str(value or "").strip()).strip()
+
+
+def is_named_thumbnail(image: dict) -> bool:
+    return bool(THUMBNAIL_STEM_PATTERN.fullmatch(thumbnail_stem(image.get("name"))))
+
+
+def select_thumbnail_image(slab_images: list[dict], extra_images: list[dict]) -> tuple[dict | None, str | None]:
+    """Choose the stable product preview without changing gallery ordering."""
+    all_images = [*slab_images, *extra_images]
+    named = next((image for image in all_images if is_named_thumbnail(image)), None)
+    if named:
+        return named, "named"
+    slab_five = next((image for image in slab_images if int(image.get("number", 0) or 0) == 5), None)
+    if slab_five:
+        return slab_five, "slab-5"
+    first_slab = slab_images[0] if slab_images else None
+    if first_slab:
+        return first_slab, "first-slab"
+    return (all_images[0], "first-image") if all_images else (None, None)
 
 
 def source_code_warnings(folder_name: str, packing_name: str | None) -> list[dict[str, object]]:
@@ -735,6 +760,7 @@ def normalize_folder(folder: dict[str, str]) -> dict:
                 mystic_extras.append(image)
         slab_images, extra_images = mystic_slabs, mystic_extras
     slab_images.sort(key=lambda image: (image["number"], image.get("view", 0)))
+    thumbnail_image, thumbnail_source = select_thumbnail_image(slab_images, extra_images)
     packing = packing or {"lines": [], "totalPcs": len(slab_images) or None, "totalSqm": None}
     if code == "—":
         code_sources = [packing_name or ""] + [str(line.get("block") or "") for line in packing.get("lines", [])]
@@ -783,6 +809,9 @@ def normalize_folder(folder: dict[str, str]) -> dict:
         "lines": packing.get("lines", []),
         "images": slab_images,
         "extraImages": extra_images,
+        "thumbnailFileId": thumbnail_image.get("fileId") if thumbnail_image else None,
+        "thumbnailLabel": thumbnail_image.get("label") if thumbnail_image else None,
+        "thumbnailSource": thumbnail_source,
         "videos": videos,
         "packingList": packing_name,
         "packingListId": packing_file_id,
