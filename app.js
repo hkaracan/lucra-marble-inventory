@@ -1149,7 +1149,7 @@ saveSalesNoteButton.addEventListener('click',()=>{if(!currentProduct)return;sale
 
 const dialog=document.querySelector('#productDialog');
 const gallerySurface=document.querySelector('.gallery'), galleryImage=document.querySelector('#dialogImage'), galleryHint=document.querySelector('#galleryHint'), galleryLoadingLabel=document.querySelector('#galleryLoadingLabel'), galleryRetryButton=document.querySelector('#galleryRetry'), galleryZoomButton=document.querySelector('#galleryZoom'), galleryExpandButton=document.querySelector('#galleryExpand'), dialogCloseButton=document.querySelector('#dialogClose'), customerCta=document.querySelector('.customer-cta');
-const salesFollowupSection=document.querySelector('.sales-followup');
+const salesFollowupSection=document.querySelector('.sales-followup'), bundleQrPanel=document.querySelector('#bundleQrPanel');
 let galleryPanX=0, galleryPanY=0, galleryPanning=false, galleryPanStart=null, gallerySwipeStart=null, galleryZoomScale=1.55, galleryPointers=new Map(), galleryPinchStart=null, galleryPreloadCache=new Map(), dialogReturnFocus=null;
 function moveGalleryImage(direction){
   if(!currentProduct?.images.length)return;
@@ -1193,6 +1193,7 @@ function openProduct(id){
   currentProduct=candidate; imageIndex=matchingImageIndex>=0?matchingImageIndex:0;galleryPreloadCache.clear();
   if(!currentProduct)return;
   openProductLink.href=customerProductUrl(currentProduct);
+  bundleQrPanel.hidden=false;bundleQrPanel.setAttribute('aria-label',`${t('scanToView')}: ${currentProduct.name}`);bundleQrPanel.innerHTML=qrCodeMarkup(publicCustomerProductUrl(currentProduct),t('scanToView'),'bundle-qr-code');
   updateShareMetadata(currentProduct);
   dialogCloseButton.setAttribute('aria-label',t('closeGallery'));gallerySurface.setAttribute('aria-label',`${t('galleryLabel')}: ${currentProduct.name}`);
   document.querySelector('#dialogCode').textContent=currentProduct.code;
@@ -1322,7 +1323,7 @@ function setGalleryFullscreen(fullscreen){
 }
 galleryExpandButton.addEventListener('click',()=>setGalleryFullscreen(!dialog.classList.contains('gallery-focus')));
 dialog.addEventListener('keydown',event=>{if(!dialog.open||event.target.matches('input,textarea,select'))return;if(event.key==='ArrowLeft'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(-1)}if(event.key==='ArrowRight'&&currentProduct?.images.length){event.preventDefault();moveGalleryImage(1)}if(event.key.toLowerCase()==='z'){event.preventDefault();toggleGalleryZoom()}if(event.key.toLowerCase()==='f'){event.preventDefault();setGalleryFullscreen(!dialog.classList.contains('gallery-focus'))}});
-dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');customerCta.hidden=false;salesFollowupSection.hidden=false;galleryExpandButton.textContent='⤢ Fullscreen';galleryExpandButton.title=t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);galleryExpandButton.setAttribute('aria-pressed','false');gallerySurface.setAttribute('aria-label',`${t('galleryLabel')}: ${currentProduct?.name||''}`);galleryPanX=0;galleryPanY=0;galleryZoomScale=1.55;galleryPointers.clear();galleryPinchStart=null;gallerySwipeStart=null;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';updateGalleryZoomControl();updateShareMetadata();const returnFocus=dialogReturnFocus;dialogReturnFocus=null;if(returnFocus?.isConnected&&typeof returnFocus.focus==='function')requestAnimationFrame(()=>returnFocus.focus())});
+dialog.addEventListener('close',()=>{dialog.classList.remove('gallery-focus');customerCta.hidden=false;salesFollowupSection.hidden=false;bundleQrPanel.hidden=true;bundleQrPanel.innerHTML='';galleryExpandButton.textContent='⤢ Fullscreen';galleryExpandButton.title=t('fullscreen');galleryExpandButton.setAttribute('aria-label',galleryExpandButton.title);galleryExpandButton.setAttribute('aria-pressed','false');gallerySurface.setAttribute('aria-label',`${t('galleryLabel')}: ${currentProduct?.name||''}`);galleryPanX=0;galleryPanY=0;galleryZoomScale=1.55;galleryPointers.clear();galleryPinchStart=null;gallerySwipeStart=null;galleryImage.classList.remove('zoomed','panning');galleryImage.style.transform='';updateGalleryZoomControl();updateShareMetadata();const returnFocus=dialogReturnFocus;dialogReturnFocus=null;if(returnFocus?.isConnected&&typeof returnFocus.focus==='function')requestAnimationFrame(()=>returnFocus.focus())});
 document.querySelector('#copyLink').addEventListener('click',async(e)=>{const url=customerProductUrl(currentProduct);await navigator.clipboard.writeText(url);e.currentTarget.textContent='Link copied';setTimeout(()=>e.currentTarget.textContent='Copy bundle link',1400)});
 openPresentationCollectionButton.addEventListener('click',()=>{const selected=selectedPresentationProducts();if(selected.length){const title=commitCustomerCollectionTitle();window.open(publicCustomerCollectionUrl(selected,title),'_blank','noopener,noreferrer')}});
 requestPresentationQuoteButton.addEventListener('click',()=>openShortlistQuoteDialog());
