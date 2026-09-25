@@ -102,6 +102,16 @@ class MockedSyncTest(unittest.TestCase):
         self.assertEqual(parsed["lines"][0]["surfaceType"], "Polished · Leather")
         self.assertEqual(parsed["lines"][1]["surfaceType"], "Raw")
 
+        embedded_surface = sync_drive.parse_packing_list(
+            workbook_bytes(
+                [
+                    ["Block Number", "Material", "Width", "Height", "Pcs", "Sqm"],
+                    ["K900003", "SAMPLE STONE POLISHED & BOOKMATCHED", 160, 320, 1, 5.12],
+                ]
+            )
+        )
+        self.assertEqual(embedded_surface["lines"][0]["surfaceType"], "Polished · Bookmatched")
+
         with patch.object(
             sync_drive,
             "download_file",

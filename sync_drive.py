@@ -188,6 +188,24 @@ def looks_like_surface_type(value: str | None) -> bool:
     )
 
 
+def extract_surface_type(value: str | None) -> str:
+    """Extract surface words embedded in a material description."""
+    text = str(value or "").translate(str.maketrans({"ı": "i", "İ": "I", "ş": "s", "Ş": "S", "ğ": "g", "Ğ": "G", "ü": "u", "Ü": "U", "ö": "o", "Ö": "O", "ç": "c", "Ç": "C"}))
+    terms = (
+        (r"polish|cilali", "Polished"),
+        (r"honed|honlu", "Honed"),
+        (r"leather|deri", "Leather"),
+        (r"raw|ham|islenmemis", "Raw"),
+        (r"bookmatch", "Bookmatched"),
+        (r"brushed|fircali", "Brushed"),
+        (r"sandblast|kuml", "Sandblasted"),
+        (r"matte|\bmat\b", "Matte"),
+        (r"patina", "Patinato"),
+        (r"\bhtl\b", "HTL"),
+    )
+    return " · ".join(label for pattern, label in terms if re.search(pattern, text, re.I))
+
+
 def compact_mystic_image_label(value: str | None) -> str:
     """Use the trailing image sequence for the Mystic Grey gallery labels."""
     text = re.sub(r"\.[^.]+$", "", str(value or "").strip())
@@ -601,6 +619,8 @@ def parse_packing_list(content: bytes) -> dict:
         if sqm is None and width is not None and height is not None:
             sqm = _round_area(width * height * pcs / 10000)
         normalized_surface = normalize_surface_type(finish)
+        if not normalized_surface and not finish:
+            normalized_surface = extract_surface_type(material)
         if normalized_surface.casefold() == normalize_surface_type(material).casefold():
             normalized_surface = ""
         lines.append(
