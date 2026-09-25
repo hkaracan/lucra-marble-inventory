@@ -45,6 +45,37 @@ DISPLAY_NAME_ALIASES = {
     "nebula wave": "Nebula Wave",
     "sunset dlomite": "Sunset Dolomite",
 }
+SURFACE_TRANSLATIONS = {
+    "cilali": "Polished",
+    "cilali yuzey": "Polished",
+    "polish": "Polished",
+    "polished": "Polished",
+    "honlu": "Honed",
+    "honlu yuzey": "Honed",
+    "honed": "Honed",
+    "deri": "Leather",
+    "deri yuzey": "Leather",
+    "leather": "Leather",
+    "leather finish": "Leather",
+    "ham": "Raw",
+    "islenmemis": "Raw",
+    "raw": "Raw",
+    "mat": "Matte",
+    "matte": "Matte",
+    "fircalı": "Brushed",
+    "fircali": "Brushed",
+    "brushed": "Brushed",
+    "kumlu": "Sandblasted",
+    "kumlanmis": "Sandblasted",
+    "sandblasted": "Sandblasted",
+    "bookmatch": "Bookmatched",
+    "bookmatched": "Bookmatched",
+    "htl": "HTL",
+    "patina": "Patinato",
+    "patinali": "Patinato",
+    "patinato": "Patinato",
+    "natural": "Natural",
+}
 REQUEST_LOCK = threading.Lock()
 LAST_REQUEST_AT = 0.0
 MIN_REQUEST_GAP = 0.35
@@ -123,6 +154,38 @@ def source_codes(value: str | None) -> list[str]:
 def canonical_display_name(value: str | None) -> str:
     text = " ".join(str(value or "").split())
     return DISPLAY_NAME_ALIASES.get(text.casefold(), text)
+
+
+def normalize_surface_type(value: str | None) -> str:
+    """Translate packing-list surface labels into stable English display values."""
+    text = " ".join(str(value or "").split()).strip()
+    if not text:
+        return ""
+    # Normalize Turkish letters before matching, while keeping the original
+    # value in ``finish`` for source-level traceability.
+    text = text.translate(str.maketrans({"ı": "i", "İ": "I", "ş": "s", "Ş": "S", "ğ": "g", "Ğ": "G", "ü": "u", "Ü": "U", "ö": "o", "Ö": "O", "ç": "c", "Ç": "C"}))
+    parts = re.split(r"\s*(?:&|\+|/|\band\b|\bve\b|-)\s*", text, flags=re.I)
+    normalized = []
+    for part in parts:
+        token = " ".join(part.split()).strip()
+        if not token:
+            continue
+        key = token.casefold()
+        translated = SURFACE_TRANSLATIONS.get(key)
+        if translated is None:
+            translated = " ".join(word[:1].upper() + word[1:].lower() for word in token.split())
+        if translated not in normalized:
+            normalized.append(translated)
+    return " · ".join(normalized)
+
+
+def looks_like_surface_type(value: str | None) -> bool:
+    """Recognize surface values in layouts where the surface column is unlabeled."""
+    normalized = normalize_surface_type(value).casefold()
+    return bool(
+        re.search(r"polish|honed|raw|leather|surface|finish|cilali|honlu|deri|ham|bookmatch|brushed|fircali|kumlu|patina", str(value or ""), re.I)
+        or any(term in normalized for term in ("polished", "honed", "leather", "raw", "matte", "brushed", "sandblasted", "bookmatched", "patinato"))
+    )
 
 
 def compact_mystic_image_label(value: str | None) -> str:
@@ -431,7 +494,7 @@ def _packing_mapping(rows: list[list]) -> dict | None:
                     ]
                     if len(text_cols) >= 2:
                         first_text, second_text = (str(sample[index]).strip() for index in text_cols[:2])
-                        first_is_finish = bool(re.search(r"polish|honed|raw|leather|surface|finish", first_text, re.I))
+                        first_is_finish = looks_like_surface_type(first_text)
                         second_is_thickness = bool(re.fullmatch(r"\d+(?:[.,]\d+)?\s*(?:cm|mm)", second_text, re.I))
                         if second_is_thickness:
                             # The second text cell is thickness, not a
@@ -476,7 +539,7 @@ def _packing_mapping(rows: list[list]) -> dict | None:
         if len(text_cols) < 2:
             continue
         first_text, second_text = str(row[text_cols[0]]).strip(), str(row[text_cols[1]]).strip()
-        finish_first = bool(re.search(r"polish|honed|raw|leather|surface|finish", first_text, re.I))
+        finish_first = looks_like_surface_type(first_text)
         return {
             "start": row_index,
             "block": block_col,
@@ -537,10 +600,14 @@ def parse_packing_list(content: bytes) -> dict:
             continue
         if sqm is None and width is not None and height is not None:
             sqm = _round_area(width * height * pcs / 10000)
+        normalized_surface = normalize_surface_type(finish)
+        if normalized_surface.casefold() == normalize_surface_type(material).casefold():
+            normalized_surface = ""
         lines.append(
             {
                 "block": str(raw_block or "").strip(),
                 "finish": finish,
+                "surfaceType": normalized_surface,
                 "material": material,
                 "widthCm": width,
                 "heightCm": height,
@@ -785,6 +852,7 @@ def normalize_folder(folder: dict[str, str]) -> dict:
         ))
     source_warnings = source_code_warnings(folder_name, packing_name)
     finishes = sorted({line["finish"] for line in packing["lines"] if line.get("finish")})
+    surface_types = sorted({line["surfaceType"] for line in packing["lines"] if line.get("surfaceType")})
     dimensions = sorted({f'{line["widthCm"]} × {line["heightCm"]} cm' for line in packing["lines"] if line.get("widthCm") and line.get("heightCm")})
     labels = sorted({int(image["label"]) for image in slab_images if str(image.get("label", "")).isdigit()})
     missing_numbers = []
@@ -809,6 +877,7 @@ def normalize_folder(folder: dict[str, str]) -> dict:
         "code": code,
         "reserved": reserved,
         "finish": " / ".join(finishes) or "Natural stone",
+        "surfaceTypes": surface_types,
         "pcs": packing.get("totalPcs") or len(slab_images) or None,
         "sqm": packing.get("totalSqm"),
         "dimensions": dimensions,

@@ -76,6 +76,7 @@ body.sales-mode .sales-dashboard{display:block}
 .customer-visibility-summary{margin:8px 0 0;color:var(--navy);font-size:11px;font-weight:600}
 @media(min-width:721px){.sales-list-head,.sales-row{grid-template-columns:minmax(180px,1.45fr) minmax(90px,.8fr) minmax(120px,1.05fr) minmax(160px,1.4fr) minmax(150px,1.35fr) minmax(140px,1.2fr) minmax(145px,1.25fr) minmax(125px,1fr) minmax(65px,.65fr);min-width:1280px}}
 .sales-row.customer-hidden{background:#fffaf0}
+.sales-packing .sales-surface{color:#24788c}
 .sales-customer-visibility{display:flex;flex-direction:column;gap:5px}
 .sales-customer-visibility b{color:#398158;font-size:10px;text-transform:uppercase;letter-spacing:.06em}
 .sales-customer-visibility.is-hidden b{color:var(--reserved)}
@@ -97,7 +98,7 @@ body.sales-mode .sales-dashboard{display:block}
 /* Catalogue cards follow the measured dominant source ratio: 3:2. */
 .card-image{aspect-ratio:1.5}
 .card-image.image-contained img{object-fit:contain;background:#e7edef}
-@media print{.print-sheet-specs{grid-template-columns:repeat(5,1fr)}}
+@media print{.print-sheet-specs{grid-template-columns:repeat(6,1fr)}}
 
 @media print{
   .print-sheet-header-side,.print-collection-header-side{display:grid;justify-items:end;align-content:start;gap:7px}.print-qr{display:grid;justify-items:center;gap:4px;width:88px}.print-qr img{display:block;width:82px;height:82px;object-fit:contain}.print-qr b{color:#6b7780;font-size:8px;line-height:1.2;text-align:center;font-weight:700}.print-qr span{color:#6b7780;font-size:8px;line-height:1.25;text-align:center;overflow-wrap:anywhere}.print-qr span small{display:block;margin-top:3px;font-size:7px}.print-collection-qr{display:flex;align-items:center;justify-items:initial;gap:8px;width:auto;border-top:1px solid #dce5e9;margin-top:10px;padding-top:9px}.print-collection-qr img{width:42px;height:42px}.print-collection-qr b{font-size:8px;max-width:80px}

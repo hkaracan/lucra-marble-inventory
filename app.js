@@ -37,7 +37,7 @@ Object.assign(translations.en,{copyCollectionLink:'Copy collection link',collect
 Object.assign(translations.tr,{copyCollectionLink:'Koleksiyon bağlantısını kopyala',collectionLinkCopied:'Koleksiyon bağlantısı kopyalandı'});
 Object.assign(translations.en,{customerCollection:'YOUR LIST',customerCollectionHint:'Create a list to share or print for a customer.',addToCollection:'Add to list',removeFromCollection:'Remove from list',printCollection:'Print list',collectionSheet:'Customer list',collectionIntro:'A saved list from Lucra Marble.',collectionTitleLabel:'List title',whatsappCollection:'Send list via WhatsApp',copyCollectionLink:'Copy list link',collectionLinkCopied:'List link copied',sharedSelection:'SHARED LIST',sharedSelectionHint:'A shared list from Lucra Marble.',shareSelection:'Share list link',selectionShared:'List link copied'});
 Object.assign(translations.tr,{customerCollection:'LİSTENİZ',customerCollectionHint:'Müşteriyle paylaşmak veya yazdırmak için bir liste oluşturun.',addToCollection:'Listeye ekle',removeFromCollection:'Listeden çıkar',printCollection:'Listeyi yazdır',collectionSheet:'Müşteri listesi',collectionIntro:'Lucra Marble’dan kaydedilmiş liste.',collectionTitleLabel:'Liste başlığı',whatsappCollection:'Listeyi WhatsApp ile gönder',copyCollectionLink:'Liste bağlantısını kopyala',collectionLinkCopied:'Liste bağlantısı kopyalandı',sharedSelection:'PAYLAŞILAN LİSTE',sharedSelectionHint:'Lucra Marble’dan paylaşılan liste.',shareSelection:'Liste bağlantısını paylaş',selectionShared:'Liste bağlantısı kopyalandı'});
-Object.assign(translations.en,{approxWeight:'Approx. weight',weightNotAvailable:'Weight unavailable',weightAssumption:'Estimated using 58 kg/m²; actual weight may vary.',weightUnavailableReason:'Weight unavailable because area is not listed.',requestQuote:'Request a quote',askLucraWhatsApp:'Ask Lucra on WhatsApp',quoteRequestSubject:'Quote request',quoteRequestReady:'Quote request ready'});
+Object.assign(translations.en,{approxWeight:'Approx. weight',weightNotAvailable:'Weight unavailable',weightAssumption:'Estimated using 58 kg/m²; actual weight may vary.',weightUnavailableReason:'Weight unavailable because area is not listed.',surfaceType:'Surface',surfaceNotListed:'Not listed',requestQuote:'Request a quote',askLucraWhatsApp:'Ask Lucra on WhatsApp',quoteRequestSubject:'Quote request',quoteRequestReady:'Quote request ready'});
 Object.assign(translations.en,{customerCta:'Need current pricing or availability? Request a quote or ask Lucra on WhatsApp.'});
 Object.assign(translations.tr,{approxWeight:'Yaklaşık ağırlık',weightNotAvailable:'Belirtilmedi'});
 Object.assign(translations.en,{whatsappCustomer:'Send via WhatsApp'});
@@ -532,6 +532,7 @@ function renderSalesDashboard(visible){
   salesRows.innerHTML=dashboardVisible.map(product=>{
     const packing=packingListSummary(product);
     const media=productMediaSummary(product);
+    const surface=productSurfaceLabel(product);
     const followup=followupFor(product),customerVisible=isCustomerVisible(product);
     const driveUrl=product.folderId?`https://drive.google.com/drive/folders/${encodeURIComponent(product.folderId)}`:rootFolder;
     return `<div class="sales-row ${customerVisible?'':'customer-hidden'}" role="row" tabindex="0" aria-label="${escapeHtml(`${t('openGallery')}: ${product.name}${product.code&&product.code!=='—'?` · ${t('bundle')} ${product.code}`:''}`)}" aria-keyshortcuts="Enter Space" data-product-id="${escapeHtml(productKey(product))}">
@@ -539,7 +540,7 @@ function renderSalesDashboard(visible){
       <span data-label="${escapeHtml(t('status'))}" role="cell"><b class="sales-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</b></span>
       <span data-label="${escapeHtml(t('stock'))}" role="cell">${escapeHtml(productStock(product))}</span>
       <span class="sales-dimensions" data-label="${escapeHtml(t('sizes'))}" role="cell">${escapeHtml(productDimensions(product))}</span>
-      <span class="sales-packing ${packing.className}" data-label="${escapeHtml(t('packingList'))}" role="cell"><b>${escapeHtml(packing.label)}</b><small>${escapeHtml(packing.detail)}</small></span>
+      <span class="sales-packing ${packing.className}" data-label="${escapeHtml(t('packingList'))}" role="cell"><b>${escapeHtml(packing.label)}</b><small>${escapeHtml(packing.detail)}</small><small class="sales-surface">${escapeHtml(t('surfaceType'))}: ${escapeHtml(surface)}</small></span>
       <span class="sales-packing ${media.className}" data-label="${escapeHtml(t('media'))}" role="cell"><b>${escapeHtml(media.label)}</b><small>${escapeHtml(media.detail)}</small></span>
       <span class="sales-followup-cell" data-label="${escapeHtml(t('followUp'))}" role="cell"><b class="followup-status ${escapeHtml(followup.status)}">${escapeHtml(followupLabel(followup.status))}</b><small>${escapeHtml(followup.note||t('noNote'))}</small></span>
       <span class="sales-customer-visibility ${customerVisible?'':'is-hidden'}" data-label="${escapeHtml(t('customerVisibility'))}" role="cell"><b>${escapeHtml(t(customerVisible?'shownToCustomers':'hiddenFromCustomers'))}</b><button class="customer-visibility-toggle" type="button" data-product-id="${escapeHtml(productKey(product))}" aria-pressed="${customerVisible}" aria-label="${escapeHtml(t(customerVisible?'hideFromCustomers':'showToCustomers'))} ${escapeHtml(product.name)}">${escapeHtml(t(customerVisible?'hideFromCustomers':'showToCustomers'))}</button></span>
@@ -731,9 +732,33 @@ function clearSharedCollection(){
   sharedCollectionActive=false;sharedCollectionTitle='';sharedCollectionKeys.clear();document.body.classList.remove('shared-collection-mode');
   const url=new URL(location.href);url.searchParams.delete('collection');url.searchParams.delete('title');history.replaceState(null,'',`${url.pathname}${url.search}${url.hash}`);updateShareMetadata();render();
 }
+const surfaceLabelTranslations={cilali:'Polished',polished:'Polished',polish:'Polished',honlu:'Honed',honed:'Honed',deri:'Leather',leather:'Leather','leather finish':'Leather',ham:'Raw',raw:'Raw',islenmemis:'Raw',mat:'Matte',matte:'Matte',fircali:'Brushed',brushed:'Brushed',kumlu:'Sandblasted',kumlanmis:'Sandblasted',sandblasted:'Sandblasted',bookmatch:'Bookmatched',bookmatched:'Bookmatched',htl:'HTL',patina:'Patinato',patinali:'Patinato',patinato:'Patinato',natural:'Natural'};
+function normalizeSurfaceLabel(value){
+  const text=String(value||'').trim().replace(/[İıŞşĞğÜüÖöÇç]/g,letter=>({İ:'I',ı:'i',Ş:'S',ş:'s',Ğ:'G',ğ:'g',Ü:'U',ü:'u',Ö:'O',ö:'o',Ç:'C',ç:'c'}[letter]||letter));
+  const parts=text.split(/\s*(?:&|\+|\/|\band\b|\bve\b|-)\s*/i).map(part=>part.trim()).filter(Boolean);
+  const normalized=[];
+  parts.forEach(part=>{
+    const key=part.toLowerCase().replace(/\s+/g,' ');
+    const label=surfaceLabelTranslations[key]||part.replace(/\b\w/g,character=>character.toUpperCase());
+    if(label&&!normalized.includes(label))normalized.push(label);
+  });
+  return normalized.join(' · ');
+}
+function surfaceLabelLooksValid(value){
+  const text=String(value||'').trim().replace(/[İıŞşĞğÜüÖöÇç]/g,letter=>({İ:'I',ı:'i',Ş:'S',ş:'s',Ğ:'G',ğ:'g',Ü:'U',ü:'u',Ö:'O',ö:'o',Ç:'C',ç:'c'}[letter]||letter)).toLowerCase();
+  return Boolean(text&&(/polish|honed|raw|leather|surface|finish|cilali|honlu|deri|ham|bookmatch|brushed|fircali|kumlu|patina/.test(text)||['htl','unfilled','filled'].includes(text)));
+}
+function productSurfaceTypes(product){
+  const values=Array.isArray(product?.surfaceTypes)&&product.surfaceTypes.length?product.surfaceTypes:(Array.isArray(product?.lines)?product.lines.map(line=>typeof line==='object'?(line.surfaceType||line.finish):'').filter(surfaceLabelLooksValid):[]);
+  return [...new Set(values.map(normalizeSurfaceLabel).filter(Boolean))];
+}
+function productSurfaceLabel(product){
+  const surfaces=productSurfaceTypes(product);
+  return surfaces.length?surfaces.join(' · '):(product?.packingList?t('surfaceNotListed'):t('noPackingList'));
+}
 function productSummary(product){
   const packing=packingListSummary(product),media=productMediaSummary(product);
-  return `${product.name} ${product.code} — ${product.reserved?'Reserved':'Available'}\nStock: ${productStock(product)}\nApprox. weight: ${productWeightLabel(product)}\nWeight basis: ${productWeightAssumption(product)}\nSizes: ${productDimensions(product)}\nPacking list: ${packing.label} (${packing.detail})\nMedia: ${media.label} (${media.detail})\nDrive: ${productDriveUrl(product)}`;
+  return `${product.name} ${product.code} — ${product.reserved?'Reserved':'Available'}\nStock: ${productStock(product)}\nApprox. weight: ${productWeightLabel(product)}\nWeight basis: ${productWeightAssumption(product)}\nSurface: ${productSurfaceLabel(product)}\nSizes: ${productDimensions(product)}\nPacking list: ${packing.label} (${packing.detail})\nMedia: ${media.label} (${media.detail})\nDrive: ${productDriveUrl(product)}`;
 }
 function shortlistSummary(title='Lucra Marble shortlist'){
   return [title,...selectedProducts().map((product,index)=>`${index+1}. ${productSummary(product)}`)].join('\n\n');
@@ -749,6 +774,7 @@ function customerProductSummary(product,usePublicLink=false,includeDrive=false){
     `Stock: ${stock}${area}`,
     `Approx. weight: ${productWeightLabel(product)}`,
     `Weight basis: ${productWeightAssumption(product)}`,
+    `Surface: ${productSurfaceLabel(product)}`,
     dimensions,
     'Location: Denizli, Türkiye',
     `Photos & details: ${usePublicLink?publicCustomerProductUrl(product):customerProductUrl(product)}`,
@@ -871,16 +897,16 @@ async function copyText(text,button,successText){
 function openWhatsApp(text){window.open(`${lucraWhatsAppUrl}?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer')}
 function renderCompare(){
   const selected=selectedProducts();
-  compareContent.innerHTML=`<div class="compare-table-wrap"><table class="compare-table"><thead><tr><th>${escapeHtml(t('bundle'))}</th><th>${escapeHtml(t('status'))}</th><th>${escapeHtml(t('stock'))}</th><th>${escapeHtml(t('sizes'))}</th><th>${escapeHtml(t('packingList'))}</th><th>${escapeHtml(t('media'))}</th></tr></thead><tbody>${selected.map(product=>{
+  compareContent.innerHTML=`<div class="compare-table-wrap"><table class="compare-table"><thead><tr><th>${escapeHtml(t('bundle'))}</th><th>${escapeHtml(t('status'))}</th><th>${escapeHtml(t('stock'))}</th><th>${escapeHtml(t('sizes'))}</th><th>${escapeHtml(t('surfaceType'))}</th><th>${escapeHtml(t('packingList'))}</th><th>${escapeHtml(t('media'))}</th></tr></thead><tbody>${selected.map(product=>{
     const packing=packingListSummary(product),media=productMediaSummary(product);
-    return `<tr><th><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.code)}</small></th><td><b class="sales-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</b></td><td>${escapeHtml(productStock(product))}</td><td>${escapeHtml(productDimensions(product))}</td><td><b class="compare-status ${packing.className}">${escapeHtml(packing.label)}</b><small>${escapeHtml(packing.detail)}</small></td><td><b class="compare-status ${media.className}">${escapeHtml(media.label)}</b><small>${escapeHtml(media.detail)}</small></td></tr>`;
+    return `<tr><th><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.code)}</small></th><td><b class="sales-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</b></td><td>${escapeHtml(productStock(product))}</td><td>${escapeHtml(productDimensions(product))}</td><td>${escapeHtml(productSurfaceLabel(product))}</td><td><b class="compare-status ${packing.className}">${escapeHtml(packing.label)}</b><small>${escapeHtml(packing.detail)}</small></td><td><b class="compare-status ${media.className}">${escapeHtml(media.label)}</b><small>${escapeHtml(media.detail)}</small></td></tr>`;
   }).join('')}</tbody></table></div>`;
 }
 function csvCell(value){return `"${String(value??'').replace(/"/g,'""')}"`}
 function downloadProducts(records,filePrefix){
-  const rows=[['Product','Code','Status','Stock','Approx. weight','Dimensions','Packing list','Packing detail','Media','Media detail','Drive URL'],...records.map(product=>{
+  const rows=[['Product','Code','Status','Stock','Approx. weight','Surface','Dimensions','Packing list','Packing detail','Media','Media detail','Drive URL'],...records.map(product=>{
     const packing=packingListSummary(product),media=productMediaSummary(product);
-    return [product.name,product.code,product.reserved?'Reserved':'Available',productStock(product),productWeightLabel(product),productDimensions(product),packing.label,packing.detail,media.label,media.detail,productDriveUrl(product)];
+    return [product.name,product.code,product.reserved?'Reserved':'Available',productStock(product),productWeightLabel(product),productSurfaceLabel(product),productDimensions(product),packing.label,packing.detail,media.label,media.detail,productDriveUrl(product)];
   })];
   const csv=`\ufeff${rows.map(row=>row.map(csvCell).join(',')).join('\n')}`;
   const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
@@ -928,7 +954,7 @@ function printSheetMarkup(product){
   const thumbnail=productThumbnailImage(product),images=(product.images||[]).slice(0,6),onlineUrl=publicCustomerProductUrl(product),driveUrl=productDriveUrl(product);
   const imageGrid=images.length?`<section class="print-sheet-views"><h2>${escapeHtml(t('selectedViews'))}</h2><div class="print-sheet-image-grid">${images.map((image,index)=>`<figure><img src="${escapeHtml(image.src)}" alt="${escapeHtml(product.name)} ${escapeHtml(image.type==='slab'?`slab ${image.label}`:image.label)}"><figcaption>${escapeHtml(image.type==='slab'?`Slab ${image.label}`:image.label||`${t('selectedViews')} ${index+1}`)}</figcaption></figure>`).join('')}</div>${product.images.length>images.length?`<p class="print-sheet-muted">${escapeHtml(`${product.images.length-images.length} ${t('views')} · `)}<a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('fullGallery'))}</a></p>`:''}</section>`:'<p class="print-sheet-muted">No images found</p>';
   const dimensions=product.dimensions?.length?productDimensions(product):t('sizeDetailsNotListed');
-  return `<div class="print-sheet-page"><header class="print-sheet-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(product.name)}</h1><p>${escapeHtml(product.code)} · <span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></p></div><div class="print-sheet-header-side"><div class="print-sheet-label">${escapeHtml(t('bundleSheet'))}</div>${qrCodeMarkup(onlineUrl)}</div></header>${thumbnail?.src?`<img class="print-sheet-hero" src="${escapeHtml(thumbnail.src)}" alt="${escapeHtml(product.name)}">`:''}<dl class="print-sheet-specs"><div><dt>${escapeHtml(t('totalSlabs'))}</dt><dd>${escapeHtml(product.pcs!=null?String(product.pcs):t('countUnavailable'))}</dd></div><div><dt>${escapeHtml(t('totalArea'))}</dt><dd>${escapeHtml(product.sqm!=null?`${Number(product.sqm).toFixed(2)} m²`:'—')}</dd></div><div><dt>${escapeHtml(t('approxWeight'))}</dt><dd>${escapeHtml(productWeightLabel(product))}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl>${imageGrid}<div class="print-sheet-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('fullGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div><p class="print-sheet-footer">${escapeHtml(t('contactForPricing'))}</p></div>`;
+  return `<div class="print-sheet-page"><header class="print-sheet-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(product.name)}</h1><p>${escapeHtml(product.code)} · <span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></p></div><div class="print-sheet-header-side"><div class="print-sheet-label">${escapeHtml(t('bundleSheet'))}</div>${qrCodeMarkup(onlineUrl)}</div></header>${thumbnail?.src?`<img class="print-sheet-hero" src="${escapeHtml(thumbnail.src)}" alt="${escapeHtml(product.name)}">`:''}<dl class="print-sheet-specs"><div><dt>${escapeHtml(t('totalSlabs'))}</dt><dd>${escapeHtml(product.pcs!=null?String(product.pcs):t('countUnavailable'))}</dd></div><div><dt>${escapeHtml(t('totalArea'))}</dt><dd>${escapeHtml(product.sqm!=null?`${Number(product.sqm).toFixed(2)} m²`:'—')}</dd></div><div><dt>${escapeHtml(t('approxWeight'))}</dt><dd>${escapeHtml(productWeightLabel(product))}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('surfaceType'))}</dt><dd>${escapeHtml(productSurfaceLabel(product))}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl>${imageGrid}<div class="print-sheet-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('fullGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div><p class="print-sheet-footer">${escapeHtml(t('contactForPricing'))}</p></div>`;
 }
 
 function printProductSheet(){
@@ -952,7 +978,7 @@ function printCollectionMarkup(records){
     const weight=productApproxWeight(product)!=null?` · ${t('approxWeight')}: ${Math.round(productApproxWeight(product))} kg`:'';
     const dimensions=product.dimensions?.length?productDimensions(product):t('sizeDetailsNotListed');
     const onlineUrl=publicCustomerProductUrl(product),driveUrl=productDriveUrl(product);
-    return `<article class="print-collection-card"><div class="print-collection-card-head"><div><h2>${escapeHtml(product.name)}</h2><p>${escapeHtml(code.replace(/^ · /,''))}</p></div><span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></div>${image?.src?`<img class="print-collection-image" src="${escapeHtml(image.src)}" alt="${escapeHtml(product.name)}">`:'<div class="print-collection-image print-collection-no-image">No image</div>'}<dl class="print-collection-specs"><div><dt>${escapeHtml(t('stock'))}</dt><dd>${escapeHtml(`${stock}${area}${weight}`)}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl><div class="print-collection-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('onlineGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div>${qrCodeMarkup(onlineUrl,t('scanToView'),'print-collection-qr')}</article>`;
+    return `<article class="print-collection-card"><div class="print-collection-card-head"><div><h2>${escapeHtml(product.name)}</h2><p>${escapeHtml(code.replace(/^ · /,''))}</p></div><span class="print-sheet-status ${product.reserved?'reserved':''}">${escapeHtml(product.reserved?t('reserved'):t('available'))}</span></div>${image?.src?`<img class="print-collection-image" src="${escapeHtml(image.src)}" alt="${escapeHtml(product.name)}">`:'<div class="print-collection-image print-collection-no-image">No image</div>'}<dl class="print-collection-specs"><div><dt>${escapeHtml(t('stock'))}</dt><dd>${escapeHtml(`${stock}${area}${weight}`)}</dd></div><div><dt>${escapeHtml(t('dimensions'))}</dt><dd>${escapeHtml(dimensions)}</dd></div><div><dt>${escapeHtml(t('surfaceType'))}</dt><dd>${escapeHtml(productSurfaceLabel(product))}</dd></div><div><dt>${escapeHtml(t('location'))}</dt><dd>Denizli, Türkiye</dd></div></dl><div class="print-collection-links"><a href="${escapeHtml(onlineUrl)}">${escapeHtml(t('onlineGallery'))} ↗</a><a href="${escapeHtml(driveUrl)}">${escapeHtml(t('openDrive'))} ↗</a></div>${qrCodeMarkup(onlineUrl,t('scanToView'),'print-collection-qr')}</article>`;
   }).join('');
   return `<div class="print-collection-page"><header class="print-collection-header"><div><div class="print-sheet-brand">LUCRA MARBLE · DENİZLİ, TÜRKİYE</div><h1>${escapeHtml(customerCollectionTitle||t('collectionSheet'))}</h1><p>${escapeHtml(t('collectionIntro'))}</p></div><div class="print-collection-header-side"><div class="print-sheet-label">${escapeHtml(`${records.length} ${t('selectedBundles')}`)}</div>${qrCodeMarkup(collectionUrl)}</div></header><section class="print-collection-grid">${cards}</section><p class="print-collection-footer">${escapeHtml(`${t('availabilityNote')} ${t('contactForPricing')}`)}</p></div>`;
 }
@@ -1204,6 +1230,7 @@ function openProduct(id){
   document.querySelector('#dialogWeight').textContent=productWeightLabel(currentProduct);
   document.querySelector('#dialogWeightNote').textContent=productWeightAssumption(currentProduct);
   document.querySelector('#dialogSize').textContent=currentProduct.dimensions?.length?productDimensions(currentProduct):(hasPackingList?t('sizeNotProvided'):t('noPackingList'));
+  document.querySelector('#dialogSurface').textContent=productSurfaceLabel(currentProduct);
   const status=document.querySelector('#dialogStatus');status.className=`status-badge ${currentProduct.reserved?'reserved':''}`;status.textContent=currentProduct.reserved?'Reserved':'Available';
   const packingSummary=packingListSummary(currentProduct);
   document.querySelector('#bundleLines').innerHTML=currentProduct.lines.length?currentProduct.lines.map(x=>typeof x==='string'?`<p><span>${escapeHtml(x.split(' · ')[0])}</span><span>${escapeHtml(x.split(' · ')[1])}</span><span>${escapeHtml(x.split(' · ')[2])}</span></p>`:`<p><span>${escapeHtml(x.block||'Additional size')}</span><span>${escapeHtml(`${x.pcs} pcs · ${x.widthCm??'—'} × ${x.heightCm??'—'} cm`)}</span><span>${escapeHtml(x.sqm!=null?`${Number(x.sqm).toFixed(2)} m²`:'—')}</span></p>`).join(''):`<p><span>Packing list</span><span>${escapeHtml(packingSummary.detail)}</span><span>${escapeHtml(packingSummary.label)}</span></p>`;

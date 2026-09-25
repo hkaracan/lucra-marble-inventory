@@ -87,6 +87,35 @@ class MockedSyncTest(unittest.TestCase):
         self.assertEqual(parsed["totalSqm"], 31.21)
         self.assertEqual(parsed["lines"][0]["sqm"], 20.48)
 
+    def test_surface_types_are_normalized_to_english(self):
+        parsed = sync_drive.parse_packing_list(
+            workbook_bytes(
+                [
+                    ["Block Number", "Surface", "Material", "Width", "Height", "Pcs", "Sqm"],
+                    ["K900001", "CİLALI & DERİ", "Sample Stone", 160, 320, 2, 10.24],
+                    ["K900002", "Ham", "Sample Stone", 165, 325, 1, 5.36],
+                ]
+            )
+        )
+
+        self.assertEqual(parsed["lines"][0]["finish"], "CİLALI & DERİ")
+        self.assertEqual(parsed["lines"][0]["surfaceType"], "Polished · Leather")
+        self.assertEqual(parsed["lines"][1]["surfaceType"], "Raw")
+
+        with patch.object(
+            sync_drive,
+            "download_file",
+            return_value=packing_list_bytes(),
+        ):
+            product = sync_drive.normalize_folder(
+                {
+                    "id": "surface-product",
+                    "name": "Sample Stone K9000",
+                    "_items": [{"id": "packing", "name": "Packing List K9000.xlsx"}],
+                }
+            )
+        self.assertEqual(product["surfaceTypes"], ["Honed"])
+
     def test_added_at_is_preserved_and_new_bundles_receive_a_first_seen_date(self):
         tree = {
             "root": [
@@ -207,6 +236,7 @@ class MockedSyncTest(unittest.TestCase):
         self.assertEqual(flinders["lines"][0]["material"], "Flinders White")
         self.assertEqual((merged_dimensions["totalPcs"], merged_dimensions["totalSqm"]), (9, 51.53))
         self.assertEqual(merged_dimensions["lines"][0]["finish"], "Bookmatched-Polished")
+        self.assertEqual(merged_dimensions["lines"][0]["surfaceType"], "Bookmatched · Polished")
         self.assertEqual(merged_dimensions["lines"][0]["material"], "Alaskan Blue")
         self.assertEqual(merged_dimensions["lines"][0]["widthCm"], 195)
         self.assertEqual((vanilla["totalPcs"], vanilla["totalSqm"]), (22, 114.26))
