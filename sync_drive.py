@@ -76,6 +76,12 @@ SURFACE_TRANSLATIONS = {
     "patinato": "Patinato",
     "natural": "Natural",
 }
+# Some source labels are not customer-facing surface descriptions. Keep these
+# exclusions narrow so other bundles can still expose the same label when it
+# is genuinely meaningful in their packing list.
+SURFACE_EXCLUSIONS_BY_CODE = {
+    "K6169": {"HTL"},
+}
 REQUEST_LOCK = threading.Lock()
 LAST_REQUEST_AT = 0.0
 MIN_REQUEST_GAP = 0.35
@@ -177,6 +183,17 @@ def normalize_surface_type(value: str | None) -> str:
         if translated not in normalized:
             normalized.append(translated)
     return " · ".join(normalized)
+
+
+def remove_excluded_surface_types(value: str | None, code: str | None) -> str:
+    excluded = {label.casefold() for label in SURFACE_EXCLUSIONS_BY_CODE.get(str(code or "").upper(), set())}
+    if not excluded:
+        return str(value or "").strip()
+    return " · ".join(
+        part.strip()
+        for part in str(value or "").split(" · ")
+        if part.strip() and part.strip().casefold() not in excluded
+    )
 
 
 def looks_like_surface_type(value: str | None) -> bool:
@@ -618,7 +635,7 @@ def parse_packing_list(content: bytes) -> dict:
             continue
         if sqm is None and width is not None and height is not None:
             sqm = _round_area(width * height * pcs / 10000)
-        normalized_surface = normalize_surface_type(finish)
+        normalized_surface = normalize_surface_type(finish) if looks_like_surface_type(finish) else ""
         if not normalized_surface and not finish:
             normalized_surface = extract_surface_type(material)
         if normalized_surface.casefold() == normalize_surface_type(material).casefold():
@@ -870,6 +887,8 @@ def normalize_folder(folder: dict[str, str]) -> dict:
             (str(line.get("material") or "").strip() for line in packing.get("lines", []) if str(line.get("material") or "").strip()),
             code if code != "—" else clean_name,
         ))
+    for line in packing["lines"]:
+        line["surfaceType"] = remove_excluded_surface_types(line.get("surfaceType"), code)
     source_warnings = source_code_warnings(folder_name, packing_name)
     finishes = sorted({line["finish"] for line in packing["lines"] if line.get("finish")})
     surface_types = sorted({line["surfaceType"] for line in packing["lines"] if line.get("surfaceType")})

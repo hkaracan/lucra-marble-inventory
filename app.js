@@ -733,6 +733,7 @@ function clearSharedCollection(){
   const url=new URL(location.href);url.searchParams.delete('collection');url.searchParams.delete('title');history.replaceState(null,'',`${url.pathname}${url.search}${url.hash}`);updateShareMetadata();render();
 }
 const surfaceLabelTranslations={cilali:'Polished',polished:'Polished',polish:'Polished',honlu:'Honed',honed:'Honed',deri:'Leather',leather:'Leather','leather finish':'Leather',ham:'Raw',raw:'Raw',islenmemis:'Raw',mat:'Matte',matte:'Matte',fircali:'Brushed',brushed:'Brushed',kumlu:'Sandblasted',kumlanmis:'Sandblasted',sandblasted:'Sandblasted',bookmatch:'Bookmatched',bookmatched:'Bookmatched',htl:'HTL',patina:'Patinato',patinali:'Patinato',patinato:'Patinato',natural:'Natural'};
+const surfaceExclusionsByCode={K3332:new Set(['Breccia Montagna']),K6169:new Set(['HTL'])};
 function normalizeSurfaceLabel(value){
   const text=String(value||'').trim().replace(/[İıŞşĞğÜüÖöÇç]/g,letter=>({İ:'I',ı:'i',Ş:'S',ş:'s',Ğ:'G',ğ:'g',Ü:'U',ü:'u',Ö:'O',ö:'o',Ç:'C',ç:'c'}[letter]||letter));
   const parts=text.split(/\s*(?:&|\+|\/|\band\b|\bve\b|-)\s*/i).map(part=>part.trim()).filter(Boolean);
@@ -750,7 +751,8 @@ function surfaceLabelLooksValid(value){
 }
 function productSurfaceTypes(product){
   const values=Array.isArray(product?.surfaceTypes)&&product.surfaceTypes.length?product.surfaceTypes:(Array.isArray(product?.lines)?product.lines.map(line=>typeof line==='object'?(line.surfaceType||line.finish):'').filter(surfaceLabelLooksValid):[]);
-  return [...new Set(values.map(normalizeSurfaceLabel).filter(Boolean))];
+  const excluded=surfaceExclusionsByCode[String(product?.code||'').toUpperCase()]||new Set();
+  return [...new Set(values.map(normalizeSurfaceLabel).filter(Boolean).map(surface=>surface.split(' · ').filter(part=>!excluded.has(part)).join(' · ')).filter(Boolean))];
 }
 function surfaceFilterValues(){
   return [...new Set(products.flatMap(product=>productSurfaceTypes(product).flatMap(surface=>surface.split(' · ').map(value=>value.trim()).filter(Boolean))))].sort((a,b)=>a.localeCompare(b));

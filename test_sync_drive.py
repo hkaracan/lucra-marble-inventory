@@ -126,6 +126,39 @@ class MockedSyncTest(unittest.TestCase):
             )
         self.assertEqual(product["surfaceTypes"], ["Honed"])
 
+    def test_unknown_finish_text_is_not_promoted_to_surface_and_k6169_htl_is_hidden(self):
+        breccia = sync_drive.parse_packing_list(
+            workbook_bytes(
+                [
+                    ["Block Number", "Finish", "Material", "Width", "Height", "Pcs", "Sqm"],
+                    ["K33320102", "Breccia Montagna", "Negative Effect", 185, 310, 10, 57.35],
+                ]
+            )
+        )
+        self.assertEqual(breccia["lines"][0]["finish"], "Breccia Montagna")
+        self.assertEqual(breccia["lines"][0]["surfaceType"], "")
+
+        with patch.object(
+            sync_drive,
+            "download_file",
+            return_value=workbook_bytes(
+                [
+                    ["Block Number", "Finish", "Material", "Width", "Height", "Pcs", "Sqm"],
+                    ["K61690102", "BOOKMATCHED", "MERKEZ 1", 181, 290, 1, 5.25],
+                    ["", "HTL", "MERKEZ 1", 175, 295, 1, 5.16],
+                ]
+            ),
+        ):
+            product = sync_drive.normalize_folder(
+                {
+                    "id": "k6169",
+                    "name": "Nimbus White Veincut K6169",
+                    "_items": [{"id": "packing", "name": "Packing List K6169.xlsx"}],
+                }
+            )
+        self.assertEqual(product["surfaceTypes"], ["Bookmatched"])
+        self.assertEqual([line["surfaceType"] for line in product["lines"]], ["Bookmatched", ""])
+
     def test_added_at_is_preserved_and_new_bundles_receive_a_first_seen_date(self):
         tree = {
             "root": [
