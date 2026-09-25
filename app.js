@@ -74,7 +74,7 @@ Object.assign(translations.en,{skipToCatalogue:'Skip to catalogue',searchLabel:'
 Object.assign(translations.tr,{skipToCatalogue:'Kataloğa geç',searchLabel:'Malzeme veya paket kodu ara',inventoryFiltersLabel:'Envanter filtreleri',catalogViewLabel:'Katalog düzeni',updatedAt:'Güncelleme: {date}',copyListLink:'Liste bağlantısını kopyala',listLinkCopied:'Liste bağlantısı kopyalandı',openGallery:'Ürün galerisini aç',areaNotProvided:'Alan belirtilmedi',sizeNotProvided:'Ölçü belirtilmedi',slab:'plaka',slabPhoto:'plaka fotoğrafı',extraView:'ek görünüm',extraViews:'ek görünüm',video:'video',videos:'video'});
 Object.assign(translations.en,{sharedListMetaTitle:'Shared slab list',sharedListMetaDescription:'View a shared Lucra Marble slab list from Denizli, Türkiye.'});
 Object.assign(translations.tr,{sharedListMetaTitle:'Paylaşılan plaka listesi',sharedListMetaDescription:'Denizli, Türkiye’den paylaşılan Lucra Marble plaka listesini görüntüleyin.'});
-Object.assign(translations.en,{resetAll:'Reset all',activeFilters:'Active filters',removeFilter:'Remove filter',searchFilter:'Search',statusFilter:'Status',sortFilter:'Sort',minAreaFilter:'Min m²',maxAreaFilter:'Max m²',minSlabsFilter:'Min slabs',maxSlabsFilter:'Max slabs',sizeFilter:'Size',packingFilter:'Packing',photosFilter:'Photos'});
+Object.assign(translations.en,{resetAll:'Reset all',activeFilters:'Active filters',removeFilter:'Remove filter',searchFilter:'Search',statusFilter:'Status',sortFilter:'Sort',minAreaFilter:'Min m²',maxAreaFilter:'Max m²',minSlabsFilter:'Min slabs',maxSlabsFilter:'Max slabs',sizeFilter:'Size',surfaceFilter:'Surface',allSurfaces:'All surfaces',packingFilter:'Packing',photosFilter:'Photos'});
 Object.assign(translations.en,{quoteFromShortlist:'Request a quote',requestQuoteFromList:'Request a quote',shortlistQuoteTitle:'Request a quote',shortlistQuoteHint:'Send one enquiry for the selected bundles, quantities, delivery destination, and contact details.',selectedQuoteBundles:'Selected bundles',quantity:'Quantity',contactName:'Contact name',company:'Company',email:'Email',phone:'Phone / WhatsApp',deliveryDestination:'Delivery destination',deliveryPlaceholder:'City, country, or delivery address',quoteNotes:'Additional notes',quoteNotesPlaceholder:'Project timing, finish, or other requirements',emailQuoteRequest:'Email quote request',whatsappQuoteRequest:'Send request via WhatsApp',quoteRequestMissingSelection:'Select at least one bundle first.',quoteRequestMissingQuantity:'Enter a quantity of at least 1 for every bundle.',quoteRequestMissingFields:'Please complete the required fields.',quoteRequestPrepared:'Quote request ready',openLink:'Open link',openListLink:'Open list link'});
 Object.assign(translations.en,{customerVisibility:'Customer view',shownToCustomers:'Shown to customers',hiddenFromCustomers:'Hidden from customers',hideFromCustomers:'Hide from customers',showToCustomers:'Show to customers',customerVisibilityShown:'Customer view: {shown} shown · Saved on this device',customerVisibilitySummary:'Customer view: {shown} shown · {hidden} hidden · Saved on this device',customerVisibilityHiddenNote:'bundles hidden from customer view'});
 function t(key){return translations[language][key]??translations.en[key]??key}
@@ -159,7 +159,7 @@ const catalogView=document.querySelector('.catalog-view'), catalogViewButtons=do
 const salesKpis=document.querySelector('#salesKpis'), salesRows=document.querySelector('#salesRows'), salesFilterNote=document.querySelector('#salesFilterNote'), salesSearchInput=document.querySelector('#salesSearchInput'), salesSortSelect=document.querySelector('#salesSortSelect');
 const customerVisibilitySummary=document.querySelector('#customerVisibilitySummary');
 const sortSelect=document.querySelector('#sortSelect'), syncButton=document.querySelector('#syncButton');
-const minArea=document.querySelector('#minArea'), maxArea=document.querySelector('#maxArea'), minSlabs=document.querySelector('#minSlabs'), maxSlabs=document.querySelector('#maxSlabs'), dimensionFilter=document.querySelector('#dimensionFilter'), packingFilter=document.querySelector('#packingFilter'), mediaFilter=document.querySelector('#mediaFilter'), clearFiltersButton=document.querySelector('#clearFilters');
+const minArea=document.querySelector('#minArea'), maxArea=document.querySelector('#maxArea'), minSlabs=document.querySelector('#minSlabs'), maxSlabs=document.querySelector('#maxSlabs'), dimensionFilter=document.querySelector('#dimensionFilter'), surfaceFilter=document.querySelector('#surfaceFilter'), packingFilter=document.querySelector('#packingFilter'), mediaFilter=document.querySelector('#mediaFilter'), clearFiltersButton=document.querySelector('#clearFilters');
 const advancedFiltersToggle=document.querySelector('#advancedFiltersToggle');
 const showMissingPacking=document.querySelector('#showMissingPacking');
 const shortlistCount=document.querySelector('#shortlistCount'), compareSelectedButton=document.querySelector('#compareSelected'), copyShortlistButton=document.querySelector('#copyShortlist'), shareCollectionButton=document.querySelector('#shareCollection'), whatsappShortlistButton=document.querySelector('#whatsappShortlist'), exportShortlistButton=document.querySelector('#exportShortlist'), exportVisibleButton=document.querySelector('#exportVisible'), clearShortlistButton=document.querySelector('#clearShortlist');
@@ -234,8 +234,8 @@ function filteredProducts(){
   const visible=products.filter(p=>{
     const text=`${p.name} ${p.code} ${p.groupName||''}`.toLowerCase();
     const dimensions=normalizeDimensionText((p.dimensions||[]).join(' '));
-    const area=p.sqm==null||p.sqm===''?null:Number(p.sqm),slabs=p.pcs==null||p.pcs===''?null:Number(p.pcs),packingClass=packingListSummary(p).className,hasImages=Boolean(p.images?.length);
-    return (document.body.classList.contains('sales-mode')||isCustomerVisible(p))&&(!sharedCollectionActive||sharedCollectionKeys.has(productKey(p)))&&(currentFilter==='all'||(currentFilter==='reserved'?p.reserved:currentFilter==='recent'?Boolean(bundleFreshness(p)):!p.reserved))&&text.includes(q)&&(!dimensionQuery||dimensions.includes(dimensionQuery))&&(minAreaValue===null||(Number.isFinite(area)&&area>=minAreaValue))&&(maxAreaValue===null||(Number.isFinite(area)&&area<=maxAreaValue))&&(minSlabsValue===null||(Number.isFinite(slabs)&&slabs>=minSlabsValue))&&(maxSlabsValue===null||(Number.isFinite(slabs)&&slabs<=maxSlabsValue))&&(packingFilter.value==='all'||packingClass===packingFilter.value)&&(mediaFilter.value==='all'||(mediaFilter.value==='with-images'?hasImages&&!p.skippedPhotoFolders?.length:!hasImages));
+    const area=p.sqm==null||p.sqm===''?null:Number(p.sqm),slabs=p.pcs==null||p.pcs===''?null:Number(p.pcs),packingClass=packingListSummary(p).className,hasImages=Boolean(p.images?.length),surfaceMatches=surfaceFilter.value==='all'||productSurfaceTypes(p).some(surface=>surface.split(' · ').includes(surfaceFilter.value));
+    return (document.body.classList.contains('sales-mode')||isCustomerVisible(p))&&(!sharedCollectionActive||sharedCollectionKeys.has(productKey(p)))&&(currentFilter==='all'||(currentFilter==='reserved'?p.reserved:currentFilter==='recent'?Boolean(bundleFreshness(p)):!p.reserved))&&text.includes(q)&&(!dimensionQuery||dimensions.includes(dimensionQuery))&&(minAreaValue===null||(Number.isFinite(area)&&area>=minAreaValue))&&(maxAreaValue===null||(Number.isFinite(area)&&area<=maxAreaValue))&&(minSlabsValue===null||(Number.isFinite(slabs)&&slabs>=minSlabsValue))&&(maxSlabsValue===null||(Number.isFinite(slabs)&&slabs<=maxSlabsValue))&&surfaceMatches&&(packingFilter.value==='all'||packingClass===packingFilter.value)&&(mediaFilter.value==='all'||(mediaFilter.value==='with-images'?hasImages&&!p.skippedPhotoFolders?.length:!hasImages));
   });
   const addedTimestamp=product=>{const timestamp=Date.parse(product?.addedAt||'');return Number.isFinite(timestamp)?timestamp:0};
   return visible.sort((a,b)=>sortSelect.value==='newest'?addedTimestamp(b)-addedTimestamp(a)||a.name.localeCompare(b.name)||a.code.localeCompare(b.code):sortSelect.value==='oldest'?addedTimestamp(a)-addedTimestamp(b)||a.name.localeCompare(b.name)||a.code.localeCompare(b.code):sortSelect.value==='slabs'?((Number(b.pcs)||0)-(Number(a.pcs)||0)||a.name.localeCompare(b.name)):sortSelect.value==='area'?((Number(b.sqm)||0)-(Number(a.sqm)||0)||a.name.localeCompare(b.name)):a.name.localeCompare(b.name)||a.code.localeCompare(b.code));
@@ -752,6 +752,15 @@ function productSurfaceTypes(product){
   const values=Array.isArray(product?.surfaceTypes)&&product.surfaceTypes.length?product.surfaceTypes:(Array.isArray(product?.lines)?product.lines.map(line=>typeof line==='object'?(line.surfaceType||line.finish):'').filter(surfaceLabelLooksValid):[]);
   return [...new Set(values.map(normalizeSurfaceLabel).filter(Boolean))];
 }
+function surfaceFilterValues(){
+  return [...new Set(products.flatMap(product=>productSurfaceTypes(product).flatMap(surface=>surface.split(' · ').map(value=>value.trim()).filter(Boolean))))].sort((a,b)=>a.localeCompare(b));
+}
+function populateSurfaceFilter(){
+  if(!surfaceFilter)return;
+  const selected=surfaceFilter.value,values=surfaceFilterValues();
+  surfaceFilter.innerHTML=`<option value="all">${escapeHtml(t('allSurfaces'))}</option>${values.map(value=>`<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join('')}`;
+  surfaceFilter.value=values.includes(selected)?selected:'all';
+}
 function productSurfaceLabel(product){
   const surfaces=productSurfaceTypes(product);
   return surfaces.length?surfaces.join(' · '):(product?.packingList?t('surfaceNotListed'):t('noPackingList'));
@@ -1058,6 +1067,7 @@ function activeFilterEntries(){
   if(sortSelect.value!=='name')entries.push({key:'sort',label:`${t('sortFilter')}: ${sortSelect.options[sortSelect.selectedIndex]?.textContent||sortSelect.value}`});
   [[minArea,'minAreaFilter'],[maxArea,'maxAreaFilter'],[minSlabs,'minSlabsFilter'],[maxSlabs,'maxSlabsFilter']].forEach(([input,key])=>{if(input.value.trim())entries.push({key:input.id,label:`${t(key)}: ${input.value.trim()}`})});
   if(dimensionFilter.value.trim())entries.push({key:'dimension',label:`${t('sizeFilter')}: ${dimensionFilter.value.trim()}`});
+  if(surfaceFilter.value!=='all')entries.push({key:'surface',label:`${t('surfaceFilter')}: ${surfaceFilter.options[surfaceFilter.selectedIndex]?.textContent||surfaceFilter.value}`});
   if(packingFilter.value!=='all')entries.push({key:'packing',label:`${t('packingFilter')}: ${packingFilter.options[packingFilter.selectedIndex]?.textContent||packingFilter.value}`});
   if(mediaFilter.value!=='all')entries.push({key:'media',label:`${t('photosFilter')}: ${mediaFilter.options[mediaFilter.selectedIndex]?.textContent||mediaFilter.value}`});
   return entries;
@@ -1073,9 +1083,9 @@ function clearSingleFilter(key){
   else if(key==='status')setCatalogStatusFilter('all');
   else if(key==='sort')sortSelect.value='name';
   else{
-    const controls={minArea,maxArea,minSlabs,maxSlabs,dimension:dimensionFilter,packing:packingFilter,media:mediaFilter};
+    const controls={minArea,maxArea,minSlabs,maxSlabs,dimension:dimensionFilter,surface:surfaceFilter,packing:packingFilter,media:mediaFilter};
     const control=controls[key];
-    if(control)control.value=key==='packing'||key==='media'?'all':'';
+    if(control)control.value=['surface','packing','media'].includes(key)?'all':'';
   }
   render();
 }
@@ -1084,6 +1094,7 @@ function resetAllFilters(){
   setCatalogStatusFilter('all');
   sortSelect.value='name';
   [minArea,maxArea,minSlabs,maxSlabs,dimensionFilter].forEach(input=>input.value='');
+  surfaceFilter.value='all';
   packingFilter.value='all';
   mediaFilter.value='all';
   document.body.classList.remove('filters-open');
@@ -1095,6 +1106,7 @@ function resetAllFilters(){
 }
 
 function render(){
+  populateSurfaceFilter();
   renderCollectionBanner();
   renderPresentationCollection();
   const visible=filteredProducts();
@@ -1120,7 +1132,7 @@ document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',(
 catalogViewButtons.forEach(button=>button.addEventListener('click',()=>setCatalogColumns(button.dataset.columns)));
 search.addEventListener('input',render);
 sortSelect.addEventListener('change',render);
-[minArea,maxArea,minSlabs,maxSlabs,dimensionFilter,packingFilter,mediaFilter].forEach(input=>input.addEventListener(input.tagName==='SELECT'?'change':'input',render));
+[minArea,maxArea,minSlabs,maxSlabs,dimensionFilter,surfaceFilter,packingFilter,mediaFilter].forEach(input=>input.addEventListener(input.tagName==='SELECT'?'change':'input',render));
 clearFiltersButton.addEventListener('click',resetAllFilters);
 activeFilterChips?.addEventListener('click',event=>{const chip=event.target.closest('[data-clear-filter]');if(chip)clearSingleFilter(chip.dataset.clearFilter)});
 clearCollectionButton.addEventListener('click',clearSharedCollection);

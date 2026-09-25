@@ -90,6 +90,7 @@
         <label><span data-i18n="minSlabs">Min slabs</span> <input id="minSlabs" type="number" min="0" step="1" inputmode="numeric" placeholder="0" /></label>
         <label><span data-i18n="maxSlabs">Max slabs</span> <input id="maxSlabs" type="number" min="0" step="1" inputmode="numeric" placeholder="—" /></label>
         <label><span data-i18n="size">Size</span> <input id="dimensionFilter" type="search" data-i18n-placeholder="sizePlaceholder" placeholder="e.g. 190 × 290" /></label>
+        <label><span data-i18n="surfaceFilter">Surface</span> <select id="surfaceFilter"><option value="all" data-i18n="allSurfaces">All surfaces</option></select></label>
         <label><span data-i18n="packing">Packing</span> <select id="packingFilter"><option value="all" data-i18n="allData">All data</option><option value="connected" data-i18n="connected">Connected</option><option value="partial" data-i18n="fileFound">File found</option><option value="missing" data-i18n="missing">Missing</option></select></label>
         <label><span data-i18n="photos">Photos</span> <select id="mediaFilter"><option value="all" data-i18n="allPhotos">All photos</option><option value="with-images" data-i18n="withImages">With images</option><option value="missing" data-i18n="missingImages">Missing images</option></select></label>
         <button id="clearFilters" class="quiet-button" type="button" data-i18n="resetAll">Reset all</button>
@@ -342,6 +343,6 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260925-01"></script>
+  <script src="app.js?v=20260925-02"></script>
 </body>
 </html>
