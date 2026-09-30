@@ -366,12 +366,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
 .gallery-focus .gallery-count{border:1px solid rgba(255,255,255,.26)}
 
 /* Keep active catalogue filters visible and individually removable. */
-.active-filter-chips{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:-18px 0 24px;padding:0 0 1px}
+.active-filter-chips{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 0 24px;padding:4px 0 1px}
 .active-filter-chips[hidden]{display:none}
 .active-filter-label{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
 .filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #b8dce3;border-radius:100px;background:#f1fafc;color:#24788c;padding:7px 9px;font:600 11px "DM Sans",sans-serif;cursor:pointer}
 .filter-chip:hover,.filter-chip:focus-visible{border-color:var(--aqua);background:#e5f6f9}
-@media(max-width:720px){.active-filter-chips{margin:-8px 0 18px;gap:6px}.filter-chip{padding:6px 8px;font-size:10px}}
+@media(max-width:720px){.active-filter-chips{margin:0 0 18px;padding-top:2px;gap:6px}.filter-chip{padding:6px 8px;font-size:10px}}
 
 /* Shortlist quote request form. */
 .quote-dialog{width:min(760px,94vw);max-height:92vh}
