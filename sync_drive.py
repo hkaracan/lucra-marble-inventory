@@ -89,6 +89,12 @@ NESTED_FOLDER_TIMEOUT = 8
 NESTED_FOLDER_ATTEMPTS = 1
 MAX_WORKERS = 3
 L1014_PATTERN = re.compile(r"\bL1014\b", re.I)
+# The public root listing can omit this bundle because Google exposes only a
+# limited number of children anonymously. Keep the known public folder ID as a
+# targeted read-only fallback so the bundle and its packing list are always
+# attempted; nested photo folders remain optional media.
+L1014_FOLDER_ID = "1oLzjli-9t_kFxlx2geGa-r7CeztqemXn"
+L1014_FOLDER_NAME = "Rosso Levanto L1014"
 
 try:
     OVERFLOW_MANIFEST = json.loads(OVERFLOW_MANIFEST_PATH.read_text(encoding="utf-8"))
@@ -950,6 +956,11 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
         except (OSError, json.JSONDecodeError):
             previous_payload = {}
     root_folders = folder_items(root_folder_id)
+    if not any(
+        folder.get("id") == L1014_FOLDER_ID or is_l1014_folder(folder.get("name", ""))
+        for folder in root_folders
+    ):
+        root_folders.append({"id": L1014_FOLDER_ID, "name": L1014_FOLDER_NAME, "kind": "folder"})
     folders = []
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as discovery_pool:
         discovered = {discovery_pool.submit(folder_items, folder["id"]): folder for folder in root_folders}

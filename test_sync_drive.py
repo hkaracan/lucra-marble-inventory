@@ -203,7 +203,7 @@ class MockedSyncTest(unittest.TestCase):
             self.assertEqual(old["addedAt"], "2026-09-01T12:00:00Z")
             self.assertRegex(new["addedAt"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
             self.assertEqual(payload["syncHistory"][0]["status"], "success")
-            self.assertEqual(payload["syncHistory"][0]["added"], 1)
+            self.assertEqual(payload["syncHistory"][0]["added"], 2)
             self.assertTrue(history_path.exists())
             self.assertTrue(status_path.exists())
             self.assertEqual(
@@ -520,6 +520,30 @@ class MockedSyncTest(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, "previous catalogue was preserved"):
                     sync_drive.sync_inventory("root")
                 self.assertEqual(json.loads(output.read_text(encoding="utf-8")), previous)
+
+    def test_l1014_is_targeted_when_root_listing_omits_it(self):
+        tree = {
+            "root": [{"id": "other", "name": "Other Stone K9000"}],
+            sync_drive.L1014_FOLDER_ID: [
+                {"id": "packing", "name": "Packing List L1014.xlsx"},
+            ],
+            "other": [],
+        }
+
+        def fake_folder_items(folder_id, timeout=35, attempts=3):
+            return tree.get(folder_id, [])
+
+        fake_folder_items.cache_clear = lambda: None
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "data" / "inventory.json"
+            with patch.object(sync_drive, "OUTPUT", output), patch.object(sync_drive, "folder_items", fake_folder_items), patch.object(
+                sync_drive, "download_file", return_value=packing_list_bytes()
+            ):
+                payload = sync_drive.sync_inventory("root")
+
+        l1014 = next(product for product in payload["products"] if product["code"] == "L1014")
+        self.assertEqual(l1014["folderId"], sync_drive.L1014_FOLDER_ID)
+        self.assertEqual(l1014["packingList"], "Packing List L1014.xlsx")
 
     def test_source_code_mismatch_is_reported_without_changing_the_folder_code(self):
         folder = {
