@@ -3,7 +3,12 @@ const actionsWorkflowUrl = 'https://github.com/hkaracan/lucra-marble-inventory/a
 const publicSiteBase = 'https://inventory.lucramarble.com/';
 const isGithubPages = /(^|\.)github\.io$/.test(location.hostname);
 const isLocalServer = /^(localhost|127\.0\.0\.1|::1)$/.test(location.hostname);
-const salesPassword = 'lucra123';
+const salesPasswordHash = '9e6a0334bb084a28386219f3a200b8c9193a7d34170ed0fca7759368bca053a7';
+async function hashSalesPassword(value){
+  const bytes=new TextEncoder().encode(value);
+  const digest=await window.crypto.subtle.digest('SHA-256',bytes);
+  return Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
+}
 const lucraQuoteEmail = 'emine@lucramarble.com';
 const lucraWhatsAppUrl = 'https://wa.me/905062288586';
 const names = [
@@ -1168,12 +1173,17 @@ document.querySelector('#modeSwitch').addEventListener('click',()=>{
   if(salesUnlocked){setSalesMode(true);return}
   salesGateError.textContent='';salesPasswordInput.value='';salesGate.showModal();setTimeout(()=>salesPasswordInput.focus(),50);
 });
-salesGateForm.addEventListener('submit',event=>{
+salesGateForm.addEventListener('submit',async event=>{
   event.preventDefault();
-  if(salesPasswordInput.value===salesPassword){
-    salesUnlocked=true;try{sessionStorage.setItem('lucraSalesUnlocked','1')}catch(error){}
-    salesGate.close();setSalesMode(true);
-  }else{salesGateError.textContent='That password is not correct.';salesPasswordInput.select()}
+  try{
+    const submittedHash=await hashSalesPassword(salesPasswordInput.value);
+    if(submittedHash===salesPasswordHash){
+      salesUnlocked=true;try{sessionStorage.setItem('lucraSalesUnlocked','1')}catch(error){}
+      salesGate.close();setSalesMode(true);
+    }else{salesGateError.textContent='That password is not correct.';salesPasswordInput.select()}
+  }catch(error){
+    salesGateError.textContent='Dashboard access is unavailable in this browser.';
+  }
 });
 document.querySelector('#cancelSalesAccess').addEventListener('click',()=>salesGate.close());
 compareSelectedButton.addEventListener('click',()=>{renderCompare();compareDialog.showModal()});
