@@ -1069,6 +1069,19 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
             raise RuntimeError("Rosso Levanto L1014 could not be read; the previous catalogue was preserved.")
     if not products:
         raise RuntimeError("Sync returned no products; the previous catalogue was preserved.")
+    if errors:
+        details = "; ".join(
+            f'{error.get("folder", "Unknown folder")}: {error.get("error", "Unknown error")}'
+            for error in errors[:8]
+        )
+        suffix = "" if len(errors) <= 8 else f"; and {len(errors) - 8} more"
+        raise RuntimeError(
+            f"Sync failed for {len(errors)} bundle folder(s); the previous catalogue was preserved. "
+            f"{details}{suffix}"
+        )
+    folder_ids = [product.get("folderId") for product in products]
+    if any(not folder_id for folder_id in folder_ids) or len(folder_ids) != len(set(folder_ids)):
+        raise RuntimeError("Sync produced missing or duplicate folder IDs; the previous catalogue was preserved.")
     previous_by_id={product.get("folderId"):product for product in previous_payload.get("products",[]) if product.get("folderId")}
     # Keep the first-seen date stable so the UI can identify recent additions
     # without Drive credentials or a non-read-only metadata API. Existing

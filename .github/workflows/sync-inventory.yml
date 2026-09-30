@@ -42,8 +42,20 @@ jobs:
       - name: Install parser dependency
         run: python -m pip install -r requirements.txt
 
+      - name: Capture previous catalogue baseline
+        run: |
+          if git cat-file -e HEAD:data/inventory.json 2>/dev/null; then
+            git show HEAD:data/inventory.json > /tmp/lucra-previous-inventory.json
+          fi
+
       - name: Sync public Drive folder
-        run: python sync_drive.py
+        id: sync
+        run: |
+          set -o pipefail
+          python sync_drive.py 2>&1 | tee /tmp/lucra-sync.log
+
+      - name: Validate catalogue before deployment
+        run: python validate_catalogue.py --previous /tmp/lucra-previous-inventory.json
 
       - name: Add sync report to job summary
         run: |
@@ -87,6 +99,13 @@ jobs:
           {
             echo "## Inventory sync failed"
             echo "The previous catalogue remains deployed. No repository files were overwritten."
+            if [ -s /tmp/lucra-sync.log ]; then
+              echo ""
+              echo "### Sync diagnostic"
+              echo '```text'
+              tail -n 30 /tmp/lucra-sync.log
+              echo '```'
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload Pages artifact

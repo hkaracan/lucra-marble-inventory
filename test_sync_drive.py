@@ -517,10 +517,9 @@ class MockedSyncTest(unittest.TestCase):
             output.parent.mkdir(parents=True)
             output.write_text(json.dumps(previous), encoding="utf-8")
             with patch.object(sync_drive, "OUTPUT", output), patch.object(sync_drive, "folder_items", fake_folder_items):
-                payload = sync_drive.sync_inventory("root")
-
-        self.assertEqual([product["code"] for product in payload["products"]], ["L1014"])
-        self.assertTrue(payload["errors"])
+                with self.assertRaisesRegex(RuntimeError, "previous catalogue was preserved"):
+                    sync_drive.sync_inventory("root")
+                self.assertEqual(json.loads(output.read_text(encoding="utf-8")), previous)
 
     def test_source_code_mismatch_is_reported_without_changing_the_folder_code(self):
         folder = {

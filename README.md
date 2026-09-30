@@ -13,7 +13,7 @@ Then open `http://localhost:4173`.
 
 You can also open `index.html` directly from this folder. Direct HTML mode uses the local snapshot when it is recent and automatically falls back to the latest published GitHub Pages snapshot when the local copy is more than two hours old. It still works offline with the local snapshot and public Drive thumbnails; use the Python server when you want to run a fresh manual Drive sync.
 
-The public website is available at [hkaracan.github.io/lucra-marble-inventory](https://hkaracan.github.io/lucra-marble-inventory/). Because GitHub Pages is a static host, its **Sync via GitHub Actions** button opens the manual workflow instead of running the local Python API.
+The public website is available at [inventory.lucramarble.com](https://inventory.lucramarble.com/). Because GitHub Pages is a static host, its **Sync via GitHub Actions** button opens the manual workflow instead of running the local Python API.
 
 ## Current scope
 
@@ -41,7 +41,7 @@ To refresh the live website manually, open the repository’s **Actions** tab, s
 
 Sales Mode has a deliberately simple demonstration gate using `lucra123`. This is only a client-side visibility gate for the prototype; it is not a security boundary. Real protection would require server-side authentication.
 
-Safety controls include read-only requests, three-request concurrency, spacing between requests, bounded retries with backoff, time-limited optional nested-photo lookups, individual folder error isolation, a one-minute manual-sync cooldown, single-sync locking, local image caching, and atomic inventory replacement. L1014 is validated as a required bundle and its packing-list record is retained if a refresh cannot read the folder. A failed refresh preserves the previous successful catalogue, while optional photo-folder skips and packing-list warnings are included in the Sales Mode sync feedback.
+Safety controls include read-only requests, three-request concurrency, spacing between requests, bounded retries with backoff, time-limited optional nested-photo lookups, optional photo-folder isolation, a one-minute manual-sync cooldown, single-sync locking, local image caching, catalogue validation, and atomic inventory replacement. L1014 is validated as a required bundle and its packing-list record is retained if a refresh cannot read the folder. A bundle discovery error now fails the sync before publication, preserving the previous successful catalogue; optional photo-folder skips and packing-list warnings remain visible in the Sales Mode sync feedback.
 
 ## Live integration
 
