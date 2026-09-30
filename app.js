@@ -6,7 +6,7 @@ const isLocalServer = /^(localhost|127\.0\.0\.1|::1)$/.test(location.hostname);
 const lucraQuoteEmail = 'emine@lucramarble.com';
 const lucraWhatsAppUrl = 'https://wa.me/905062288586';
 const supabaseClient=window.supabase&&window.LUCRA_SUPABASE_URL&&window.LUCRA_SUPABASE_PUBLISHABLE_KEY?window.supabase.createClient(window.LUCRA_SUPABASE_URL,window.LUCRA_SUPABASE_PUBLISHABLE_KEY):null;
-const authorizedSalesEmail=lucraQuoteEmail.toLowerCase();
+const authorizedSalesEmail='hasan@lucramarble.com';
 const salesAuthRedirectUrl=`${publicSiteBase}`;
 const names = [
   'Alaskan Blue K2970','Alexander Black K4987','Arabescato Imperiale K6235','Bianco Dolomite L1011','Breccia Montagna K3332','Bruno Perla K6029','Cafe Amore K6058','Ceppo Beige K5567','Ceppo Beige K6086','Ceppo Grey K3630','Crema Luna K6131','Diamond Grey M2878','Flinders White','Golden Roots K5080','Green Olive K3618','Ice Bloom K4132','Invisible Blue K3280','Karmania Traonyx K5809','Lilac Extra K3619','Marmara Equator K3514','MoonLight Grey K5147','Naturella K5171','Nebula Wave L1009','Nimbus White Veincut K6169','Polar White K6089','Porto Rosa L006','Red Jasper L1010','Red Travertine K5094','Reserved Velluto Onyx K3947','Rosso Levanto K6222','Rosso Levanto L1013','Rosso Levanto L1014','Silver Travertine Ham (Raw) K5301','Sunset Dolomite New','Terranova Ceppo K6044','Travertine L009','Tundra Grey','Van Gogh K3229','Vanilla Ice K5372','Vanilla K6130','Velluto Onyx Cross Cut K3653','Verde Levanto K5420'
