@@ -3,14 +3,11 @@ const actionsWorkflowUrl = 'https://github.com/hkaracan/lucra-marble-inventory/a
 const publicSiteBase = 'https://inventory.lucramarble.com/';
 const isGithubPages = /(^|\.)github\.io$/.test(location.hostname);
 const isLocalServer = /^(localhost|127\.0\.0\.1|::1)$/.test(location.hostname);
-const salesPasswordHash = '9e6a0334bb084a28386219f3a200b8c9193a7d34170ed0fca7759368bca053a7';
-async function hashSalesPassword(value){
-  const bytes=new TextEncoder().encode(value);
-  const digest=await window.crypto.subtle.digest('SHA-256',bytes);
-  return Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
-}
 const lucraQuoteEmail = 'emine@lucramarble.com';
 const lucraWhatsAppUrl = 'https://wa.me/905062288586';
+const supabaseClient=window.supabase&&window.LUCRA_SUPABASE_URL&&window.LUCRA_SUPABASE_PUBLISHABLE_KEY?window.supabase.createClient(window.LUCRA_SUPABASE_URL,window.LUCRA_SUPABASE_PUBLISHABLE_KEY):null;
+const authorizedSalesEmail=lucraQuoteEmail.toLowerCase();
+const salesAuthRedirectUrl=`${publicSiteBase}`;
 const names = [
   'Alaskan Blue K2970','Alexander Black K4987','Arabescato Imperiale K6235','Bianco Dolomite L1011','Breccia Montagna K3332','Bruno Perla K6029','Cafe Amore K6058','Ceppo Beige K5567','Ceppo Beige K6086','Ceppo Grey K3630','Crema Luna K6131','Diamond Grey M2878','Flinders White','Golden Roots K5080','Green Olive K3618','Ice Bloom K4132','Invisible Blue K3280','Karmania Traonyx K5809','Lilac Extra K3619','Marmara Equator K3514','MoonLight Grey K5147','Naturella K5171','Nebula Wave L1009','Nimbus White Veincut K6169','Polar White K6089','Porto Rosa L006','Red Jasper L1010','Red Travertine K5094','Reserved Velluto Onyx K3947','Rosso Levanto K6222','Rosso Levanto L1013','Rosso Levanto L1014','Silver Travertine Ham (Raw) K5301','Sunset Dolomite New','Terranova Ceppo K6044','Travertine L009','Tundra Grey','Van Gogh K3229','Vanilla Ice K5372','Vanilla K6130','Velluto Onyx Cross Cut K3653','Verde Levanto K5420'
 ];
@@ -30,6 +27,7 @@ Object.assign(translations.en,{justIn:'Just in',newBundle:'New',newest:'New to o
 Object.assign(translations.tr,{justIn:'Yeni geldi',newBundle:'Yeni'});
 Object.assign(translations.en,{auditEyebrow:'SYNC AUDIT',syncAudit:'Sync audit',syncAuditHint:'Review each product’s packing list, area, dimensions, photos, and sync status.',openAudit:'Open audit',hideAudit:'Hide audit',auditFilter:'Show',auditAll:'All products',auditAttention:'Needs attention',auditNoPacking:'No packing list',auditSize:'Missing area / size',auditImages:'Missing images',auditImageCheck:'Image count mismatch',auditWarnings:'Sync warnings',exportAudit:'Export audit CSV',auditAreaSize:'Area / size',auditSync:'Sync',auditNoResults:'No products match this audit filter.',complete:'Complete',partial:'Partial',notProvided:'Not provided',clean:'Clean',ready:'Ready',imageChecks:'Image checks',imageMismatchDetail:'bundles where numbered photos differ from slab count',reviewImages:'Review numbered photos',slabPhotos:'slab photos',missingNumbers:'Missing numbers',expected:'Expected',followupFilter:'Follow-up',allFollowups:'All follow-up statuses',copyCustomerLink:'Copy customer link',customerLinkCopied:'Customer link copied',packingHiddenNote:'bundles without packing lists hidden',followupHiddenNote:'bundles hidden by follow-up filter',sharedSelection:'SHARED SELECTION',sharedSelectionHint:'A curated selection from Lucra Marble.',showAllBundles:'Show all bundles',shareSelection:'Share selection link',selectionShared:'Selection link copied',sharedCollectionEmpty:'No shared bundles are available'});
 Object.assign(translations.tr,{auditEyebrow:'SENKRONİZASYON DENETİMİ',syncAudit:'Senkronizasyon denetimi',syncAuditHint:'Her ürünün paket listesini, alanını, ölçülerini, fotoğraflarını ve senkronizasyon durumunu inceleyin.',openAudit:'Denetimi aç',hideAudit:'Denetimi gizle',auditFilter:'Göster',auditAll:'Tüm ürünler',auditAttention:'İlgilenilmeli',auditNoPacking:'Paket listesi yok',auditSize:'Alan / ölçü eksik',auditImages:'Fotoğraf eksik',auditImageCheck:'Fotoğraf sayısı uyuşmuyor',auditWarnings:'Senkronizasyon uyarıları',exportAudit:'Denetimi CSV aktar',auditAreaSize:'Alan / ölçü',auditSync:'Senkronizasyon',auditNoResults:'Bu denetim filtresiyle eşleşen ürün yok.',complete:'Tamam',partial:'Kısmi',notProvided:'Belirtilmedi',clean:'Temiz',ready:'Hazır',imageChecks:'Fotoğraf kontrolleri',imageMismatchDetail:'numaralı fotoğrafı plaka adedinden farklı olan demet',reviewImages:'Numaralı fotoğrafları kontrol edin',slabPhotos:'plaka fotoğrafı',missingNumbers:'Eksik numaralar',expected:'Beklenen',followupFilter:'Takip',allFollowups:'Tüm takip durumları',copyCustomerLink:'Müşteri bağlantısını kopyala',customerLinkCopied:'Müşteri bağlantısı kopyalandı',packingHiddenNote:'paket listesi olmayan demet gizlendi',followupHiddenNote:'demet takip filtresiyle gizlendi',sharedSelection:'PAYLAŞILAN SEÇİM',sharedSelectionHint:'Lucra Marble’dan seçilmiş ürünler.',showAllBundles:'Tüm demetleri göster',shareSelection:'Seçim bağlantısını paylaş',selectionShared:'Seçim bağlantısı kopyalandı',sharedCollectionEmpty:'Paylaşılan demet bulunamadı'});
+Object.assign(translations.en,{salesAccessHint:'Enter your authorized Lucra email to receive a sign-in link.',salesEmail:'Email',sendSignInLink:'Send sign-in link',salesAuthNote:'A one-time sign-in link will be sent to your authorized Lucra email.',authLinkSent:'Check your email for the Lucra sign-in link.',authWrongAccount:'Use the authorized Lucra email address.',authUnavailable:'Authentication is not configured.',signOut:'Sign out'});
 let language='en';
 Object.assign(translations.en,{printSheet:'Print bundle sheet',selectedViews:'Selected views',fullGallery:'View full gallery',bundleSheet:'Bundle sheet',sizeDetailsNotListed:'Size details not listed'});
 Object.assign(translations.tr,{printSheet:'Demet sayfasını yazdır',selectedViews:'Seçili görseller',fullGallery:'Tam galeriyi görüntüle',bundleSheet:'Demet sayfası',sizeDetailsNotListed:'Ölçü ayrıntıları listelenmedi'});
@@ -176,7 +174,7 @@ const followupFilterSelect=document.querySelector('#followupFilter');
 const collectionBanner=document.querySelector('#collectionBanner'), collectionTitle=document.querySelector('#collectionTitle'), collectionSummary=document.querySelector('#collectionSummary'), collectionQr=document.querySelector('#collectionQr'), collectionUpdated=document.querySelector('#collectionUpdated'), copySharedCollectionLink=document.querySelector('#copySharedCollectionLink'), clearCollectionButton=document.querySelector('#clearCollection');
 const presentationCollection=document.querySelector('#presentationCollection'), presentationCollectionName=document.querySelector('#presentationCollectionName'), presentationCollectionTitle=document.querySelector('#presentationCollectionTitle'), presentationCollectionSummary=document.querySelector('#presentationCollectionSummary'), presentationCollectionItems=document.querySelector('#presentationCollectionItems'), sharePresentationCollectionButton=document.querySelector('#sharePresentationCollection'), openPresentationCollectionButton=document.querySelector('#openPresentationCollection'), requestPresentationQuoteButton=document.querySelector('#requestPresentationQuote'), copyPresentationCollectionSummaryButton=document.querySelector('#copyPresentationCollectionSummary'), printPresentationCollectionButton=document.querySelector('#printPresentationCollection'), whatsappPresentationCollectionButton=document.querySelector('#whatsappPresentationCollection'), clearPresentationCollectionButton=document.querySelector('#clearPresentationCollection');
 const catalogueFreshness=document.querySelector('#catalogueFreshness'), publicCatalogueFreshness=document.querySelector('#publicCatalogueFreshness'), latestSyncTitle=document.querySelector('#latestSyncTitle'), latestSyncSource=document.querySelector('#latestSyncSource'), latestSyncStats=document.querySelector('#latestSyncStats'), latestSyncHistoryRows=document.querySelector('#latestSyncHistoryRows'), syncFailureNote=document.querySelector('#syncFailureNote');
-const salesGate=document.querySelector('#salesGate'), salesGateForm=document.querySelector('#salesGateForm'), salesPasswordInput=document.querySelector('#salesPasswordInput'), salesGateError=document.querySelector('#salesGateError');
+const salesGate=document.querySelector('#salesGate'), salesGateForm=document.querySelector('#salesGateForm'), salesEmailInput=document.querySelector('#salesEmailInput'), salesGateError=document.querySelector('#salesGateError'), signOutSalesButton=document.querySelector('#signOutSales');
 const compareDialog=document.querySelector('#compareDialog'), compareContent=document.querySelector('#compareContent'), copyCompareButton=document.querySelector('#copyCompare');
 const shortlistQuoteDialog=document.querySelector('#shortlistQuoteDialog'), shortlistQuoteForm=document.querySelector('#shortlistQuoteForm'), shortlistQuoteItems=document.querySelector('#shortlistQuoteItems'), shortlistQuoteError=document.querySelector('#shortlistQuoteError'), closeShortlistQuoteButton=document.querySelector('#closeShortlistQuote'), shortlistQuoteCloseButton=document.querySelector('#shortlistQuoteClose'), whatsappShortlistQuoteButton=document.querySelector('#whatsappShortlistQuote');
 const openProductLink=document.querySelector('#openProductLink');
@@ -1166,26 +1164,38 @@ auditFilterSelect.addEventListener('change',event=>{auditFilter=event.currentTar
 exportAuditButton.addEventListener('click',downloadAudit);
 function setSalesMode(enabled){document.body.classList.toggle('sales-mode',enabled);catalogView.hidden=enabled;document.querySelector('#modeLabel').textContent=enabled?t('salesMode'):t('presentationMode');render()}
 let salesUnlocked=false;
-try{salesUnlocked=sessionStorage.getItem('lucraSalesUnlocked')==='1'}catch(error){}
+function isAuthorizedSalesSession(session){return Boolean(session?.user?.email&&session.user.email.toLowerCase()===authorizedSalesEmail)}
+function applySalesSession(session){
+  salesUnlocked=isAuthorizedSalesSession(session);
+  if(!salesUnlocked&&document.body.classList.contains('sales-mode'))setSalesMode(false);
+  if(salesUnlocked&&salesGate.open)salesGate.close();
+}
+if(supabaseClient){
+  supabaseClient.auth.onAuthStateChange((_event,session)=>applySalesSession(session));
+  supabaseClient.auth.getSession().then(({data})=>applySalesSession(data.session)).catch(()=>{salesUnlocked=false});
+}
 document.querySelector('#modeSwitch').addEventListener('click',()=>{
   const entering=!document.body.classList.contains('sales-mode');
   if(!entering){setSalesMode(false);return}
   if(salesUnlocked){setSalesMode(true);return}
-  salesGateError.textContent='';salesPasswordInput.value='';salesGate.showModal();setTimeout(()=>salesPasswordInput.focus(),50);
+  salesGateError.textContent='';salesEmailInput.value=authorizedSalesEmail;salesGate.showModal();setTimeout(()=>salesEmailInput.focus(),50);
 });
 salesGateForm.addEventListener('submit',async event=>{
   event.preventDefault();
+  if(!supabaseClient){salesGateError.textContent=t('authUnavailable');return}
+  const email=salesEmailInput.value.trim().toLowerCase();
+  if(email!==authorizedSalesEmail){salesGateError.textContent=t('authWrongAccount');salesEmailInput.select();return}
+  const submitButton=salesGateForm.querySelector('button[type="submit"]');
+  submitButton.disabled=true;salesGateError.textContent='';
   try{
-    const submittedHash=await hashSalesPassword(salesPasswordInput.value);
-    if(submittedHash===salesPasswordHash){
-      salesUnlocked=true;try{sessionStorage.setItem('lucraSalesUnlocked','1')}catch(error){}
-      salesGate.close();setSalesMode(true);
-    }else{salesGateError.textContent='That password is not correct.';salesPasswordInput.select()}
-  }catch(error){
-    salesGateError.textContent='Dashboard access is unavailable in this browser.';
-  }
+    const {error}=await supabaseClient.auth.signInWithOtp({email,options:{emailRedirectTo:salesAuthRedirectUrl,shouldCreateUser:false}});
+    if(error)throw error;
+    salesGateError.textContent=t('authLinkSent');
+  }catch(error){salesGateError.textContent=error?.message||t('authUnavailable')}
+  finally{submitButton.disabled=false}
 });
 document.querySelector('#cancelSalesAccess').addEventListener('click',()=>salesGate.close());
+signOutSalesButton.addEventListener('click',async()=>{if(supabaseClient)await supabaseClient.auth.signOut();salesUnlocked=false;setSalesMode(false)});
 compareSelectedButton.addEventListener('click',()=>{renderCompare();compareDialog.showModal()});
 copyShortlistButton.addEventListener('click',()=>copyText(shortlistSummary(),copyShortlistButton,'Copied'));
 whatsappShortlistButton.addEventListener('click',()=>openWhatsApp(customerShortlistSummary()));

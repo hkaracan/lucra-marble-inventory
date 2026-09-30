@@ -31,6 +31,7 @@
     <div class="header-actions">
       <span class="sync sales-only" id="syncStatus"><i></i> Loading inventory</span>
       <button class="sync-button sales-only" id="syncButton" type="button">↻ Sync from Drive</button>
+      <button class="secondary sales-only" id="signOutSales" type="button" data-i18n="signOut">Sign out</button>
       <button class="mode-switch" id="modeSwitch" type="button" aria-label="Switch display mode">
         <span class="mode-icon">◫</span><span id="modeLabel">Presentation Mode</span>
       </button>
@@ -286,17 +287,17 @@
     <div class="access-shell">
       <p class="eyebrow" data-i18n="salesAccess">SALES ACCESS</p>
       <h2 id="salesGateTitle" data-i18n="openSalesDashboard">Open sales dashboard</h2>
-      <p data-i18n="salesAccessHint">Enter the demo password to view packing-list and source details.</p>
+      <p data-i18n="salesAccessHint">Enter your authorized Lucra email to receive a sign-in link.</p>
       <form id="salesGateForm">
-        <label for="salesPasswordInput" data-i18n="password">Password</label>
-        <input id="salesPasswordInput" type="password" autocomplete="current-password" />
+        <label for="salesEmailInput" data-i18n="salesEmail">Email</label>
+        <input id="salesEmailInput" type="email" autocomplete="email" inputmode="email" required />
         <p class="access-error" id="salesGateError" role="alert"></p>
         <div class="dialog-actions">
           <button id="cancelSalesAccess" class="secondary" type="button" data-i18n="cancel">Cancel</button>
-          <button class="primary" type="submit" data-i18n="unlockDashboard">Unlock dashboard</button>
+          <button class="primary" type="submit" data-i18n="sendSignInLink">Send sign-in link</button>
         </div>
       </form>
-      <small>Demo protection only. Real access control requires server-side authentication.</small>
+      <small data-i18n="salesAuthNote">A one-time sign-in link will be sent to your authorized Lucra email.</small>
     </div>
   </dialog>
 
@@ -343,6 +344,8 @@
   </dialog>
 
   <script src="data/inventory.js"></script>
-  <script src="app.js?v=20260930-02"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js?v=20260930-01"></script>
+  <script src="app.js?v=20260930-03"></script>
 </body>
 </html>
