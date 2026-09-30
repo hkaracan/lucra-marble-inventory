@@ -1,7 +1,8 @@
 const rootFolder = 'https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z?usp=drive_link';
 const actionsWorkflowUrl = 'https://github.com/hkaracan/lucra-marble-inventory/actions/workflows/sync-inventory.yml';
-const publicSiteBase = 'https://hkaracan.github.io/lucra-marble-inventory/';
+const publicSiteBase = 'https://inventory.lucramarble.com/';
 const isGithubPages = /(^|\.)github\.io$/.test(location.hostname);
+const isLocalServer = /^(localhost|127\.0\.0\.1|::1)$/.test(location.hostname);
 const salesPassword = 'lucra123';
 const lucraQuoteEmail = 'emine@lucramarble.com';
 const lucraWhatsAppUrl = 'https://wa.me/905062288586';
@@ -96,8 +97,8 @@ function updateShareMetadata(product=null){
   const productTitle=product?`Lucra Marble · ${product.name}${product.code&&product.code!=='—'?` · ${product.code}`:''}`:'';
   const title=productTitle||(sharedCollectionActive?`Lucra Marble · ${sharedCollectionTitle||t('sharedListMetaTitle')}`:'Lucra Marble — Slab Inventory');
   const description=product?`${product.name} · ${product.reserved?t('reserved'):t('available')} · Denizli, Türkiye`:sharedCollectionActive?t('sharedListMetaDescription'):'Browse Lucra Marble’s current natural-stone slab inventory from Denizli, Türkiye.';
-  const url=product?publicCustomerProductUrl(product):sharedCollectionActive?publicSharedCollectionUrl():'https://hkaracan.github.io/lucra-marble-inventory/';
-  const image=productThumbnailImage(product)?.src||'https://hkaracan.github.io/lucra-marble-inventory/public/lucra-logo.png';
+  const url=product?publicCustomerProductUrl(product):sharedCollectionActive?publicSharedCollectionUrl():publicSiteBase;
+  const image=productThumbnailImage(product)?.src||`${publicSiteBase}public/lucra-logo.png`;
   document.title=title;setMetaContent('meta[name="description"]',description);setMetaContent('meta[property="og:title"]',title);setMetaContent('meta[property="og:description"]',description);setMetaContent('meta[property="og:url"]',url);setMetaContent('meta[property="og:image"]',image);setMetaContent('meta[name="twitter:title"]',title);setMetaContent('meta[name="twitter:description"]',description);setMetaContent('meta[name="twitter:image"]',image);
 }
 function applyLanguage(){
@@ -1380,7 +1381,7 @@ document.querySelector('#copyCompare').addEventListener('click',()=>copyText(sho
 compareDialog.addEventListener('click',event=>{if(event.target===compareDialog)compareDialog.close()});
 
 function normalizeLiveProduct(p,i){
-  const mediaUrl=(fileId,size=1400)=>location.protocol==='file:'||isGithubPages?`https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w${size}`:`/api/media?id=${encodeURIComponent(fileId)}&size=${size}`;
+  const mediaUrl=(fileId,size=1400)=>isLocalServer?`/api/media?id=${encodeURIComponent(fileId)}&size=${size}`:`https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w${size}`;
   const imageSources=fileId=>({src:mediaUrl(fileId),thumbSrc:mediaUrl(fileId,700)});
   const displayName=canonicalProductName(p.name),productForDisplay={...p,name:displayName},displayCode=displayProductCode(productForDisplay),mysticGrey=isMysticGreyProduct(productForDisplay);
   const slabImages=(p.images||[]).map(image=>({...imageSources(image.fileId),fileId:image.fileId,name:image.name,label:String(mysticGrey?compactMysticImageLabel(image.label??image.name??image.number):image.label??image.number),type:'slab'}));
