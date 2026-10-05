@@ -161,9 +161,36 @@
 
   const clearEmpty = document.createElement('button');
   clearEmpty.type = 'button'; clearEmpty.className = 'secondary preview-clear-empty';
-  clearEmpty.textContent = 'Clear filters';
-  clearEmpty.addEventListener('click', resetAllFilters);
+  clearEmpty.textContent = 'Reset filters';
+  function resetBrowsingFilters() {
+    resetAllFilters();
+    $('#searchInput').focus({preventScroll:true});
+  }
+  clearEmpty.addEventListener('click', resetBrowsingFilters);
   $('#emptyState').append(clearEmpty);
+  const chips = $('#activeFilterChips');
+  const originalRenderChips = renderActiveFilterChips;
+  renderActiveFilterChips = () => {
+    originalRenderChips();
+    const active = activeFilterEntries().length > 0;
+    clearEmpty.hidden = !active;
+    if (!active) return;
+    const reset = document.createElement('button');
+    reset.type = 'button'; reset.className = 'preview-reset-filters';
+    reset.textContent = 'Reset filters';
+    reset.addEventListener('click', resetBrowsingFilters);
+    chips.append(reset);
+  };
+  chips.addEventListener('click', event => {
+    const button = event.target.closest('[data-clear-filter]');
+    if (!button) return;
+    const index = [...chips.querySelectorAll('[data-clear-filter]')].indexOf(button);
+    requestAnimationFrame(() => {
+      const remaining = [...chips.querySelectorAll('[data-clear-filter]')];
+      (remaining[Math.min(index, remaining.length - 1)] || $('#searchInput')).focus({preventScroll:true});
+    });
+  }, true);
+  renderActiveFilterChips();
 
   const controlIds = ['searchInput', 'sortSelect', 'minArea', 'maxArea', 'minSlabs', 'maxSlabs', 'dimensionFilter', 'surfaceFilter'];
   const saved = read('lucraResponsiveBrowsing', {});
