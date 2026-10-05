@@ -25,9 +25,21 @@ function previewSavedChanges(records, inventory) {
     }
     originalPrune();
   };
-  const notice = document.createElement('p');
-  notice.className = 'preview-availability-note';
-  ($('#publicCatalogueFreshness').closest('.preview-catalogue-meta') || $('#publicCatalogueFreshness')).after(notice);
+  const notice = document.createElement('details');
+  notice.className = 'preview-availability-info';
+  notice.innerHTML = '<summary aria-label="About catalogue availability"><span aria-hidden="true">ⓘ</span><span class="preview-availability-label">Availability info</span></summary><p class="preview-availability-note"></p>';
+  const noticeText = notice.querySelector('p');
+  const phoneNotice = matchMedia('(max-width:720px)');
+  function arrangeAvailabilityInfo() {
+    notice.open = false;
+    const meta = $('#publicCatalogueFreshness').closest('.preview-catalogue-meta');
+    if (phoneNotice.matches && meta) meta.append(notice);
+    else $('#publicCatalogueFreshness').after(notice);
+  }
+  phoneNotice.addEventListener('change', arrangeAvailabilityInfo);
+  arrangeAvailabilityInfo();
+  document.addEventListener('click', event => {if (!notice.contains(event.target)) notice.open = false;});
+  notice.addEventListener('keydown', event => {if (event.key === 'Escape') {notice.open = false; notice.querySelector('summary').focus();}});
   const detailNotice = document.createElement('p');
   detailNotice.className = 'preview-availability-note preview-bundle-availability';
   $('#productDialog .dialog-title-row').after(detailNotice);
@@ -60,7 +72,7 @@ function previewSavedChanges(records, inventory) {
     }
     desktopAlerts.hidden = listAlerts.hidden = changes.length === 0;
     const updated = syncedAt && !Number.isNaN(Date.parse(syncedAt)) ? ` Last updated ${syncDateLabel(syncedAt)}.` : ' Update time not available.';
-    setText(notice, 'Available means listed in the catalogue; confirm current availability with Lucra.' + updated);
+    setText(noticeText, 'Available means listed in the catalogue; confirm current availability and pricing with Lucra.' + updated);
     setText(detailNotice, (currentProduct?.reserved ? 'This bundle is reserved. Ask Lucra about availability.' : 'Listed as available. Please confirm current availability with Lucra.') + updated);
     shareList.disabled = selectedPresentationProducts().length === 0;
   }
