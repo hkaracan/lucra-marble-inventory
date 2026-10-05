@@ -319,3 +319,26 @@ body.mobile-preview #presentationCollection #whatsappPresentationCollection{back
 body.mobile-preview .card-collection-toggle>span:first-child{display:inline-flex;align-items:center;justify-content:center;width:22px;height:20px;font-size:0;line-height:1}
 .card-collection-toggle[aria-pressed="true"] .preview-heart{fill:currentColor}
 #previewList>span>.preview-heart{margin:5px 0}
+
+/* Give the mobile catalogue more room and keep availability guidance on demand. */
+.preview-availability-info{position:relative;margin:0 0 12px;color:#4d616b;z-index:9}
+.preview-availability-info>summary{display:flex;align-items:center;gap:6px;min-height:44px;width:max-content;cursor:pointer;list-style:none;font:500 12px "DM Sans",sans-serif}
+.preview-availability-info>summary::-webkit-details-marker{display:none}
+.preview-availability-info>summary>span:first-child{font-size:20px;line-height:1}
+.preview-availability-info[open]>summary{color:#235969}
+.preview-availability-info>.preview-availability-note{position:absolute;top:100%;left:0;margin:0;width:min(300px,calc(100vw - 40px));padding:14px 16px;border:1px solid #cce8ef;border-radius:14px;background:white;box-shadow:0 8px 28px #23324820}
+@media(max-width:720px){
+  body.mobile-preview .controls{gap:12px;padding-bottom:4px}
+  body.mobile-preview .search{min-height:54px;padding-top:8px;padding-bottom:8px}
+  body.mobile-preview .catalog-head{margin:8px 0 2px}
+  body.mobile-preview .preview-catalogue-meta{align-items:center;gap:6px;flex-wrap:nowrap;margin:0 0 8px}
+  body.mobile-preview .preview-catalogue-meta #publicCatalogueFreshness{flex:1;min-width:0}
+  body.mobile-preview .preview-catalogue-meta #resultCount{flex:none}
+  .preview-catalogue-meta .preview-availability-info{flex:none;margin:0}
+  .preview-catalogue-meta .preview-availability-info>summary{width:44px;justify-content:center}
+  .preview-catalogue-meta .preview-availability-label{display:none}
+  .preview-catalogue-meta .preview-availability-info>.preview-availability-note{left:auto;right:0}
+  body.mobile-preview[data-preview-columns="2"] .card-media-meta{display:none}
+  body.mobile-preview[data-preview-columns="2"] .card-info{padding-top:10px;gap:4px}
+  body.mobile-preview[data-preview-columns="2"] .card h3{margin-bottom:4px}
+}
