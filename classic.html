@@ -21,16 +21,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css?v=20260930-02" />
-  <link rel="stylesheet" href="ui/mobile.css?v=9dfbf53bcd" />
 <script src="ui/layout-choice.js?v=6181a0ccec"></script>
 </head>
-<body class="mobile-preview">
+<body data-layout="classic">
   <a class="skip-link" href="#catalog" data-i18n="skipToCatalogue">Skip to catalogue</a>
   <header class="site-header">
     <a class="brand" href="https://www.lucramarble.com" aria-label="Visit Lucra Marble website">
       <img src="public/lucra-logo.png" alt="Lucra Marble" />
     </a>
-    <div class="header-actions"><a class="layout-choice" href="classic.html" data-layout-choice="classic">Previous layout</a>
+    <div class="header-actions"><a href="./" data-layout-choice="responsive">New layout</a>
       <span class="sync sales-only" id="syncStatus"><i></i> Loading inventory</span>
       <button class="sync-button sales-only" id="syncButton" type="button">↻ Sync from Drive</button>
       <button class="secondary sales-only" id="signOutSales" type="button" data-i18n="signOut">Sign out</button>
@@ -349,28 +348,5 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js?v=20260930-01"></script>
   <script src="app.js?v=20261005-02"></script>
-  <nav class="preview-nav" aria-label="Mobile navigation">
-    <button type="button" id="previewExplore" aria-current="page"><span aria-hidden="true">▦</span>Inventory</button>
-    <button type="button" id="previewList"><span aria-hidden="true">♡<small id="previewListCount" hidden>0</small></span>My list</button>
-  </nav>
-  <button type="button" id="previewMenu" class="preview-header-menu" aria-label="Open menu" aria-haspopup="dialog" aria-controls="previewMenuDialog" aria-expanded="false"><span aria-hidden="true">☰</span></button>
-  <dialog id="previewFilters" class="preview-sheet" aria-labelledby="previewFiltersTitle">
-    <header class="preview-sheet-head"><button type="button" data-preview-close aria-label="Close filters">×</button><h2 id="previewFiltersTitle">Filters</h2></header>
-    <div class="preview-sheet-body" id="previewFilterBody"></div>
-    <footer class="preview-sheet-footer"><button type="button" id="previewReset">Clear all</button><button type="button" class="primary" id="previewApply">Show bundles</button></footer>
-  </dialog>
-  <dialog id="previewListDialog" class="preview-sheet" aria-labelledby="previewListTitle">
-    <header class="preview-sheet-head"><button type="button" data-preview-close aria-label="Close my list">×</button><h2 id="previewListTitle">My list</h2></header>
-    <div class="preview-sheet-body" id="previewListBody"><p id="previewListEmpty">Save bundles using the heart on a photo. Your sharing, quote, and print options will appear here.</p></div>
-  </dialog>
-  <dialog id="previewMenuDialog" class="preview-sheet" aria-labelledby="previewMenuTitle">
-    <header class="preview-sheet-head"><button type="button" data-preview-close aria-label="Close menu">×</button><h2 id="previewMenuTitle">Menu</h2></header>
-    <div class="preview-sheet-body" id="previewMenuBody"></div>
-  </dialog>
-  <script src="ui/mobile.js?v=33b75689b0"></script>
-  <script src="ui/browsing.js?v=96f9eab7c1"></script>
-  <script src="ui/reliability.js?v=4b1a6c12e3"></script>
-
-
 </body>
 </html>
