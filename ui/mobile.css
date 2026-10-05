@@ -359,3 +359,11 @@ body.mobile-preview .card-collection-toggle.selected{background:#eaf7fb;color:#2
 .preview-list-toast>span{min-width:0;max-width:40ch;line-height:1.5;overflow-wrap:anywhere}
 .preview-list-toast>button{flex:none}
 @media(max-width:720px){body.mobile-preview #emptyState{padding:40px 20px;border-radius:18px}body.mobile-preview #emptyState>p{font-size:20px}}
+/* Search stays compact until a material or bundle is being typed. */
+.search { position: relative; overflow: visible; }
+.preview-search-suggestions { position: absolute; z-index: 40; left: 0; right: 0; top: calc(100% + 6px); max-height: min(360px, 45dvh); overflow-y: auto; background: #fff; border: 1px solid #dce6ec; border-radius: 16px; box-shadow: 0 10px 28px #22304724; padding: 6px; }
+.preview-search-suggestions[hidden] { display: none; }
+.preview-search-suggestions [role="option"] { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 10px 12px; border-radius: 10px; cursor: pointer; color: #223047; }
+.preview-search-suggestions strong { font-size: 14px; }
+.preview-search-suggestions small { color: #657582; font-size: 12px; text-align: right; }
+.preview-search-suggestions [role="option"]:hover, .preview-search-suggestions [aria-selected="true"] { background: #eef7fa; }
