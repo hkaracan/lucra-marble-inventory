@@ -313,3 +313,9 @@ body.mobile-preview #previewListDialog #requestPresentationQuote{background:#eaf
 body.mobile-preview #presentationCollection .presentation-collection-actions>button:not(.preview-share-list):not(#whatsappPresentationCollection){background:#eaf7fb;border:1px solid #cce8ef;color:#235969}
 body.mobile-preview #presentationCollection #whatsappPresentationCollection{background:#25d366;border-color:#25d366;color:white}
 @media print{.preview-header-menu{display:none!important}}
+
+/* Keep hearts compact and independent of platform font glyphs. */
+.preview-heart{display:block;width:22px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+body.mobile-preview .card-collection-toggle>span:first-child{display:inline-flex;align-items:center;justify-content:center;width:22px;height:20px;font-size:0;line-height:1}
+.card-collection-toggle[aria-pressed="true"] .preview-heart{fill:currentColor}
+#previewList>span>.preview-heart{margin:5px 0}

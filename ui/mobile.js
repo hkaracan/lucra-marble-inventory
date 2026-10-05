@@ -4,6 +4,10 @@
   const phoneSlabs = matchMedia('(max-width:720px)');
   const $ = selector => document.querySelector(selector);
   if (!$('#productGrid') || !$('#previewFilters')) return;
+  const heartIcon = '<svg class="preview-heart" viewBox="0 0 24 22" aria-hidden="true" focusable="false"><path d="M12 19.5 3.3 11.2C-1.2 6.8 5.2-.8 12 5.6 18.8-.8 25.2 6.8 20.7 11.2Z" /></svg>';
+  const navHeart = $('#previewList > span');
+  if (navHeart.firstChild?.nodeType === Node.TEXT_NODE) navHeart.firstChild.remove();
+  navHeart.insertAdjacentHTML('afterbegin', heartIcon);
   const filterSheet = $('#previewFilters');
   const listSheet = $('#previewListDialog');
   const menuSheet = $('#previewMenuDialog');
@@ -203,7 +207,7 @@
     }
     {
       document.querySelectorAll('.card-collection-toggle').forEach(button => {
-        setText(button.firstElementChild, button.getAttribute('aria-pressed') === 'true' ? '♥' : '♡');
+        if (!button.firstElementChild.querySelector('.preview-heart')) button.firstElementChild.innerHTML = heartIcon;
       });
       document.querySelectorAll('#productGrid .card').forEach(card => {
         const product = products.find(item => productKey(item) === card.dataset.productId);
