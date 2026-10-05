@@ -383,3 +383,12 @@ body.mobile-preview .quote-item input:focus, body.mobile-preview .quote-form-gri
 
 body.mobile-preview .search:focus-within { box-shadow:0 0 0 2px #657582; }
 body.mobile-preview #searchInput:focus-visible { outline:none; }
+
+/* A consistent touch-sized clear action replaces the browser-specific search icon. */
+body.mobile-preview .search { padding-right:54px; }
+body.mobile-preview #searchInput::-webkit-search-cancel-button { -webkit-appearance:none; appearance:none; }
+body.mobile-preview #searchInput::-ms-clear { display:none; }
+body.mobile-preview .preview-search-clear { position:absolute; right:6px; top:50%; transform:translateY(-50%); display:grid; place-items:center; width:44px; height:44px; padding:0; border:0; border-radius:50%; background:transparent; color:#657582; cursor:pointer; }
+body.mobile-preview .preview-search-clear span { font:400 26px/1 "DM Sans",sans-serif; }
+body.mobile-preview .preview-search-clear:hover { background:#f1f3f4; color:#223047; }
+body.mobile-preview .preview-search-clear[hidden] { display:none; }
