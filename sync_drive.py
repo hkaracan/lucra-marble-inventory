@@ -18,7 +18,8 @@ from urllib.request import Request, urlopen
 
 from openpyxl import load_workbook
 
-ROOT_FOLDER_ID = "17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z"
+ROOT_FOLDER_ID = "1eEHJTGshR3HcP8bbW21eMIVsdM1IDemp"
+LEGACY_ROOT_FOLDER_ID = "17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z"
 ROOT_FOLDER_URL = f"https://drive.google.com/drive/folders/{ROOT_FOLDER_ID}"
 OUTPUT = Path(__file__).parent / "data" / "inventory.json"
 OVERFLOW_MANIFEST_PATH = Path(__file__).parent / "data" / "drive_overflow.json"
@@ -38,7 +39,7 @@ FILE_PATTERN = re.compile(r"\.(jpe?g|png|webp|heic|heif|mp4|mov|webm|xlsx?)$", r
 CAMERA_IMAGE_PATTERN = re.compile(r"^(?:IMG|DSC|PXL)[ _-]?\d+\.(?:jpe?g|png|webp|heic|heif)$", re.I)
 THUMBNAIL_STEM_PATTERN = re.compile(r"^(?:kapak|cover|thumbnail)$", re.I)
 PACKING_LIST_PATTERN = re.compile(r"\bpacking\s+list\b", re.I)
-BUNDLE_CODE_PATTERN = re.compile(r"(?:^|\s)([KLM]\d+)\s*$", re.I)
+BUNDLE_CODE_PATTERN = re.compile(r"(?:^|\s)([KLM]\d+)_?\s*$", re.I)
 SOURCE_CODE_PATTERN = re.compile(r"\b([KLM]\d+)\b", re.I)
 MYSTIC_GREY_PATTERN = re.compile(r"\bmystic\s+grey\b", re.I)
 DISPLAY_NAME_ALIASES = {
@@ -100,6 +101,10 @@ try:
     OVERFLOW_MANIFEST = json.loads(OVERFLOW_MANIFEST_PATH.read_text(encoding="utf-8"))
 except (FileNotFoundError, json.JSONDecodeError):
     OVERFLOW_MANIFEST = {}
+
+SOURCE_MIGRATION = json.loads(
+    (Path(__file__).parent / "data" / "source_migration.json").read_text(encoding="utf-8")
+)
 
 
 def fetch(url: str, timeout: int = 35, attempts: int = 3) -> bytes:
@@ -956,7 +961,7 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
         except (OSError, json.JSONDecodeError):
             previous_payload = {}
     root_folders = folder_items(root_folder_id)
-    if not any(
+    if root_folder_id == LEGACY_ROOT_FOLDER_ID and not any(
         folder.get("id") == L1014_FOLDER_ID or is_l1014_folder(folder.get("name", ""))
         for folder in root_folders
     ):
@@ -1036,7 +1041,7 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
             )
     sync_timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     payload = {
-        "source": ROOT_FOLDER_URL,
+        "source": f"https://drive.google.com/drive/folders/{root_folder_id}",
         "syncedAt": sync_timestamp,
         "location": "Denizli, Türkiye",
         "products": products,
@@ -1093,22 +1098,30 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
     folder_ids = [product.get("folderId") for product in products]
     if any(not folder_id for folder_id in folder_ids) or len(folder_ids) != len(set(folder_ids)):
         raise RuntimeError("Sync produced missing or duplicate folder IDs; the previous catalogue was preserved.")
-    previous_by_id={product.get("folderId"):product for product in previous_payload.get("products",[]) if product.get("folderId")}
+    for product in products:
+        migration = SOURCE_MIGRATION.get(product.get("folderId"), {})
+        if migration:
+            product["stableFolderId"] = migration["previousFolderId"]
+            if migration.get("addedAt"):
+                product["addedAt"] = migration["addedAt"]
+    def stable_id(product):
+        return product.get("stableFolderId") or product.get("folderId")
+    previous_by_id={stable_id(product):product for product in previous_payload.get("products",[]) if product.get("folderId")}
     # Keep the first-seen date stable so the UI can identify recent additions
     # without Drive credentials or a non-read-only metadata API. Existing
     # catalogues from before this field was introduced simply receive no
     # badge until they are replaced by a newly discovered bundle.
     for product in products:
-        previous = previous_by_id.get(product.get("folderId"))
+        previous = previous_by_id.get(stable_id(product))
         if previous and previous.get("addedAt"):
             product["addedAt"] = previous["addedAt"]
-        elif previous is None:
+        elif previous is None and not product.get("stableFolderId"):
             product["addedAt"] = sync_timestamp
-    added=[product for product in products if product.get("folderId") not in previous_by_id]
+    added=[product for product in products if stable_id(product) not in previous_by_id and not product.get("stableFolderId")]
     updated=[]
     unchanged=0
     for product in products:
-        previous=previous_by_id.get(product.get("folderId"))
+        previous=previous_by_id.get(stable_id(product))
         if previous is None:
             continue
         current_json=json.dumps(product,ensure_ascii=False,sort_keys=True)

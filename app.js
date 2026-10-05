@@ -1,4 +1,4 @@
-const rootFolder = 'https://drive.google.com/drive/folders/17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z?usp=drive_link';
+const rootFolder = 'https://drive.google.com/drive/folders/1eEHJTGshR3HcP8bbW21eMIVsdM1IDemp';
 const actionsWorkflowUrl = 'https://github.com/hkaracan/lucra-marble-inventory/actions/workflows/sync-inventory.yml';
 const publicSiteBase = 'https://inventory.lucramarble.com/';
 const isGithubPages = /(^|\.)github\.io$/.test(location.hostname)||location.hostname==='inventory.lucramarble.com';
@@ -131,7 +131,7 @@ const fallbackProducts = names.map((label,i)=>{
 
 function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));}
 function slugifyBundle(value){return String(value??'bundle').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'bundle';}
-function bundleBase(product){return product.folderId?`drive-${product.folderId}`:`bundle-${slugifyBundle(product.folderName||product.name||product.code||'bundle')}`;}
+function bundleBase(product){const id=product.stableFolderId||product.folderId;return id?`drive-${id}`:`bundle-${slugifyBundle(product.folderName||product.name||product.code||'bundle')}`;}
 function assignBundleKeys(records){
   const used=new Set();
   return records.map(product=>{

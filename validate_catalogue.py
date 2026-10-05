@@ -40,7 +40,7 @@ def validate_payload(payload: dict, label: str = "catalogue") -> list[str]:
         problems.append(f"{label} contains duplicate folder IDs: {duplicates[:5]}")
 
     codes = {str(product.get("code") or "").upper() for product in products}
-    if "L1014" not in codes:
+    if payload.get("source", "").endswith("17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z") and "L1014" not in codes:
         problems.append("required L1014 bundle is missing")
 
     for product in products:

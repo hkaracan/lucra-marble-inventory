@@ -33,6 +33,28 @@ def workbook_bytes(rows: list[list]) -> bytes:
 
 
 class MockedSyncTest(unittest.TestCase):
+    def test_source_migration_preserves_bundle_identity_without_old_root_fallback(self):
+        new_id = "1CbBjlNRKVXr9gyjzDXHNxE6vKMGk-m1a"
+        old_id = sync_drive.SOURCE_MIGRATION[new_id]["previousFolderId"]
+        tree = {
+            sync_drive.ROOT_FOLDER_ID: [{"id": new_id, "name": "Reserved Calacatta wave K6293"}],
+            new_id: [{"id": "packing", "name": "K6293 PL.xlsx"}],
+        }
+        calls = []
+        def fake_folder_items(folder_id, **kwargs):
+            calls.append(folder_id)
+            return tree.get(folder_id, [])
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.object(sync_drive, "OUTPUT", Path(directory) / "inventory.json"), patch.object(
+                sync_drive, "folder_items", fake_folder_items
+            ), patch.object(sync_drive, "download_file", return_value=packing_list_bytes()):
+                payload = sync_drive.sync_inventory()
+        self.assertEqual(payload["source"], sync_drive.ROOT_FOLDER_URL)
+        self.assertEqual(len(payload["products"]), 1)
+        self.assertEqual(payload["products"][0]["stableFolderId"], old_id)
+        self.assertTrue(payload["products"][0]["reserved"])
+        self.assertNotIn(sync_drive.L1014_FOLDER_ID, calls)
+
     def test_large_bundle_listing_recovers_packing_and_media(self):
         cases = [
             ("1fzUkcc-xV1g6PFeHQkD3H0_XJmHcSS8x", "K6293 PL.xlsx", 68),
@@ -236,7 +258,7 @@ class MockedSyncTest(unittest.TestCase):
             self.assertEqual(old["addedAt"], "2026-09-01T12:00:00Z")
             self.assertRegex(new["addedAt"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
             self.assertEqual(payload["syncHistory"][0]["status"], "success")
-            self.assertEqual(payload["syncHistory"][0]["added"], 2)
+            self.assertEqual(payload["syncHistory"][0]["added"], 1)
             self.assertTrue(history_path.exists())
             self.assertTrue(status_path.exists())
             self.assertEqual(
@@ -556,7 +578,7 @@ class MockedSyncTest(unittest.TestCase):
 
     def test_l1014_is_targeted_when_root_listing_omits_it(self):
         tree = {
-            "root": [{"id": "other", "name": "Other Stone K9000"}],
+            sync_drive.LEGACY_ROOT_FOLDER_ID: [{"id": "other", "name": "Other Stone K9000"}],
             sync_drive.L1014_FOLDER_ID: [
                 {"id": "packing", "name": "Packing List L1014.xlsx"},
             ],
@@ -572,7 +594,7 @@ class MockedSyncTest(unittest.TestCase):
             with patch.object(sync_drive, "OUTPUT", output), patch.object(sync_drive, "folder_items", fake_folder_items), patch.object(
                 sync_drive, "download_file", return_value=packing_list_bytes()
             ):
-                payload = sync_drive.sync_inventory("root")
+                payload = sync_drive.sync_inventory(sync_drive.LEGACY_ROOT_FOLDER_ID)
 
         l1014 = next(product for product in payload["products"] if product["code"] == "L1014")
         self.assertEqual(l1014["folderId"], sync_drive.L1014_FOLDER_ID)

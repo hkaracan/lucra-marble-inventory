@@ -2,6 +2,9 @@
 
 Responsive catalogue MVP based on Lucra Marble's Google Drive folder and per-bundle packing-list workflow.
 
+Current inventory source: [public Drive folder](https://drive.google.com/drive/folders/1eEHJTGshR3HcP8bbW21eMIVsdM1IDemp).
+The October 2026 source migration uses new Drive file IDs. `data/source_migration.json` preserves existing bundle identities, QR codes, shared lists, and first-seen dates for matched bundles; Drive links and media use the new IDs. Bundles absent from the new source are omitted, including L1014.
+
 ## Preview locally
 
 ```bash
