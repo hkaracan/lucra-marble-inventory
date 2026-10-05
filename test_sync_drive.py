@@ -33,6 +33,39 @@ def workbook_bytes(rows: list[list]) -> bytes:
 
 
 class MockedSyncTest(unittest.TestCase):
+    def test_large_bundle_listing_recovers_packing_and_media(self):
+        cases = [
+            ("1fzUkcc-xV1g6PFeHQkD3H0_XJmHcSS8x", "K6293 PL.xlsx", 68),
+            ("1L1Z4Stw2Mq3CfgfYYdehL11uBZeD24RA", "K6294 PL.xlsx", 54),
+            ("1PSIiQQbAdBXkbSd5eon9dez4RnLbtU0s", "Packing List K6210.xlsx", 60),
+        ]
+        for folder_id, packing_name, slab_count in cases:
+            with self.subTest(folder=folder_id):
+                manifest = sync_drive.OVERFLOW_MANIFEST[folder_id]["items"]
+                photos = sorted(
+                    (item for item in manifest if sync_drive.SLAB_PATTERN.match(item["name"])),
+                    key=lambda item: int(item["name"].split(".")[0]),
+                )[:50]
+                html = "".join(
+                    f'<tr data-id="{item["id"]}"><title>image</title><strong>{item["name"]}</strong></tr>'
+                    for item in photos
+                ).encode()
+                sync_drive.folder_items.cache_clear()
+                try:
+                    with patch.object(sync_drive, "fetch", return_value=html):
+                        items = sync_drive.folder_items(folder_id)
+                    self.assertEqual(len(items), len({item["id"] for item in items}))
+                    with patch.object(sync_drive, "download_file", return_value=packing_list_bytes()) as download:
+                        slabs, extras, videos, packing, name, file_id, skipped = sync_drive.collect_media(items)
+                    self.assertEqual(name, packing_name)
+                    self.assertEqual(len(slabs), slab_count)
+                    self.assertEqual(packing["totalPcs"], 4)
+                    self.assertEqual(packing["totalSqm"], 20.48)
+                    download.assert_called_once_with(file_id)
+                    self.assertEqual(skipped, [])
+                finally:
+                    sync_drive.folder_items.cache_clear()
+
     def test_no_packing_list_bundle_folders_are_valid_bundle_folders(self):
         self.assertTrue(sync_drive.is_bundle_folder("Rosso Levanto K6222"))
         self.assertTrue(sync_drive.is_bundle_folder("Vanilla Ice K5372"))
