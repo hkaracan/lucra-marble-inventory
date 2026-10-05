@@ -247,6 +247,7 @@
     const card = event.target.closest('.card');
     if (!card || event.target.closest('button') || (event.type === 'keydown' && !['Enter', ' '].includes(event.key))) return;
     openingCard = card;
+    queueMicrotask(() => {if (openingCard === card) openingCard = null;});
   }
   gridNode.addEventListener('click', rememberCard, true);
   gridNode.addEventListener('keydown', rememberCard, true);
