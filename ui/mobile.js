@@ -156,7 +156,6 @@
     if (!currentProduct) return;
     const key = productKey(currentProduct);
     togglePresentationSelection(key, !presentationSelection.has(key));
-    notifySelection(key);
     update();
   });
 
@@ -181,6 +180,8 @@
     const badge = $('#previewListCount');
     setText(badge, String(sales ? shortlist.size : total));
     badge.hidden = Number(badge.textContent) === 0;
+    $('#previewList').classList.toggle('preview-has-saved', Number(badge.textContent) > 0);
+    $('#previewList').setAttribute('aria-label', `My list, ${badge.textContent} saved bundles`);
     $('#previewListEmpty').hidden = total > 0;
     $('#previewList').hidden = sharedCollectionActive;
     setText($('#previewApply'), `Show ${$('#resultCount').textContent || 'bundles'}`);
@@ -208,6 +209,7 @@
     {
       document.querySelectorAll('.card-collection-toggle').forEach(button => {
         if (!button.firstElementChild.querySelector('.preview-heart')) button.firstElementChild.innerHTML = heartIcon;
+        button.title = button.getAttribute('aria-pressed') === 'true' ? 'Saved to My list · Remove' : 'Add to My list';
       });
       document.querySelectorAll('#productGrid .card').forEach(card => {
         const product = products.find(item => productKey(item) === card.dataset.productId);
@@ -265,26 +267,42 @@
   function notifySelection(key) {
     const selected = presentationSelection.has(key);
     undoSelection = {key, selected:!selected};
-    setText(toast.querySelector('span'), selected ? 'Added to my list' : 'Removed from my list');
+    const product = products.find(item => productKey(item) === key);
+    const name = product?.name || 'Bundle';
+    setText(toast.querySelector('span'), `${name} ${selected ? 'added to' : 'removed from'} My list`);
+    const host = document.querySelector('dialog[open]') || document.body;
+    if (toast.parentElement !== host) {
+      if (toast.matches(':popover-open')) toast.hidePopover();
+      host.append(toast);
+    }
     toast.showPopover();
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {toast.hidePopover(); undoSelection = null;}, 6000);
   }
   toast.querySelector('button').addEventListener('click', () => {
     if (!undoSelection) return;
-    togglePresentationSelection(undoSelection.key, undoSelection.selected);
+    originalToggleSelection(undoSelection.key, undoSelection.selected);
     update();
     clearTimeout(toastTimer);
     toast.hidePopover();
     undoSelection = null;
   });
-  gridNode.addEventListener('click', event => {
-    const toggle = event.target.closest('.card-collection-toggle');
-    if (toggle) {
-      const key = toggle.dataset.productId;
-      setTimeout(() => notifySelection(key), 0);
-    }
+  document.addEventListener('close', event => {
+    if (!event.target.matches?.('dialog') || !event.target.contains(toast)) return;
+    if (toast.matches(':popover-open')) toast.hidePopover();
+    document.body.append(toast);
+    if (undoSelection) toast.showPopover();
   }, true);
+  const originalToggleSelection = togglePresentationSelection;
+  togglePresentationSelection = (key, selected) => {
+    const changed = presentationSelection.has(key) !== selected;
+    const restoreFocus = document.activeElement?.closest('.card-collection-toggle')?.dataset.productId === key;
+    originalToggleSelection(key, selected);
+    if (changed) notifySelection(key);
+    if (restoreFocus) requestAnimationFrame(() => {
+      [...gridNode.querySelectorAll('.card-collection-toggle')].find(button => button.dataset.productId === key)?.focus({preventScroll:true});
+    });
+  };
   gridNode.addEventListener('pointerdown', event => {
     if (!mobile.matches || event.pointerType === 'mouse' || event.target.closest('button')) return;
     const image = event.target.closest('.card-image');
