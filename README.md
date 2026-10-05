@@ -44,7 +44,7 @@ To refresh the live website manually, open the repository’s **Actions** tab, s
 
 Sales Mode uses Supabase Auth magic-link login for the authorized Lucra account. The public catalogue snapshot remains available to customers; the next security step is moving internal dashboard-only data into Supabase tables protected by Row Level Security.
 
-Safety controls include read-only requests, three-request concurrency, spacing between requests, bounded retries with backoff, time-limited optional nested-photo lookups, optional photo-folder isolation, a one-minute manual-sync cooldown, single-sync locking, local image caching, catalogue validation, and atomic inventory replacement. L1014 is validated as a required bundle and its packing-list record is retained if a refresh cannot read the folder. A bundle discovery error now fails the sync before publication, preserving the previous successful catalogue; optional photo-folder skips and packing-list warnings remain visible in the Sales Mode sync feedback.
+Safety controls include read-only requests, three-request concurrency, spacing between requests, bounded retries with backoff, time-limited optional nested-photo lookups, optional photo-folder isolation, a one-minute manual-sync cooldown, single-sync locking, local image caching, catalogue validation, and atomic inventory replacement. The required L1014 fallback applies only to the old root folder. A bundle discovery error fails the sync before publication, preserving the previous successful catalogue; optional photo-folder skips and packing-list warnings remain visible in the Sales Mode sync feedback.
 
 ## Live integration
 
