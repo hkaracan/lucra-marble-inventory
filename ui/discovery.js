@@ -49,6 +49,29 @@
 
   const input = document.querySelector('#searchInput');
   const host = input.closest('.search');
+  const clear = document.createElement('button');
+  clear.type = 'button';
+  clear.className = 'preview-search-clear';
+  clear.setAttribute('aria-label', 'Clear search');
+  clear.title = 'Clear search';
+  clear.innerHTML = '<span aria-hidden="true">×</span>';
+  const updateClear = () => { clear.hidden = input.value.length === 0; };
+  clear.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    input.value = '';
+    input.focus({preventScroll:true});
+    input.dispatchEvent(new Event('input', {bubbles:true}));
+  });
+  host.append(clear);
+  input.addEventListener('input', updateClear);
+  const renderWithSearch = render;
+  render = function(...args) {
+    const result = renderWithSearch(...args);
+    updateClear();
+    return result;
+  };
+  updateClear();
   const list = document.createElement('div');
   list.id = 'inventorySuggestions';
   list.className = 'preview-search-suggestions';
