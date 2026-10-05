@@ -65,6 +65,21 @@
     const byKey = new Map(products.map(product => [productKey(product), product]));
     return [...presentationSelection].map(key => byKey.get(key)).filter(product => product && isCustomerVisible(product));
   };
+  const originalFilteredProducts = filteredProducts;
+  if (sharedCollectionActive) {
+    const sharedOrder = document.createElement('option');
+    sharedOrder.value = 'shared-order'; sharedOrder.textContent = 'Shared list order';
+    $('#sortSelect').prepend(sharedOrder);
+    $('#sortSelect').value = 'shared-order';
+  }
+  filteredProducts = () => {
+    const visible = originalFilteredProducts();
+    if (sharedCollectionActive && $('#sortSelect').value === 'shared-order') {
+      const order = new Map([...sharedCollectionKeys].map((key, index) => [key, index]));
+      return visible.sort((a, b) => order.get(productKey(a)) - order.get(productKey(b)));
+    }
+    return visible;
+  };
   const compareList = document.createElement('button');
   compareList.type = 'button'; compareList.className = 'secondary preview-compare-list';
   compareList.textContent = 'Compare my list';
@@ -154,7 +169,7 @@
   const saved = read('lucraResponsiveBrowsing', {});
   let restored = false, knownProducts;
   function saveBrowsing() {
-    if (!restored) return;
+    if (!restored || sharedCollectionActive) return;
     write('lucraResponsiveBrowsing', {
       fields:Object.fromEntries(controlIds.map(id => [id, $('#' + id).value])),
       status:currentFilter,
@@ -165,12 +180,12 @@
     if (knownProducts === products) return;
     knownProducts = products;
     if (!restored) {
-      controlIds.forEach(id => {
+      if (!sharedCollectionActive) controlIds.forEach(id => {
         const field = $('#' + id), value = saved.fields?.[id];
         if (typeof value !== 'string') return;
         if (field.tagName !== 'SELECT' || [...field.options].some(option => option.value === value)) field.value = value;
       });
-      if (['all', 'available', 'reserved', 'recent'].includes(saved.status)) setCatalogStatusFilter(saved.status);
+      if (!sharedCollectionActive && ['all', 'available', 'reserved', 'recent'].includes(saved.status)) setCatalogStatusFilter(saved.status);
       (saved.photos || []).forEach(entry => {
         const product = products.find(item => productKey(item) === entry.key);
         if (!product) return;
