@@ -367,3 +367,19 @@ body.mobile-preview .card-collection-toggle.selected{background:#eaf7fb;color:#2
 .preview-search-suggestions strong { font-size: 14px; }
 .preview-search-suggestions small { color: #657582; font-size: 12px; text-align: right; }
 .preview-search-suggestions [role="option"]:hover, .preview-search-suggestions [aria-selected="true"] { background: #eef7fa; }
+/* Neutral focus follows the control shape; pointer selection does not add a box. */
+body.mobile-preview :is(button,a,input,select,textarea,summary,.card):focus-visible { outline:2px solid #39434a; outline-offset:3px; }
+body.mobile-preview :is(button,a,summary,.card):focus:not(:focus-visible) { outline:none; }
+body.mobile-preview .card:focus-visible { border-radius:18px; }
+body.mobile-preview #productDialog.gallery-focus :is(button,a):focus-visible { outline:2px solid white; outline-offset:3px; box-shadow:0 0 0 4px #39434a; }
+body.mobile-preview .card-collection-toggle.selected { background:white; color:#223047; border:1px solid #dce6ec; }
+body.mobile-preview .preview-search-suggestions :is([role="option"]:hover,[aria-selected="true"]) { background:#f1f3f4; }
+body.mobile-preview .quote-item input:focus, body.mobile-preview .quote-form-grid input:focus, body.mobile-preview .quote-full-field :is(input,textarea):focus { border-color:#657582; box-shadow:none; }
+@media(max-width:720px) { body.mobile-preview :is(#searchInput,.preview-sheet input,.preview-sheet select,.quote-dialog input,.quote-dialog textarea) { font-size:16px; } }
+@media(prefers-reduced-motion:reduce) {
+  body.mobile-preview *, body.mobile-preview *::before, body.mobile-preview *::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; scroll-behavior:auto!important; }
+}
+@media(forced-colors:active) { body.mobile-preview :is(button,a,input,select,textarea,summary,.card):focus-visible { outline-color:Highlight; } }
+
+body.mobile-preview .search:focus-within { box-shadow:0 0 0 2px #657582; }
+body.mobile-preview #searchInput:focus-visible { outline:none; }
