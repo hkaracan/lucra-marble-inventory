@@ -240,22 +240,61 @@
   let swipe;
   let suppressClickUntil = 0;
   const gridNode = $('#productGrid');
-  let browseReturn;
+  let browseReturn, openingCard;
+  const galleryResume = new Map();
+  const photoKey = photo => photo?.fileId || photo?.src || null;
   function rememberCard(event) {
     const card = event.target.closest('.card');
     if (!card || event.target.closest('button') || (event.type === 'keydown' && !['Enter', ' '].includes(event.key))) return;
-    browseReturn = {key:card.dataset.productId, top:window.scrollY, left:window.scrollX};
+    openingCard = card;
   }
   gridNode.addEventListener('click', rememberCard, true);
   gridNode.addEventListener('keydown', rememberCard, true);
+  function rememberGalleryPhoto() {
+    if (!currentProduct) return;
+    const key = productKey(currentProduct);
+    const existing = galleryResume.get(key);
+    galleryResume.set(key, {
+      cardPhoto:existing?.cardPhoto ?? photoKey(catalogCardImage(currentProduct)),
+      galleryPhoto:photoKey(currentProduct.images?.[imageIndex]),
+    });
+  }
+  const originalOpenProduct = openProduct;
+  openProduct = id => {
+    const wasOpen = $('#productDialog').open;
+    if (wasOpen) rememberGalleryPhoto();
+    const product = products.find(item => productKey(item) === id);
+    const cardPhoto = product && photoKey(catalogCardImage(product));
+    const previousPhoto = galleryResume.get(id);
+    const card = openingCard?.dataset.productId === id ? openingCard : null;
+    openingCard = null;
+    const origin = document.activeElement;
+    const position = {key:id, card:Boolean(card), cardTop:card?.getBoundingClientRect().top, top:window.scrollY, left:window.scrollX, origin, panel:origin?.closest('dialog'), reviewKey:origin?.closest('[data-preview-review]')?.dataset.previewReview};
+    originalOpenProduct(id);
+    if (!$('#productDialog').open || !currentProduct || productKey(currentProduct) !== id) return;
+    if (!wasOpen) browseReturn = position;
+    // A newly chosen card photo takes priority over the previous gallery visit.
+    if (previousPhoto?.cardPhoto === cardPhoto) {
+      const index = currentProduct.images.findIndex(photo => photoKey(photo) === previousPhoto.galleryPhoto);
+      if (index >= 0 && index !== imageIndex) {imageIndex = index; updateGallery();}
+    }
+    galleryResume.set(id, {cardPhoto, galleryPhoto:photoKey(currentProduct.images?.[imageIndex])});
+  };
   $('#productDialog').addEventListener('close', () => {
+    rememberGalleryPhoto();
     if (!browseReturn) return;
     const previous = browseReturn;
     browseReturn = null;
     requestAnimationFrame(() => {
-      const card = [...gridNode.querySelectorAll('.card')].find(item => item.dataset.productId === previous.key);
-      card?.focus({preventScroll:true});
-      window.scrollTo({top:previous.top, left:previous.left, behavior:'instant'});
+      const card = previous.card && [...gridNode.querySelectorAll('.card')].find(item => item.dataset.productId === previous.key);
+      const origin = previous.origin?.isConnected ? previous.origin : null;
+      const review = previous.reviewKey && [...document.querySelectorAll('[data-preview-review]')].find(row => row.dataset.previewReview === previous.reviewKey);
+      const panelFallback = previous.panel?.open && previous.panel.querySelector('[data-preview-close], .dialog-close');
+      const target = card || origin || review?.querySelector('.preview-review-photo') || panelFallback || $('#searchInput');
+      target?.focus({preventScroll:true});
+      // Anchor to the same card even when saving or resizing has changed the grid.
+      const top = card ? window.scrollY + card.getBoundingClientRect().top - Math.min(previous.cardTop, window.innerHeight - 120) : previous.top;
+      window.scrollTo({top, left:previous.left, behavior:'instant'});
     });
   });
   const toast = document.createElement('div');
@@ -290,7 +329,7 @@
   document.addEventListener('close', event => {
     if (!event.target.matches?.('dialog') || !event.target.contains(toast)) return;
     if (toast.matches(':popover-open')) toast.hidePopover();
-    document.body.append(toast);
+    (document.querySelector('dialog[open]') || document.body).append(toast);
     if (undoSelection) toast.showPopover();
   }, true);
   const originalToggleSelection = togglePresentationSelection;
