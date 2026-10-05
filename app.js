@@ -1517,7 +1517,7 @@ function fetchPublishedScriptSnapshot(){
 
 function openHashProduct(){
   const match=location.hash.match(/^#bundle-(.+)$/);if(!match)return;
-  const id=decodeURIComponent(match[1]), product=products.find(p=>productKey(p)===id)||(id!=='—'?products.find(p=>p.code===id):null);
+  const id=decodeURIComponent(match[1]), product=products.find(p=>productKey(p)===id||`drive-${p.folderId}`===id)||(id!=='—'?products.find(p=>p.code===id):null);
   if(product)openProduct(productKey(product));
 }
 window.addEventListener('hashchange',openHashProduct);
