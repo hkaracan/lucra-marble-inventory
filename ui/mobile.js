@@ -10,8 +10,6 @@
   navHeart.insertAdjacentHTML('afterbegin', heartIcon);
   const filterSheet = $('#previewFilters');
   const listSheet = $('#previewListDialog');
-  const menuSheet = $('#previewMenuDialog');
-  $('.site-header').append($('#previewMenu'));
   const filterPanel = $('#advancedFilters');
   $('#productDialog [data-i18n="location"]')?.closest('div').remove();
   // These data-quality filters are omitted from the customer preview.
@@ -22,6 +20,46 @@
   });
   const selectionPanel = $('#presentationCollection');
   const headerActions = $('.header-actions');
+  const staff = document.createElement('div');
+  staff.className = 'preview-footer-staff';
+  $('footer').append(staff);
+  staff.append(headerActions);
+  const salesActions = document.createElement('div');
+  salesActions.className = 'preview-sales-actions';
+  $('#salesDashboard .sales-dashboard-head').after(salesActions);
+  function updateStaffAccess() {
+    const sales = document.body.classList.contains('sales-mode');
+    (sales ? salesActions : staff).append(headerActions);
+    staff.hidden = sales;
+    salesActions.hidden = !sales;
+    const label = sales ? 'Back to inventory' : salesUnlocked ? 'Sales dashboard' : 'Staff sign-in';
+    $('#modeLabel').textContent = label;
+    $('#modeSwitch').setAttribute('aria-label', label);
+  }
+  const originalSalesMode = setSalesMode;
+  setSalesMode = function(...args) {
+    const wasSales = document.body.classList.contains('sales-mode');
+    const result = originalSalesMode(...args);
+    updateStaffAccess();
+    if (wasSales !== document.body.classList.contains('sales-mode')) requestAnimationFrame(() => {
+      const target = $(document.body.classList.contains('sales-mode') ? '#salesDashboard' : '#catalog');
+      target.setAttribute('tabindex', '-1');
+      target.scrollIntoView({block:'start', behavior:'instant'});
+      target.focus({preventScroll:true});
+    });
+    return result;
+  };
+  const originalSalesSession = applySalesSession;
+  applySalesSession = function(...args) { const result = originalSalesSession(...args); updateStaffAccess(); return result; };
+  updateStaffAccess();
+  let headerFrame;
+  function updateHeader() {
+    headerFrame = null;
+    const compact = document.body.classList.contains('preview-header-compact');
+    document.body.classList.toggle('preview-header-compact', compact ? window.scrollY > 20 : window.scrollY > 120);
+  }
+  window.addEventListener('scroll', () => { if (!headerFrame) headerFrame = requestAnimationFrame(updateHeader); }, {passive:true});
+  updateHeader();
   const filterToggle = $('#advancedFiltersToggle');
   const filterCount = document.createElement('small');
   filterCount.className = 'preview-filter-count';
@@ -51,7 +89,7 @@
     if (marker) marker.after(node);
   }
   function closeSheets() {
-    [filterSheet, listSheet, menuSheet].forEach(sheet => {
+    [filterSheet, listSheet].forEach(sheet => {
       if (sheet.open) sheet.close();
     });
   }
@@ -69,10 +107,9 @@
       if (review) review.open = true;
     }
     sheet.showModal();
-    if (sheet === menuSheet) $('#previewMenu').setAttribute('aria-expanded', 'true');
     update();
   }
-  [filterSheet, listSheet, menuSheet].forEach(sheet => {
+  [filterSheet, listSheet].forEach(sheet => {
     sheet.querySelector('[data-preview-close]').addEventListener('click', () => sheet.close());
     sheet.addEventListener('click', event => {
       if (event.target !== sheet) return;
@@ -87,7 +124,6 @@
         filterToggle.setAttribute('aria-expanded', 'false');
       }
       if (sheet === listSheet) restore(selectionPanel);
-      if (sheet === menuSheet) $('#previewMenu').setAttribute('aria-expanded', 'false');
       update();
       lastFocus?.focus();
     });
@@ -115,9 +151,6 @@
       $('#shortlistSelect')?.focus({preventScroll:true});
     } else openSheet(listSheet);
   });
-  $('#previewMenu').addEventListener('click', () => openSheet(menuSheet));
-  $('#modeSwitch').addEventListener('click', () => menuSheet.close());
-  $('#signOutSales').addEventListener('click', () => menuSheet.close());
 
   function arrange() {
     closeSheets();
@@ -126,13 +159,11 @@
       controls.prepend(searchRow);
       moveTo($('.search'), searchRow);
       moveTo(filterToggle, searchRow);
-      moveTo(headerActions, $('#previewMenuBody'));
       const head = $('.catalog-head');
       controls.after(head);
     } else {
       restore($('.search'));
       restore(filterToggle);
-      restore(headerActions);
       searchRow.remove();
       $('.controls').before($('.catalog-head'));
     }

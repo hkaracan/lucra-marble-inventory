@@ -30,10 +30,6 @@
 #previewListDialog .presentation-collection-actions{display:grid;grid-template-columns:1fr 1fr}
 #previewListDialog .presentation-collection-actions button{min-height:48px;font-size:12px;border-radius:14px}
 #previewListDialog .collection-title-field input{min-height:48px;font-size:16px}
-#previewMenuDialog .header-actions{display:flex;flex-direction:column;align-items:stretch;gap:14px;margin-bottom:24px}
-#previewMenuDialog .header-actions button{min-height:48px;justify-content:center;border-radius:24px;font-size:14px}
-#previewMenuDialog .sales-only{display:none}
-body.sales-mode #previewMenuDialog .sales-only{display:flex}
 @media(max-width:1024px){
   html{scroll-padding-top:86px}
   body.mobile-preview{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
@@ -301,10 +297,8 @@ body.mobile-preview .card-info{overflow-wrap:anywhere}
 body.mobile-preview .presentation-collection-actions{flex-wrap:wrap}
 @media(max-width:1024px){.preview-catalogue-alerts{display:none!important}}
 @media print{.preview-list-alerts,.preview-photo-retry,.preview-share-feedback{display:none!important}}
-.preview-header-menu{display:none}
 @media(max-width:1024px){
   body.mobile-preview .site-header::after{display:none}
-  body.mobile-preview .preview-header-menu{display:flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:white;color:var(--navy);font-size:22px;cursor:pointer}
   body.mobile-preview .preview-nav{justify-content:center}
   body.mobile-preview .preview-nav button{max-width:220px}
 }
@@ -312,7 +306,6 @@ body.mobile-preview .presentation-collection-actions .preview-share-list,body.mo
 body.mobile-preview #previewListDialog #requestPresentationQuote{background:#eaf7fb;border-color:#cce8ef;color:#235969}
 body.mobile-preview #presentationCollection .presentation-collection-actions>button:not(.preview-share-list):not(#whatsappPresentationCollection){background:#eaf7fb;border:1px solid #cce8ef;color:#235969}
 body.mobile-preview #presentationCollection #whatsappPresentationCollection{background:#25d366;border-color:#25d366;color:white}
-@media print{.preview-header-menu{display:none!important}}
 
 /* Keep hearts compact and independent of platform font glyphs. */
 .preview-heart{display:block;width:22px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -401,3 +394,23 @@ body.mobile-preview .preview-desktop-availability { flex:1 1 100%; grid-column:1
 body.mobile-preview .preview-desktop-availability:empty { display:none; }
 body.mobile-preview .preview-category-review { flex:1 1 100%; font-size:13px; color:#657582; margin:4px 0; }
 @media(max-width:720px) { body.mobile-preview .preview-material-categories { flex-wrap:nowrap; overflow-x:auto; padding:3px 2px 6px; scrollbar-width:thin; } }
+
+/* Staff actions live in the footer; scrolling keeps only a small brand header. */
+body.mobile-preview .preview-footer-staff { grid-column:1/-1; width:100%; margin-top:12px; padding-top:16px; border-top:1px solid #dce6ec; }
+body.mobile-preview :is(.preview-footer-staff,.preview-sales-actions) .header-actions { display:flex; flex-wrap:wrap; gap:12px; justify-content:flex-end; align-items:center; }
+body.mobile-preview :is(.preview-footer-staff,.preview-sales-actions) #modeSwitch { width:auto; height:auto; min-height:44px; padding:10px 12px; border:0; border-radius:12px; background:transparent; color:#657582; text-decoration:underline; font:500 13px "DM Sans",sans-serif; }
+body.mobile-preview :is(.preview-footer-staff,.preview-sales-actions) #modeLabel { display:inline; }
+body.mobile-preview :is(.preview-footer-staff,.preview-sales-actions) .mode-icon { display:none; }
+body.mobile-preview :is(.preview-footer-staff,.preview-sales-actions) #signOutSales, body.mobile-preview :is(.preview-footer-staff,.preview-sales-actions) #syncButton { width:auto; min-height:44px; height:auto; padding:10px 14px; font-size:13px; border-radius:12px; }
+body.mobile-preview :is(.preview-footer-staff,.preview-sales-actions) #syncButton::after { content:none; }
+body.mobile-preview .site-header { transition:height .16s ease,padding .16s ease; }
+body.mobile-preview .brand { display:flex; align-items:center; min-height:44px; }
+body.mobile-preview .brand img { transition:width .16s ease; }
+body.mobile-preview.preview-header-compact .site-header { height:48px; padding-top:2px; padding-bottom:2px; border-bottom:1px solid #edf0f1; }
+body.mobile-preview.preview-header-compact .brand img { width:82px; max-height:32px; object-fit:contain; object-position:left center; }
+@media(max-width:1024px) { body.mobile-preview :is(.preview-footer-staff,.preview-sales-actions) .header-actions { justify-content:flex-start; } }
+@media print { .preview-footer-staff { display:none!important; } }
+
+body.mobile-preview .preview-sales-actions { margin:0 0 20px; }
+body.mobile-preview .preview-sales-actions .header-actions { justify-content:flex-start; }
+.preview-footer-staff[hidden],.preview-sales-actions[hidden] { display:none!important; }
