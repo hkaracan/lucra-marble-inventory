@@ -90,6 +90,23 @@
   comparison.innerHTML = '<header><h2 id="previewComparisonTitle">Compare my list</h2><button type="button" aria-label="Close list comparison">×</button></header><div class="preview-comparison-body"></div>';
   document.body.append(comparison);
   comparison.querySelector('header button').addEventListener('click', () => comparison.close());
+  const returnToComparison = document.createElement('button');
+  returnToComparison.type = 'button';
+  returnToComparison.className = 'preview-return-comparison secondary';
+  returnToComparison.textContent = '← Back to comparison';
+  returnToComparison.hidden = true;
+  $('#dialogClose').after(returnToComparison);
+  returnToComparison.addEventListener('click', () => $('#productDialog').close());
+  const originalComparisonOpen = openProduct;
+  openProduct = function(...args) { const result = originalComparisonOpen(...args); returnToComparison.hidden = !comparison.open || !$('#productDialog').open; return result; };
+  comparison.addEventListener('click', event => {
+    const button = event.target.closest('[data-compare-gallery]');
+    if (!button) return;
+    openProduct(button.dataset.compareGallery);
+    returnToComparison.hidden = !$('#productDialog').open;
+  });
+  $('#productDialog').addEventListener('close', () => {returnToComparison.hidden = true;});
+
   compareList.addEventListener('click', () => {
     const selected = selectedPresentationProducts();
     const rows = [
@@ -101,7 +118,7 @@
     ];
     const headers = selected.map(product => {
       const photo = productThumbnailImage(product);
-      return `<th scope="col">${photo?.src ? `<img src="${escapeHtml(photo.thumbSrc || photo.src)}" alt="${escapeHtml(product.name)}" loading="lazy">` : ''}<strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.code)}</small></th>`;
+      return `<th scope="col">${photo?.src ? `<button type="button" class="preview-comparison-photo" data-compare-gallery="${escapeHtml(productKey(product))}" aria-label="View gallery for ${escapeHtml(product.name)}"><img src="${escapeHtml(photo.thumbSrc || photo.src)}" alt="" loading="lazy"></button>` : ''}<strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.code)}</small></th>`;
     }).join('');
     comparison.querySelector('.preview-comparison-body').innerHTML = `<div class="preview-comparison-scroll" role="region" aria-label="Bundle comparison; scroll horizontally for more bundles" tabindex="0"><table class="preview-comparison-table" style="--comparison-count:${selected.length}"><caption class="sr-only">Compare ${selected.length} selected bundles</caption><colgroup><col class="preview-comparison-label">${selected.map(() => '<col>').join('')}</colgroup><thead><tr><th scope="col">Details</th>${headers}</tr></thead><tbody>${rows.map(([label, value]) => `<tr><th scope="row">${label}</th>${selected.map(product => `<td>${escapeHtml(String(value(product) || 'Not available'))}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
     comparison.showModal();
@@ -206,6 +223,7 @@
     });
   }
   function restoreBrowsing() {
+    if (!hasLoadedInventory) return;
     if (knownProducts === products) return;
     knownProducts = products;
     if (!restored) {

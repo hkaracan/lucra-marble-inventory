@@ -454,3 +454,15 @@ body.mobile-preview .preview-dimension-fields label { display:flex; flex-directi
 .preview-reserved-notice p+p { margin-top:8px; }
 .preview-reserved-notice p { font-size:12px; }
 .preview-reserved-notice+h3 { margin-top:12px; }
+
+/* Current inventory replaces temporary sample cards after loading. */
+.inventory-loading-message,.inventory-load-error { grid-column:1/-1; color:#657582; font-size:14px; padding:16px 0; }
+.inventory-skeleton { min-width:0; padding-bottom:16px; }
+.inventory-skeleton>div { aspect-ratio:4/3; background:#edf0f2; border-radius:18px; }
+.inventory-skeleton>span { display:block; background:#edf0f2; border-radius:6px; height:14px; width:70%; margin:12px 0; }
+.inventory-skeleton>span:last-child { width:45%; }
+body.inventory-loading #previewList,body.inventory-loading #presentationCollection,body.inventory-loading #collectionBanner,body.inventory-loading .preview-catalogue-alerts { visibility:hidden; }
+.preview-comparison-photo { display:block; padding:0; border:0; border-radius:12px; background:transparent; cursor:pointer; margin:0 0 10px; }
+.preview-comparison-table .preview-comparison-photo img { margin:0; }
+.preview-return-comparison { padding:8px 12px; min-height:44px; font-size:12px; border-radius:12px; }
+.preview-return-comparison[hidden] { display:none!important; }

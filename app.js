@@ -154,7 +154,8 @@ function freshnessBadgeMarkup(product,compact=false){
   if(!freshness)return '';
   return `<span class="${compact?'sales-':''}freshness-badge ${freshness.className}">${escapeHtml(freshness.label)}</span>`;
 }
-let products=assignBundleKeys(fallbackProducts), currentFilter='all', currentProduct=null, imageIndex=0, syncedAt=null;
+let hasLoadedInventory=false, inventoryLoadState='loading';
+let products=[], currentFilter='all', currentProduct=null, imageIndex=0, syncedAt=null;
 let catalogColumns='2';
 try{const storedColumns=localStorage.getItem('lucraCatalogColumns');if(['2','3','4'].includes(storedColumns))catalogColumns=storedColumns}catch(error){}
 document.body.classList.add(`catalog-columns-${catalogColumns}`);
@@ -601,7 +602,7 @@ function toggleCustomerVisibility(id,visible){if(!id)return;if(visible)delete cu
 function selectedPresentationProducts(){return products.filter(product=>presentationSelection.has(productKey(product))&&isCustomerVisible(product))}
 function savePresentationSelection(){try{localStorage.setItem('lucraCustomerCollection',JSON.stringify([...presentationSelection]))}catch(error){}}
 function prunePresentationSelection(){const valid=new Set(products.map(product=>productKey(product)));let changed=false;presentationSelection.forEach(key=>{if(!valid.has(key)){presentationSelection.delete(key);changed=true}});if(changed)savePresentationSelection()}
-function togglePresentationSelection(id,selected){if(selected)presentationSelection.add(id);else presentationSelection.delete(id);savePresentationSelection();render()}
+function togglePresentationSelection(id,selected){if(!hasLoadedInventory)return;if(selected)presentationSelection.add(id);else presentationSelection.delete(id);savePresentationSelection();render()}
 function commitCustomerCollectionTitle(){customerCollectionTitle=customerCollectionTitle.trim();presentationCollectionName.value=customerCollectionTitle;try{localStorage.setItem('lucraCustomerCollectionTitle',customerCollectionTitle)}catch(error){}renderPresentationCollection();return customerCollectionTitle}
 function renderPresentationCollection(){
   const selected=selectedPresentationProducts();
@@ -1112,6 +1113,15 @@ function resetAllFilters(){
 }
 
 function render(){
+  document.body.classList.toggle('inventory-loading',!hasLoadedInventory);
+  grid.setAttribute('aria-busy',String(!hasLoadedInventory&&inventoryLoadState==='loading'));
+  if(!hasLoadedInventory){
+    empty.hidden=true;
+    count.textContent=inventoryLoadState==='error'?'Inventory unavailable':'Loading inventory…';
+    grid.innerHTML=inventoryLoadState==='error'?'<div class="inventory-load-error" role="status"><p>We couldn’t load the inventory. Please try again.</p><button type="button" class="secondary" id="retryInventory">Retry loading inventory</button></div>':'<div class="inventory-loading-message" role="status">Loading current inventory…</div>'+Array.from({length:6},()=>'<div class="inventory-skeleton" aria-hidden="true"><div></div><span></span><span></span></div>').join('');
+    document.querySelector('#retryInventory')?.addEventListener('click',()=>loadInventory().then(openHashProduct));
+    return;
+  }
   populateSurfaceFilter();
   renderCollectionBanner();
   renderPresentationCollection();
@@ -1246,6 +1256,7 @@ function preloadGalleryNeighbors(){
   });
 }
 function openProduct(id){
+  if(!hasLoadedInventory)return;
   if(!dialog.open)dialogReturnFocus=document.activeElement;
   const candidate=products.find(p=>productKey(p)===id);
   if(candidate&&!document.body.classList.contains('sales-mode')&&!isCustomerVisible(candidate))return;
@@ -1474,6 +1485,8 @@ function fetchPublishedScriptSnapshot(){
 }
 
     async function loadInventory(){
+      inventoryLoadState='loading';
+      if(!hasLoadedInventory)render();
       try{
         let data,historyData=null,statusData=null,inventorySource='Local snapshot';
         if(location.protocol==='file:'){
@@ -1504,14 +1517,15 @@ function fetchPublishedScriptSnapshot(){
             fetch(`data/sync_status.json?ts=${stamp}`).then(response=>response.ok?response.json():null).catch(()=>null),
           ]);
         }
+        if(!Array.isArray(data?.products))throw new Error('Invalid inventory snapshot');
         const historyRuns=Array.isArray(historyData)?historyData:historyData&&Array.isArray(historyData.runs)?historyData.runs:data.syncHistory;
         syncHistory=Array.isArray(historyRuns)?historyRuns:[];
         syncState=statusData||data.syncStatus||null;
         brokenPhotoIdsByProduct.clear();verifiedPhotoIdsByProduct.clear();catalogImageIndexes.clear();photoVerification.checked=0;photoVerification.failed=0;photoVerification.lastCheckedAt=null;
-        products=assignBundleKeys((data.products||[]).map(normalizeLiveProduct));pruneShortlist();prunePresentationSelection();pruneCustomerVisibility();const reportedInventory=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products),sourceIssues=products.filter(product=>sourceMismatchInfo(product).hasIssue),photoIssues=products.filter(product=>photoCheck(product).hasIssue),photoCoverageNotes=products.filter(product=>imageAudit(product).mismatch);inventoryReport={...reportedInventory,photoCheckIssues:photoIssues.length,photoCoverageNotes:photoCoverageNotes.length,sourceMismatches:sourceIssues.length,sourceMismatchFolders:sourceIssues.map(product=>product.folderName)};syncedAt=data.syncedAt;
+        products=assignBundleKeys(data.products.map(normalizeLiveProduct));hasLoadedInventory=true;inventoryLoadState='ready';pruneShortlist();prunePresentationSelection();pruneCustomerVisibility();const reportedInventory=data.report&&Object.keys(data.report).length?data.report:deriveInventoryReport(products),sourceIssues=products.filter(product=>sourceMismatchInfo(product).hasIssue),photoIssues=products.filter(product=>photoCheck(product).hasIssue),photoCoverageNotes=products.filter(product=>imageAudit(product).mismatch);inventoryReport={...reportedInventory,photoCheckIssues:photoIssues.length,photoCoverageNotes:photoCoverageNotes.length,sourceMismatches:sourceIssues.length,sourceMismatchFolders:sourceIssues.map(product=>product.folderName)};syncedAt=data.syncedAt;
         syncStatus.innerHTML=`<i></i> ${products.length} bundles · ${new Date(syncedAt).toLocaleDateString()}`;
         setSyncFeedback({...data,count:products.length,report:inventoryReport},location.protocol==='file:'?inventorySource:isGithubPages?'Last published sync':'Last sync');
-      }catch(error){syncStatus.innerHTML='<i></i> Preview data';syncStatus.title='';syncFeedback.textContent='';syncHistory=[];syncState=null;}
+      }catch(error){inventoryLoadState=hasLoadedInventory?'ready':'error';syncStatus.innerHTML='<i></i> Inventory unavailable';syncStatus.title='';syncFeedback.textContent='';syncHistory=[];syncState=null;}
       render();
     }
 
