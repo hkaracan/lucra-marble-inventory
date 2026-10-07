@@ -16,6 +16,7 @@
     document.body.append(frame);
   }
   const scriptUrl=document.currentScript.src;
+  window.addEventListener('message',event=>{if(frame && event.source===frame.contentWindow && event.origin===location.origin && event.data?.type==='lucra-analytics-status')frame.dataset.tagStatus=event.data.loaded===true?'loaded':'failed';});
   function track(name,values={}) {const clean=policy.sanitize(name,values);if(!clean || !allowed() || !frameReady)return;frame.contentWindow.postMessage({type:'lucra-analytics',action:'event',...clean},location.origin);}
   document.querySelector('#modeSwitch').addEventListener('click',excludeStaff,true);
   const originalSession=applySalesSession;

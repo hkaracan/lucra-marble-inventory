@@ -21,7 +21,7 @@
       gtag('set',{page_location:policy.location,page_title:policy.title,page_referrer:policy.referrer(message.referrer)});
       gtag('js',new Date());
       gtag('config',policy.id,{send_page_view:false,allow_google_signals:false,allow_ad_personalization_signals:false,cookie_domain:'auto'});
-      const script=document.createElement('script');script.async=true;script.onload=()=>{script.dataset.loaded='true';};script.onerror=()=>{script.dataset.loaded='false';};script.src='https://www.googletagmanager.com/gtag/js?id='+policy.id;document.head.append(script);
+      const script=document.createElement('script');script.async=true;script.onload=()=>{parent.postMessage({type:'lucra-analytics-status',loaded:true},location.origin);};script.onerror=()=>{parent.postMessage({type:'lucra-analytics-status',loaded:false},location.origin);};script.src='https://www.googletagmanager.com/gtag/js?id='+policy.id;document.head.append(script);
       gtag('event','page_view',{send_to:policy.id,page_location:policy.location,page_title:policy.title,page_referrer:policy.referrer(message.referrer)});
       return;
     }
