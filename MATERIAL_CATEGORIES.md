@@ -16,3 +16,5 @@ Publish the JSON and generated `ui/material-categories.js` together and update i
 Category selection combines with the existing availability, search, dimensions and surface filters. Availability lives in Filters. Reset filters clears the category too. Personal category choices are remembered; opening a shared collection starts at All so the entire shared collection is visible.
 
 The classic layout, inventory synchronization, quote/share/print actions and saved collection membership are unchanged. Revert the category feature's merge commit with `git revert -m 1 <merge-sha>` to undo the feature independently.
+
+Additional customer-confirmed assignments: Red Travertine → Travertine; Brown Terazzo, Calacatta wave and Diana Royal → Marble.

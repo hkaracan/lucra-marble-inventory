@@ -254,7 +254,7 @@
           position.setAttribute('aria-live', 'polite');
           card.querySelector('.card-image').append(position);
         }
-        setText(position, `${catalogImageIndex(product, images) + 1} of ${images.length}`);
+        setText(position, `Photo ${catalogImageIndex(product, images) + 1} of ${images.length}`);
       });
     }
   }
