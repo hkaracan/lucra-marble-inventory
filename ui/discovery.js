@@ -111,7 +111,8 @@
     if (!query || document.activeElement !== input) return close();
     const eligible = products.filter(product =>
       (document.body.classList.contains('sales-mode') || isCustomerVisible(product)) &&
-      (!sharedCollectionActive || sharedCollectionKeys.has(productKey(product))));
+      (!sharedCollectionActive || sharedCollectionKeys.has(productKey(product))) &&
+      (!window.lucraMatchesMaterialCategory || window.lucraMatchesMaterialCategory(product)));
     const names = [...new Set(eligible.map(product => product.name))]
       .filter(name => name.toLocaleLowerCase().includes(query))
       .sort((a, b) => Number(b.toLocaleLowerCase().startsWith(query)) - Number(a.toLocaleLowerCase().startsWith(query)) || a.localeCompare(b));

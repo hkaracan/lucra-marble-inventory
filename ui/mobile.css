@@ -392,3 +392,12 @@ body.mobile-preview .preview-search-clear { position:absolute; right:6px; top:50
 body.mobile-preview .preview-search-clear span { font:400 26px/1 "DM Sans",sans-serif; }
 body.mobile-preview .preview-search-clear:hover { background:#f1f3f4; color:#223047; }
 body.mobile-preview .preview-search-clear[hidden] { display:none; }
+/* Material families lead browsing; availability remains a combinable filter. */
+body.mobile-preview .preview-material-categories { display:flex; flex:1 1 100%; gap:8px; min-width:0; flex-wrap:wrap; }
+body.mobile-preview .preview-material-category { flex:0 0 auto; min-height:44px; padding:10px 18px; border:1px solid #dce6ec; border-radius:24px; background:white; color:#39434a; font:600 14px "DM Sans",sans-serif; cursor:pointer; }
+body.mobile-preview .preview-material-category[aria-pressed="true"] { background:#223047; border-color:#223047; color:white; }
+body.mobile-preview .preview-material-category:hover:not([aria-pressed="true"]) { background:#f1f3f4; }
+body.mobile-preview .preview-desktop-availability { flex:1 1 100%; grid-column:1/-1; }
+body.mobile-preview .preview-desktop-availability:empty { display:none; }
+body.mobile-preview .preview-category-review { flex:1 1 100%; font-size:13px; color:#657582; margin:4px 0; }
+@media(max-width:720px) { body.mobile-preview .preview-material-categories { flex-wrap:nowrap; overflow-x:auto; padding:3px 2px 6px; scrollbar-width:thin; } }
