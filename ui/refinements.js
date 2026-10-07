@@ -80,3 +80,64 @@
   requestProductQuote = function() { if (currentProduct) openShortlistQuoteDialog([currentProduct]); };
   button.addEventListener('click', requestProductQuote);
 })();
+
+/* A listed size must fit both requirements on the same slab. */
+(() => {
+  const sizing = window.LucraSizing;
+  const originalSize = document.querySelector('#dimensionFilter');
+  originalSize.value = '';
+  originalSize.closest('label').hidden = true;
+  originalSize.closest('label').classList.add('preview-omitted-filter');
+  const group = document.createElement('fieldset');
+  group.className = 'preview-dimension-fields';
+  group.innerHTML = '<legend>Minimum slab dimensions</legend><div><label for="minSlabLength">Length (cm)<input id="minSlabLength" type="number" min="0" step="any" inputmode="decimal" placeholder="e.g. 290" aria-describedby="slabDimensionHint"></label><label for="minSlabWidth">Width (cm)<input id="minSlabWidth" type="number" min="0" step="any" inputmode="decimal" placeholder="e.g. 190" aria-describedby="slabDimensionHint"></label></div><p id="slabDimensionHint">Shows bundles with at least one listed size that fits, in either orientation. Other slabs in the bundle may be smaller.</p>';
+  originalSize.closest('label').after(group);
+  const length = group.querySelector('#minSlabLength'), width = group.querySelector('#minSlabWidth');
+  const storageKey = 'lucraSlabDimensions';
+  const save = () => { if (!sharedCollectionActive) try {localStorage.setItem(storageKey, JSON.stringify({length:length.value, width:width.value}));} catch {} };
+  if (!sharedCollectionActive) try {
+    const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    for (const [field, value] of [[length,saved.length],[width,saved.width]]) if (typeof value === 'string' && Number.isFinite(Number(value)) && Number(value) >= 0) field.value = value;
+  } catch {}
+  const minimum = field => field.validity.valid && field.value.trim() ? Number(field.value) : 0;
+  const originalFiltered = filteredProducts;
+  filteredProducts = function(...args) {originalSize.value = ''; return originalFiltered(...args).filter(product => sizing.fits(product, minimum(length), minimum(width)));};
+  [length,width].forEach(field => field.addEventListener('input', () => {save(); render();}));
+  const originalEntries = activeFilterEntries;
+  activeFilterEntries = function(...args) {
+    const entries = originalEntries(...args);
+    for (const [field,label] of [[length,'Min slab length'],[width,'Min slab width']]) if (minimum(field) > 0) entries.push({key:field.id,label:`${label}: ${field.value} cm`});
+    return entries;
+  };
+  const originalClear = clearSingleFilter;
+  clearSingleFilter = function(key) {
+    if (key === length.id || key === width.id) { (key === length.id ? length : width).value = ''; save(); render(); }
+    else return originalClear(key);
+  };
+  const originalReset = resetAllFilters;
+  resetAllFilters = function(...args) {length.value = ''; width.value = ''; save(); return originalReset(...args);};
+  document.querySelector('#clearFilters').addEventListener('click', event => {event.stopImmediatePropagation(); resetAllFilters();}, true);
+
+  const totals = document.createElement('dl');
+  totals.className = 'preview-selection-totals';
+  totals.setAttribute('aria-label','My list totals');
+  totals.setAttribute('aria-live','polite');
+  totals.setAttribute('aria-atomic','true');
+  document.querySelector('#presentationCollectionTitle').after(totals);
+  const missing = document.createElement('p');
+  missing.className = 'preview-totals-note';
+  totals.after(missing);
+  const originalCollection = renderPresentationCollection;
+  renderPresentationCollection = function(...args) {
+    const result = originalCollection(...args), selected = selectedPresentationProducts(), count = sizing.totals(selected);
+    totals.innerHTML = [['Bundles',count.bundles],[count.missingSlabs?'Known slabs':'Total slabs',count.missingSlabs === count.bundles ? '—' : count.slabs],[count.missingArea?'Known area':'Total area',count.missingArea === count.bundles ? '—' : `${count.area.toFixed(2)} m²`]].map(([label,value])=>`<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(String(value))}</dd></div>`).join('');
+    const notes = [];
+    if (count.missingSlabs) notes.push(`${count.missingSlabs} ${count.missingSlabs === 1 ? 'bundle is' : 'bundles are'} missing slab counts`);
+    if (count.missingArea) notes.push(`${count.missingArea} ${count.missingArea === 1 ? 'bundle is' : 'bundles are'} missing area data`);
+    missing.textContent = notes.length ? `Totals include known stock only. ${notes.join('; ')}.` : '';
+    missing.hidden = !notes.length;
+    document.querySelector('#presentationCollectionSummary').textContent = [count.area > 0 ? `Approx. weight: ${Math.round(count.area*58)} kg` : '',collectionUpdatedLabel(),t('availabilityNote')].filter(Boolean).join(' · ');
+    return result;
+  };
+  render();
+})();

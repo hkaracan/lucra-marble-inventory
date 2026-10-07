@@ -435,3 +435,14 @@ body.mobile-preview .preview-sales-actions .header-actions { justify-content:fle
   .preview-comparison-table th,.preview-comparison-table td { padding:10px 8px; font-size:12px; }
   .preview-comparison-table thead strong { font-size:13px; }
 }
+
+.preview-dimension-fields { grid-column:1/-1; min-width:0; border:1px solid #dce6ec; border-radius:12px; padding:14px; margin:0; }
+.preview-dimension-fields legend { padding:0 6px; color:#223047; font-size:14px; font-weight:600; }
+.preview-dimension-fields>div { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+body.mobile-preview .preview-dimension-fields label { display:flex; flex-direction:column; align-items:stretch; gap:8px; min-width:0; white-space:normal; }
+.preview-dimension-fields input { width:100%; min-width:0; }
+.preview-dimension-fields p,.preview-totals-note { font-size:12px; line-height:1.5; color:#657582; margin:12px 0 0; }
+.preview-selection-totals { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:16px 0 4px; padding:14px 0; border-top:1px solid #dce6ec; border-bottom:1px solid #dce6ec; }
+.preview-selection-totals dt { color:#657582; font-size:12px; }
+.preview-selection-totals dd { margin:5px 0 0; color:#223047; font-size:20px; font-weight:700; line-height:1.35; }
+@media(max-width:720px) { .preview-selection-totals { gap:8px; } .preview-selection-totals dd { font-size:18px; } body.mobile-preview .preview-dimension-fields input { font-size:16px; } }
