@@ -446,3 +446,11 @@ body.mobile-preview .preview-dimension-fields label { display:flex; flex-directi
 .preview-selection-totals dt { color:#657582; font-size:12px; }
 .preview-selection-totals dd { margin:5px 0 0; color:#223047; font-size:20px; font-weight:700; line-height:1.35; }
 @media(max-width:720px) { .preview-selection-totals { gap:8px; } .preview-selection-totals dd { font-size:18px; } body.mobile-preview .preview-dimension-fields input { font-size:16px; } }
+
+/* Keep reserved stock visible without a large warning panel. */
+.preview-list-alerts:has(.preview-reserved-notice):not(:has(h3)) { padding:4px 12px; margin:10px 0; border-radius:12px; }
+.preview-reserved-notice summary { min-height:44px; align-content:center; cursor:pointer; font:500 12px/1.45 "DM Sans",sans-serif; }
+.preview-reserved-notice>div { padding:0 0 10px; }
+.preview-reserved-notice p+p { margin-top:8px; }
+.preview-reserved-notice p { font-size:12px; }
+.preview-reserved-notice+h3 { margin-top:12px; }

@@ -65,7 +65,12 @@ function previewSavedChanges(records, inventory) {
     }
     persist();
     const changes = previewSavedChanges([...records.values()], live.map(product => ({key:productKey(product), name:product.name, code:product.code, reserved:product.reserved})));
-    const markup = changes.length ? `<h3>Check your saved bundles</h3>${changes.map(change => `<div><p><strong>${escapeHtml(change.name)}${change.code ? ` · ${escapeHtml(change.code)}` : ''}</strong><span>${change.kind === 'missing' ? 'No longer listed in this catalogue. It will not be included in new shares or quotes.' : change.kind === 'newly-reserved' ? 'Now reserved. Ask Lucra to confirm availability before quoting.' : 'Reserved. Ask Lucra to confirm availability.'}</span></p>${change.kind === 'missing' ? `<button type="button" data-dismiss-saved="${escapeHtml(change.key)}">Dismiss</button>` : ''}</div>`).join('')}` : '';
+    const reserved = changes.filter(change => change.kind !== 'missing');
+    const missing = changes.filter(change => change.kind === 'missing');
+    const reservedMarkup = reserved.length ? `<details class="preview-reserved-notice"><summary>${reserved.length} reserved ${reserved.length === 1 ? 'bundle' : 'bundles'} · Confirm availability</summary><div>${reserved.map(change => `<p><strong>${escapeHtml(change.name)}${change.code ? ` · ${escapeHtml(change.code)}` : ''}</strong><span>${change.kind === 'newly-reserved' ? 'Now reserved. ' : ''}Ask Lucra to confirm availability.</span></p>`).join('')}</div></details>` : '';
+    const missingMarkup = missing.length ? `<h3>Check your saved bundles</h3>${missing.map(change => `<div><p><strong>${escapeHtml(change.name)}${change.code ? ` · ${escapeHtml(change.code)}` : ''}</strong><span>No longer listed in this catalogue. It will not be included in new shares or quotes.</span></p><button type="button" data-dismiss-saved="${escapeHtml(change.key)}">Dismiss</button></div>`).join('')}` : '';
+    const markup = reservedMarkup + missingMarkup;
+
     if (markup !== previousAlerts) {
       desktopAlerts.innerHTML = listAlerts.innerHTML = markup;
       previousAlerts = markup;
