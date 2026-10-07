@@ -92,16 +92,18 @@
   comparison.querySelector('header button').addEventListener('click', () => comparison.close());
   compareList.addEventListener('click', () => {
     const selected = selectedPresentationProducts();
-    comparison.querySelector('.preview-comparison-body').innerHTML = selected.map(product => {
+    const rows = [
+      ['Status', product => product.reserved ? 'Reserved' : 'Available'],
+      ['Slabs', product => product.pcs ?? 'Not available'],
+      ['Area', product => product.sqm != null ? `${Number(product.sqm).toFixed(2)} m²` : 'Not available'],
+      ['Dimensions', productDimensions],
+      ['Finish', productSurfaceLabel],
+    ];
+    const headers = selected.map(product => {
       const photo = productThumbnailImage(product);
-      return `<article><div class="preview-comparison-title">${photo?.src ? `<img src="${escapeHtml(photo.thumbSrc || photo.src)}" alt="${escapeHtml(product.name)}" loading="lazy">` : ''}<h3>${escapeHtml(product.name)}<small>${escapeHtml(product.code)}</small></h3></div><dl>${[
-        ['Status', product.reserved ? 'Reserved' : 'Available'],
-        ['Slabs', product.pcs ?? 'Not available'],
-        ['Area', product.sqm != null ? `${Number(product.sqm).toFixed(2)} m²` : 'Not available'],
-        ['Dimensions', productDimensions(product)],
-        ['Finish', productSurfaceLabel(product)],
-      ].map(([label, value]) => `<div><dt>${label}</dt><dd>${escapeHtml(String(value || 'Not available'))}</dd></div>`).join('')}</dl></article>`;
+      return `<th scope="col">${photo?.src ? `<img src="${escapeHtml(photo.thumbSrc || photo.src)}" alt="${escapeHtml(product.name)}" loading="lazy">` : ''}<strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.code)}</small></th>`;
     }).join('');
+    comparison.querySelector('.preview-comparison-body').innerHTML = `<div class="preview-comparison-scroll" role="region" aria-label="Bundle comparison; scroll horizontally for more bundles" tabindex="0"><table class="preview-comparison-table" style="--comparison-count:${selected.length}"><caption class="sr-only">Compare ${selected.length} selected bundles</caption><colgroup><col class="preview-comparison-label">${selected.map(() => '<col>').join('')}</colgroup><thead><tr><th scope="col">Details</th>${headers}</tr></thead><tbody>${rows.map(([label, value]) => `<tr><th scope="row">${label}</th>${selected.map(product => `<td>${escapeHtml(String(value(product) || 'Not available'))}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
     comparison.showModal();
   });
   function decorateList() {
