@@ -113,7 +113,7 @@
   originalSize.closest('label').classList.add('preview-omitted-filter');
   const group = document.createElement('fieldset');
   group.className = 'preview-dimension-fields';
-  group.innerHTML = '<legend>Minimum slab dimensions</legend><div><label for="minSlabLength">Length (cm)<input id="minSlabLength" type="number" min="0" step="any" inputmode="decimal" placeholder="e.g. 290" aria-describedby="slabDimensionHint"></label><label for="minSlabWidth">Width (cm)<input id="minSlabWidth" type="number" min="0" step="any" inputmode="decimal" placeholder="e.g. 190" aria-describedby="slabDimensionHint"></label></div><p id="slabDimensionHint">Shows bundles with at least one listed size that fits, in either orientation. Other slabs in the bundle may be smaller.</p>';
+  group.innerHTML = '<legend>Minimum slab dimensions (cm)</legend><div><label for="minSlabLength">Minimum length<input id="minSlabLength" type="number" min="0" step="any" inputmode="decimal" placeholder="e.g. 290" aria-describedby="slabDimensionHint"></label><label for="minSlabWidth">Minimum width<input id="minSlabWidth" type="number" min="0" step="any" inputmode="decimal" placeholder="e.g. 190" aria-describedby="slabDimensionHint"></label></div><p id="slabDimensionHint">Shows bundles with at least one listed size that fits, in either orientation. Other slabs in the bundle may be smaller.</p>';
   originalSize.closest('label').after(group);
   const length = group.querySelector('#minSlabLength'), width = group.querySelector('#minSlabWidth');
   const storageKey = 'lucraSlabDimensions';
@@ -129,7 +129,7 @@
   const originalEntries = activeFilterEntries;
   activeFilterEntries = function(...args) {
     const entries = originalEntries(...args);
-    for (const [field,label] of [[length,'Min slab length'],[width,'Min slab width']]) if (minimum(field) > 0) entries.push({key:field.id,label:`${label}: ${field.value} cm`});
+    for (const [field,label] of [[length,'Minimum length'],[width,'Minimum width']]) if (minimum(field) > 0) entries.push({key:field.id,label:`${label}: ${field.value} cm`});
     return entries;
   };
   const originalClear = clearSingleFilter;
