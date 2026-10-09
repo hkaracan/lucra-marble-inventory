@@ -33,6 +33,57 @@ def workbook_bytes(rows: list[list]) -> bytes:
 
 
 class MockedSyncTest(unittest.TestCase):
+    def test_expanded_listing_finds_excel_beyond_first_fifty_files(self):
+        primary = ''.join(f'<tr data-id="photo-{n}"><title>image</title><strong>{n}.jpg</strong></tr>' for n in range(1, 51))
+        expanded = '<div id="entry-photo-1"><div class="flip-entry-title">1.jpg</div></div><div id="entry-packing"><img alt="Microsoft Excel (.xlsx)"><div class="flip-entry-title">Amazonite Honed A3238 PL.xlsx</div></div></body>'
+        calls = []
+        def fake_fetch(url, **kwargs):
+            calls.append(url)
+            return (expanded if 'embeddedfolderview' in url else primary).encode()
+        sync_drive.folder_items.cache_clear()
+        with patch.object(sync_drive, 'fetch', fake_fetch), patch.object(sync_drive, 'OVERFLOW_MANIFEST', {}):
+            items = sync_drive.folder_items('new-bundle')
+        self.assertEqual(len(items), 51)
+        self.assertEqual(items[-1], {'id': 'packing', 'name': 'Amazonite Honed A3238 PL.xlsx', 'kind': 'spreadsheet'})
+        self.assertEqual(len(calls), 2)
+        sync_drive.folder_items.cache_clear()
+
+    def test_failed_expanded_listing_is_reported_without_losing_photos(self):
+        def fake_fetch(url, **kwargs):
+            if 'embeddedfolderview' in url:
+                raise TimeoutError('temporary failure')
+            return b'<tr data-id="photo"><title>image</title><strong>1.jpg</strong></tr>'
+        sync_drive.folder_items.cache_clear()
+        with patch.object(sync_drive, 'fetch', fake_fetch), patch.object(sync_drive, 'OVERFLOW_MANIFEST', {}):
+            items = sync_drive.folder_items('unavailable-expanded')
+        self.assertEqual(items[0]['id'], 'photo')
+        self.assertIn('Expanded folder discovery failed', items[0]['discoveryWarning'])
+        sync_drive.folder_items.cache_clear()
+
+    def test_amazonite_code_and_finish_are_separate_from_name(self):
+        source = workbook_bytes([
+            ['Block Number', 'Finish', 'Material', 'Width', 'Height', 'Pcs', 'Sqm'],
+            ['A32380102', 'Bookmatched/Honed', 'Amazonite', 175, 297, 49, 251.88],
+        ])
+        with patch.object(sync_drive, 'download_file', return_value=source):
+            product = sync_drive.normalize_folder({'id': 'amazonite', 'name': 'Amazonite Honed A3238', '_items': [{'id': 'packing', 'name': 'Amazonite Honed A3238 PL.xlsx'}]})
+        self.assertEqual(product['name'], 'Amazonite')
+        self.assertEqual(product['code'], 'A3238')
+        self.assertEqual(product['pcs'], 49)
+        self.assertEqual(product['sqm'], 251.88)
+        self.assertEqual(product['surfaceTypes'], ['Bookmatched · Honed'])
+        self.assertTrue(sync_drive.is_bundle_folder('Amazonite Honed A3238'))
+
+    def test_unreadable_first_excel_does_not_hide_valid_second_excel(self):
+        with patch.object(sync_drive, 'download_file', side_effect=[b'not a workbook', packing_list_bytes()]):
+            _, _, _, packing, name, file_id, _ = sync_drive.collect_media([
+                {'id': 'broken', 'name': 'Old packing.xlsx'},
+                {'id': 'valid', 'name': 'Packing List L1014.xlsx'},
+            ])
+        self.assertEqual(name, 'Packing List L1014.xlsx')
+        self.assertEqual(file_id, 'valid')
+        self.assertEqual(packing['totalPcs'], 4)
+
     def test_source_migration_preserves_bundle_identity_without_old_root_fallback(self):
         new_id = "1CbBjlNRKVXr9gyjzDXHNxE6vKMGk-m1a"
         old_id = sync_drive.SOURCE_MIGRATION[new_id]["previousFolderId"]
