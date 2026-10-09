@@ -81,6 +81,29 @@
   button.addEventListener('click', requestProductQuote);
 })();
 
+/* Keep product specifications compact without losing packing-list detail. */
+(() => {
+  Object.assign(translations.en, {averageSize:'Average size', sizeSample:'Based on {count} slabs with size data'});
+  Object.assign(translations.tr, {averageSize:'Ortalama ölçü', sizeSample:'Ölçüsü belirtilen {count} plaka üzerinden'});
+  const value = document.querySelector('#dialogSize');
+  const label = value.previousElementSibling;
+  label.dataset.i18n = 'averageSize';
+  label.textContent = t('averageSize');
+  const originalOpen = openProduct;
+  openProduct = function(...args) {
+    const result = originalOpen(...args);
+    const average = currentProduct && window.LucraSizing.averageSize(currentProduct);
+    value.textContent = average ? `${Number(average.width.toFixed(1))} × ${Number(average.height.toFixed(1))} cm` : t('sizeNotProvided');
+    if (average?.partial) {
+      const note = document.createElement('small');
+      note.className = 'spec-note';
+      note.textContent = t('sizeSample').replace('{count}', String(average.slabs));
+      value.append(note);
+    }
+    return result;
+  };
+})();
+
 /* A listed size must fit both requirements on the same slab. */
 (() => {
   const sizing = window.LucraSizing;
