@@ -93,7 +93,7 @@
   openProduct = function(...args) {
     const result = originalOpen(...args);
     const average = currentProduct && window.LucraSizing.averageSize(currentProduct);
-    value.textContent = average ? `${Number(average.width.toFixed(1))} × ${Number(average.height.toFixed(1))} cm` : t('sizeNotProvided');
+    value.textContent = average ? `${Math.round(average.width)} × ${Math.round(average.height)} cm` : t('sizeNotProvided');
     if (average?.partial) {
       const note = document.createElement('small');
       note.className = 'spec-note';
