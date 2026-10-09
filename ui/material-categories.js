@@ -1,7 +1,7 @@
 // Generated from material-categories.json; independent of inventory sync.
 const lucraMaterialCategories = {
   "schemaVersion": 1,
-  "approvedOn": "2026-10-07",
+  "approvedOn": "2026-10-09",
   "categories": [
     {
       "id": "marble",
@@ -74,6 +74,7 @@ const lucraMaterialCategories = {
     "Red Travertine": "travertine",
     "Brown Terazzo": "marble",
     "Calacatta wave": "marble",
-    "Diana Royal": "marble"
+    "Diana Royal": "marble",
+    "Amazonite": "marble"
   }
 };
