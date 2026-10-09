@@ -36,7 +36,13 @@
     } else if (modal.open) modal.close();
     replaying = false;
   });
+  // Keep page/share metadata aligned with the visible view, including native
+  // Escape and browser navigation, before the delayed dialog close event.
+  const syncViewMetadata = () => updateShareMetadata(modal.open ? currentProduct : null);
+  new MutationObserver(syncViewMetadata).observe(modal, {attributes:true, attributeFilter:['open']});
   modal.addEventListener('close', () => {
+    syncViewMetadata();
+    if (modal.open) return; // A new gallery may have opened before this queued event.
     const current = layer();
     if (current) history.go(-current.depth);
   });
