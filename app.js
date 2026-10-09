@@ -97,8 +97,9 @@ function productThumbnailImage(product){
   return slabsAtOrAfterFive[0]||slabsBeforeFive[0]||images.find(image=>image.type==='slab')||images[0]||null;
 }
 function updateShareMetadata(product=null){
-  const productTitle=product?`Lucra Marble · ${product.name}${product.code&&product.code!=='—'?` · ${product.code}`:''}`:'';
-  const title=productTitle||(sharedCollectionActive?`Lucra Marble · ${sharedCollectionTitle||t('sharedListMetaTitle')}`:'Lucra Marble — Slab Inventory');
+  const inventoryTitle=language==='tr'?'Mermer, Traverten ve Oniks Plakalar | Lucra Marble':'Marble, Travertine & Onyx Slabs | Lucra Marble';
+  const productTitle=product?`${product.name} ${language==='tr'?'Plakalar':'Slabs'}${product.code&&product.code!=='—'?` – ${product.code}`:''} | Lucra Marble`:'';
+  const title=productTitle||(sharedCollectionActive?`${sharedCollectionTitle||t('sharedListMetaTitle')} | Lucra Marble`:inventoryTitle);
   const description=product?`${product.name} · ${product.reserved?t('reserved'):t('available')} · Denizli, Türkiye`:sharedCollectionActive?t('sharedListMetaDescription'):'Browse Lucra Marble’s current natural-stone slab inventory from Denizli, Türkiye.';
   const url=product?publicCustomerProductUrl(product):sharedCollectionActive?publicSharedCollectionUrl():publicSiteBase;
   const image=productThumbnailImage(product)?.src||`${publicSiteBase}public/lucra-logo.png`;
