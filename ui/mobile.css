@@ -466,3 +466,12 @@ body.inventory-loading #previewList,body.inventory-loading #presentationCollecti
 .preview-comparison-table .preview-comparison-photo img { margin:0; }
 .preview-return-comparison { padding:8px 12px; min-height:44px; font-size:12px; border-radius:12px; }
 .preview-return-comparison[hidden] { display:none!important; }
+
+/* Product values share a right edge; notes cannot squeeze their labels. */
+body.mobile-preview #productDialog .specs>div{justify-content:flex-start}
+body.mobile-preview #productDialog .specs dd{min-width:0}
+@media(min-width:1025px){
+  body.mobile-preview #productDialog .specs>div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:18px;align-items:start}
+  body.mobile-preview #productDialog .specs dd{margin:0;text-align:right}
+  body.mobile-preview #productDialog .spec-note{margin-left:auto;max-width:240px}
+}
