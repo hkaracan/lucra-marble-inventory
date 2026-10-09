@@ -164,3 +164,63 @@
   };
   render();
 })();
+
+/* Keep original list actions and handlers while shortening the browsing panel. */
+(() => {
+  const panel = document.querySelector('#presentationCollection');
+  const sheet = document.querySelector('#previewListDialog');
+  const mobile = matchMedia('(max-width:1024px)');
+  const body = document.createElement('div');
+  body.className = 'preview-list-content';
+  while (panel.firstChild) body.append(panel.firstChild);
+  const header = document.createElement('div');
+  header.className = 'preview-list-summary-row';
+  const review = document.createElement('button');
+  review.type = 'button'; review.className = 'secondary preview-list-review';
+  body.id = 'previewListContent';
+  review.setAttribute('aria-controls', body.id);
+  const summary = document.createElement('span');
+  summary.className = 'preview-list-compact-totals';
+  const primary = document.createElement('div');
+  primary.className = 'preview-list-primary';
+  header.append(review, summary, primary);
+  panel.append(header, body);
+  const footer = document.createElement('footer');
+  footer.className = 'preview-sheet-footer preview-list-footer';
+  sheet.append(footer);
+  const quote = document.querySelector('#requestPresentationQuote');
+  const share = document.querySelector('.preview-share-list');
+  const actions = body.querySelector('.presentation-collection-actions');
+  const compare = body.querySelector('.preview-compare-list');
+  if (compare) { compare.classList.add('preview-list-compare'); actions.before(compare); }
+  const utilities = document.createElement('details');
+  utilities.className = 'preview-list-utilities';
+  const utilityTitle = document.createElement('summary');
+  utilityTitle.textContent = 'More actions';
+  actions.before(utilities); utilities.append(utilityTitle, actions);
+  let expanded = false;
+  function update() {
+    const count = window.LucraSizing.totals(selectedPresentationProducts());
+    const parts = [`${count.bundles} ${count.bundles === 1 ? 'bundle' : 'bundles'}`];
+    if (!count.missingSlabs) parts.push(`${count.slabs} slabs`);
+    if (!count.missingArea) parts.push(`${count.area.toFixed(2)} m²`);
+    summary.textContent = parts.join(' · ');
+    review.textContent = expanded ? 'Close list' : 'Review list';
+    review.setAttribute('aria-expanded', String(expanded));
+    body.hidden = !mobile.matches && !expanded;
+    header.hidden = mobile.matches;
+    footer.hidden = !mobile.matches || count.bundles === 0 || document.body.classList.contains('sales-mode');
+    const target = mobile.matches ? footer : primary;
+    if (quote.parentElement !== target) target.append(quote, share);
+  }
+  review.addEventListener('click', () => {
+    expanded = !expanded;
+    if (expanded) body.querySelector('.collection-review').open = true;
+    update();
+  });
+  const originalCollection = renderPresentationCollection;
+  renderPresentationCollection = function(...args) { const result = originalCollection(...args); update(); return result; };
+  mobile.addEventListener('change', update);
+  sheet.addEventListener('close', update);
+  update();
+})();
