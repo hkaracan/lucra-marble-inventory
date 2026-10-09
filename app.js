@@ -97,10 +97,10 @@ function productThumbnailImage(product){
   return slabsAtOrAfterFive[0]||slabsBeforeFive[0]||images.find(image=>image.type==='slab')||images[0]||null;
 }
 function updateShareMetadata(product=null){
-  const inventoryTitle=language==='tr'?'Mermer, Traverten ve Oniks Plakalar | Lucra Marble':'Marble, Travertine & Onyx Slabs | Lucra Marble';
+  const inventoryTitle=language==='tr'?'Stoktaki Mermer ve Doğal Taş Plakalar | Lucra Marble':'Marble & Natural Stone Slabs in Stock | Lucra Marble';
   const productTitle=product?`${product.name} ${language==='tr'?'Plakalar':'Slabs'}${product.code&&product.code!=='—'?` – ${product.code}`:''} | Lucra Marble`:'';
   const title=productTitle||(sharedCollectionActive?`${sharedCollectionTitle||t('sharedListMetaTitle')} | Lucra Marble`:inventoryTitle);
-  const description=product?`${product.name} · ${product.reserved?t('reserved'):t('available')} · Denizli, Türkiye`:sharedCollectionActive?t('sharedListMetaDescription'):'Browse Lucra Marble’s current natural-stone slab inventory from Denizli, Türkiye.';
+  const description=product?`${product.name} · ${product.reserved?t('reserved'):t('available')} · Denizli, Türkiye`:sharedCollectionActive?t('sharedListMetaDescription'):'Explore available marble, dolomite, travertine and onyx slabs from Denizli, Türkiye. Browse real bundles, view dimensions and photos, and request a quote.';
   const url=product?publicCustomerProductUrl(product):sharedCollectionActive?publicSharedCollectionUrl():publicSiteBase;
   const image=productThumbnailImage(product)?.src||`${publicSiteBase}public/lucra-logo.png`;
   document.title=title;setMetaContent('meta[name="description"]',description);setMetaContent('meta[property="og:title"]',title);setMetaContent('meta[property="og:description"]',description);setMetaContent('meta[property="og:url"]',url);setMetaContent('meta[property="og:image"]',image);setMetaContent('meta[name="twitter:title"]',title);setMetaContent('meta[name="twitter:description"]',description);setMetaContent('meta[name="twitter:image"]',image);
