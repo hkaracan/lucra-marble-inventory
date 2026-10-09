@@ -39,8 +39,8 @@ FILE_PATTERN = re.compile(r"\.(jpe?g|png|webp|heic|heif|mp4|mov|webm|xlsx?)$", r
 CAMERA_IMAGE_PATTERN = re.compile(r"^(?:IMG|DSC|PXL)[ _-]?\d+\.(?:jpe?g|png|webp|heic|heif)$", re.I)
 THUMBNAIL_STEM_PATTERN = re.compile(r"^(?:kapak|cover|thumbnail)$", re.I)
 PACKING_LIST_PATTERN = re.compile(r"\bpacking\s+list\b", re.I)
-BUNDLE_CODE_PATTERN = re.compile(r"(?:^|\s)([KLM]\d+)_?\s*$", re.I)
-SOURCE_CODE_PATTERN = re.compile(r"\b([KLM]\d+)\b", re.I)
+BUNDLE_CODE_PATTERN = re.compile(r"(?:^|\s)([AKLM]\d+)_?\s*$", re.I)
+SOURCE_CODE_PATTERN = re.compile(r"\b([AKLM]\d+)\b", re.I)
 MYSTIC_GREY_PATTERN = re.compile(r"\bmystic\s+grey\b", re.I)
 DISPLAY_NAME_ALIASES = {
     "nebula wave": "Nebula Wave",
@@ -170,6 +170,7 @@ def source_codes(value: str | None) -> list[str]:
 
 def canonical_display_name(value: str | None) -> str:
     text = " ".join(str(value or "").split())
+    text = re.sub(r"\s+honed\s*$", "", text, flags=re.I).strip()
     return DISPLAY_NAME_ALIASES.get(text.casefold(), text)
 
 
@@ -355,6 +356,26 @@ def write_json_atomic(path: Path, payload: dict) -> None:
     temporary.replace(path)
 
 
+def embedded_folder_items(raw: str) -> list[dict[str, str]]:
+    """Read Drive's public embedded listing, which can expose >50 files."""
+    items = []
+    for file_id, entry in re.findall(r'id="entry-([^"]+)"(.*?)(?=id="entry-|</body>|$)', raw, re.S):
+        title = re.search(r'<div[^>]*class="[^"]*\bflip-entry-title\b[^"]*"[^>]*>(.*?)</div>', entry, re.S)
+        if not title:
+            continue
+        name = " ".join(html.unescape(TAG_PATTERN.sub("", title.group(1))).split())
+        if re.search(r'application/(?:vnd\.google-apps\.spreadsheet|vnd\.openxmlformats-officedocument\.spreadsheetml|vnd\.ms-excel)|Microsoft Excel|alt="Spreadsheet"', entry, re.I):
+            kind = "spreadsheet"
+        elif re.search(r'type/image/|alt="Image"', entry, re.I):
+            kind = "image"
+        elif re.search(r'type/video/|alt="Video"', entry, re.I):
+            kind = "video"
+        else:
+            kind = "unknown"
+        items.append({"id": file_id, "name": name, "kind": kind})
+    return items
+
+
 @lru_cache(maxsize=512)
 def folder_items(folder_id: str, timeout: int = 35, attempts: int = 3) -> list[dict[str, str]]:
     raw = fetch(f"https://drive.google.com/drive/folders/{folder_id}", timeout=timeout, attempts=attempts).decode("utf-8")
@@ -405,10 +426,35 @@ def folder_items(folder_id: str, timeout: int = 35, attempts: int = 3) -> list[d
         name = " ".join(html.unescape(TAG_PATTERN.sub("", raw_name)).split())
         found.append({"id": file_id, "name": name, "kind": kind})
         seen.add(file_id)
-    # Google’s anonymous folder HTML currently exposes only the first 50
-    # children for larger public folders. This local, read-only continuation
-    # cache contains the remaining public file IDs discovered during audit;
-    # the files themselves are still downloaded live from Drive during sync.
+    # The regular public listing stops at 50 entries. The embedded public
+    # view is a second independent discovery source; request it for full
+    # listings or media folders where no packing file was visible.
+    needs_expanded_listing = len(found) >= 50 or (
+        not any(is_packing_list_item(item) for item in found)
+        and any(item["kind"] in {"image", "video"} or IMAGE_PATTERN.search(item["name"]) or VIDEO_PATTERN.search(item["name"]) for item in found)
+    )
+    if needs_expanded_listing:
+        try:
+            expanded_raw = fetch(
+                "https://drive.google.com/embeddedfolderview?" + urlencode({"id": folder_id}),
+                timeout=timeout, attempts=attempts,
+            ).decode("utf-8")
+            expanded = embedded_folder_items(expanded_raw)
+            if not expanded:
+                raise ValueError("Expanded public listing returned no recognizable entries.")
+            by_id = {item["id"]: item for item in found}
+            for item in expanded:
+                if item["id"] in seen:
+                    if by_id[item["id"]]["kind"] == "unknown":
+                        by_id[item["id"]]["kind"] = item["kind"]
+                    continue
+                found.append(item)
+                seen.add(item["id"])
+        except Exception as exc:
+            # Keep available photos and the audited fallback IDs, but make
+            # discovery failures visible instead of claiming no Excel exists.
+            found[0]["discoveryWarning"] = "Expanded folder discovery failed: " + describe_error(exc)
+    # Retain the audited public IDs as a final fallback for Drive omissions.
     for item in OVERFLOW_MANIFEST.get(folder_id, {}).get("items", []):
         if item["id"] in seen:
             continue
@@ -686,7 +732,7 @@ def collect_media(items: list[dict[str, str]]) -> tuple[list, list, list, dict |
 
     def read_packing(item):
         nonlocal packing, packing_name, packing_file_id
-        if packing_name:
+        if packing and packing.get("lines"):
             return
         packing_name = item["name"]
         packing_file_id = item["id"]
@@ -885,7 +931,7 @@ def normalize_folder(folder: dict[str, str]) -> dict:
     packing = packing or {"lines": [], "totalPcs": len(slab_images) or None, "totalSqm": None}
     if code == "—":
         code_sources = [packing_name or ""] + [str(line.get("block") or "") for line in packing.get("lines", [])]
-        nested_code = next((match.group(1).upper() for source in code_sources if (match := re.search(r"\b([KLM]\d+)\b", source, re.I))), None)
+        nested_code = next((match.group(1).upper() for source in code_sources if (match := re.search(r"\b([AKLM]\d+)\b", source, re.I))), None)
         if nested_code:
             code = nested_code
     if display_name == "Nebula Wave" and "L1009" in source_codes(packing_name):
@@ -944,6 +990,7 @@ def normalize_folder(folder: dict[str, str]) -> dict:
         "packingWarning": packing.get("parseWarning"),
         "skippedPhotoFolders": skipped_photo_folders,
         "sourceWarnings": source_warnings,
+        "discoveryWarnings": sorted({item["discoveryWarning"] for item in [folder, *items] if item.get("discoveryWarning")}),
         "photoCheck": photo_check,
     }
 
@@ -1006,6 +1053,8 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
     products.sort(key=lambda product: (product["name"].lower(), product["code"]))
     warnings = []
     for product in products:
+        for warning in product.get("discoveryWarnings", []):
+            warnings.append({"folder": product["folderName"], "kind": "folder-discovery", "error": warning})
         for skipped in product.get("skippedPhotoFolders", []):
             warnings.append(
                 {
@@ -1216,3 +1265,4 @@ if __name__ == "__main__":
         f'{report.get("missingPackingLists",0)} without packing lists, '
         f'{report.get("missingImages",0)} without images.'
     )
+
