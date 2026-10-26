@@ -89,6 +89,7 @@ MIN_REQUEST_GAP = 0.35
 NESTED_FOLDER_TIMEOUT = 8
 NESTED_FOLDER_ATTEMPTS = 1
 MAX_WORKERS = 3
+RESERVED_PREFIX_PATTERN = re.compile(r"^\s*(?:reserved|reseved)\b\s*(?:-\s*)?", re.I)
 L1014_PATTERN = re.compile(r"\bL1014\b", re.I)
 # The public root listing can omit this bundle because Google exposes only a
 # limited number of children anonymously. Keep the known public folder ID as a
@@ -152,7 +153,7 @@ def is_packing_list_item(item: dict[str, str]) -> bool:
 
 def is_bundle_folder(name: str) -> bool:
     """Recognize coded bundle folders even when their media listing is sparse."""
-    clean_name = re.sub(r"^\s*reserved\b\s*(?:-\s*)?", "", name, flags=re.I).strip()
+    clean_name = RESERVED_PREFIX_PATTERN.sub("", name).strip()
     # A few Drive bundles use only the stock code as their folder name
     # (for example ``K6170``). Keep these as bundles even when their child
     # images have no file extension and therefore look like folders to the
@@ -897,8 +898,8 @@ def collect_media(items: list[dict[str, str]]) -> tuple[list, list, list, dict |
 
 def normalize_folder(folder: dict[str, str]) -> dict:
     folder_name = folder["name"]
-    reserved = bool(re.match(r"^\s*reserved\b", folder_name, re.I))
-    clean_name = re.sub(r"^\s*reserved\b\s*(?:-\s*)?", "", folder_name, flags=re.I).strip()
+    reserved = bool(RESERVED_PREFIX_PATTERN.match(folder_name))
+    clean_name = RESERVED_PREFIX_PATTERN.sub("", folder_name).strip()
     code_match = BUNDLE_CODE_PATTERN.search(clean_name)
     code = code_match.group(1).upper() if code_match else "—"
     display_name = canonical_display_name(clean_name[: code_match.start()].strip() if code_match else clean_name)
