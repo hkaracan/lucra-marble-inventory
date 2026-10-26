@@ -49,3 +49,11 @@ Safety controls include read-only requests, three-request concurrency, spacing b
 ## Live integration
 
 The production data adapter will enumerate the configured Drive root folder, parse each packing-list workbook layout it encounters, identify numbered slab photographs and supplementary bookmatch/zoom/backlit/video media, and cache normalized bundle records. Sales Mode marks each bundle as connected, file found, or missing so a salesperson can see which records need attention.
+
+## QR label downloads
+
+Open the sales dashboard from the footer after staff sign-in, then choose **Download QR labels**. Select all bundles or the bundles selected in the dashboard's active shortlist. Reserved bundles are included unless unchecked. The panel shows the loaded inventory's last update date, label/page counts, and missing or incomplete size warnings.
+
+The PDF is generated locally in the browser using the published inventory, shared `LucraSizing.averageSize` calculation, and stable customer bundle links. Six labels per A4 page preserve the approved October 5 template's Roboto fonts, QR size, logo, cut lines and text positions. Print at Actual size / 100%. English label text matches the approved physical labels; the panel supports English and Turkish. All libraries/fonts are hosted with the site and loaded only when needed; no QR service is used for this export.
+
+Run `node tests/qr-labels.test.cjs` from the repository root to check selection, reserved filtering, invalid/duplicate URLs, average-size handling and PDF creation.
