@@ -33,6 +33,18 @@ def workbook_bytes(rows: list[list]) -> bytes:
 
 
 class MockedSyncTest(unittest.TestCase):
+    def test_reserved_prefix_typo_marks_bundle_reserved_and_cleans_name(self):
+        for prefix in ["Reserved", "Reseved", "reseved -"]:
+            with self.subTest(prefix=prefix):
+                product = sync_drive.normalize_folder({"id": "rosso-l1014", "name": f"{prefix} Rosso Levanto L1014", "_items": []})
+                self.assertTrue(product["reserved"])
+                self.assertEqual(product["name"], "Rosso Levanto")
+                self.assertEqual(product["code"], "L1014")
+                self.assertTrue(sync_drive.is_bundle_folder(product["folderName"]))
+        available = sync_drive.normalize_folder({"id": "rosso", "name": "Rosso Levanto L1014", "_items": []})
+        self.assertFalse(available["reserved"])
+
+
     def test_expanded_listing_finds_excel_beyond_first_fifty_files(self):
         primary = ''.join(f'<tr data-id="photo-{n}"><title>image</title><strong>{n}.jpg</strong></tr>' for n in range(1, 51))
         expanded = '<div id="entry-photo-1"><div class="flip-entry-title">1.jpg</div></div><div id="entry-packing"><img alt="Microsoft Excel (.xlsx)"><div class="flip-entry-title">Amazonite Honed A3238 PL.xlsx</div></div></body>'
