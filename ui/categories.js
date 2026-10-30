@@ -9,7 +9,8 @@
   try { const saved = localStorage.getItem(storageKey); if (!sharedCollectionActive && labels.has(saved)) selected = saved; } catch {}
   const categoryOf = product => assignments.get(normalize(product.name)) || null;
   window.lucraMatchesMaterialCategory = product => selected === 'all' || categoryOf(product) === selected;
-  const remember = () => {try {localStorage.setItem(storageKey, selected);} catch {}};
+  window.LucraMaterialCategory = {get:()=>selected, set:value=>{selected=value==='all'||labels.has(value)?value:'all';}};
+  const remember = () => {if(document.body.classList.contains('sales-mode'))return;try {localStorage.setItem(storageKey, selected);} catch {}};
   const bar = document.createElement('div');
   bar.className = 'preview-material-categories';
   bar.setAttribute('role', 'group');

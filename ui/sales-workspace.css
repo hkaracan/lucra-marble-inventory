@@ -35,3 +35,14 @@ body.sales-mode #salesDashboard{scroll-margin-top:96px}
 .sales-row-main .sales-pick{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;flex:0 0 44px;margin:-10px -12px -10px -12px;cursor:pointer}.sales-row-main .sales-pick .shortlist-toggle{margin:0}
 
 .staff-viewbar button:focus-visible,.sales-workspace-tabs button:focus-visible,.sales-row-details>summary:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
+
+/* Keep the stock toolbar compact, with every export still available. */
+.sales-stock-export{margin:0 0 12px;border-bottom:1px solid var(--line)}
+.sales-stock-export>summary{cursor:pointer;min-height:44px;padding:12px 0;font-size:13px;font-weight:600;color:var(--navy)}
+.sales-stock-export>summary:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
+.sales-stock-export .sales-stock-actions{justify-content:flex-start;flex-wrap:wrap;padding:4px 0 12px;margin:0}
+.sales-workspace-chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.sales-workspace-chips button{font-size:12px;max-width:100%;overflow-wrap:anywhere;white-space:normal}
+@media(max-width:720px){.sales-row-main{padding:14px;gap:10px 14px}.sales-row-main>span::before{margin-bottom:3px!important}.sales-stock-export .sales-stock-actions button{width:auto;flex:1 1 150px}.sales-row-main .sales-followup-cell small[hidden]{display:none}}
+
+.sales-workspace-filter-body #clearFilters{display:none}
