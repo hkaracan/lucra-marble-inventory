@@ -563,8 +563,8 @@ function renderSalesDashboard(visible){
     customerAction?.addEventListener('click',event=>{event.stopPropagation();const product=products.find(item=>productKey(item)===row.dataset.productId);if(product)copyText(customerProductUrl(product),customerAction,t('customerLinkCopied'))});
     const visibilityToggle=row.querySelector('.customer-visibility-toggle');
     visibilityToggle?.addEventListener('click',event=>{event.stopPropagation();const product=products.find(item=>productKey(item)===row.dataset.productId);if(product)toggleCustomerVisibility(row.dataset.productId,!isCustomerVisible(product))});
-    row.addEventListener('click',event=>{if(!event.target.closest('a,button,input,label'))openProduct(row.dataset.productId)});
-    row.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&!event.target.closest('a,button,input,label')){event.preventDefault();openProduct(row.dataset.productId)}});
+    row.addEventListener('click',event=>{if(!event.target.closest('a,button,input,label,summary,details'))openProduct(row.dataset.productId)});
+    row.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&!event.target.closest('a,button,input,label,summary,details')){event.preventDefault();openProduct(row.dataset.productId)}});
   });
   updateShortlistControls();
 }
