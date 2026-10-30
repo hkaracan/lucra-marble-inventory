@@ -57,3 +57,9 @@ Open the sales dashboard from the footer after staff sign-in, then choose **Down
 The PDF is generated locally in the browser using the published inventory, shared `LucraSizing.averageSize` calculation, and stable customer bundle links. Six labels per A4 page preserve the approved October 5 template's Roboto fonts, QR size, logo, cut lines and text positions. Print at Actual size / 100%. English label text matches the approved physical labels; the panel supports English and Turkish. All libraries/fonts are hosted with the site and loaded only when needed; no QR service is used for this export.
 
 Run `node tests/qr-labels.test.cjs` from the repository root to check selection, reserved filtering, invalid/duplicate URLs, average-size handling and PDF creation.
+
+## Sales workspace
+
+After staff sign-in, the header keeps **Sales** and **Customer view** in the same place. Switching to Customer view previews the public inventory without signing out; **Sign out** ends staff access. The chosen view and dashboard section are remembered on this device. Direct bundle and shared-list links open in customer view. Staff authentication is still required before restoring Sales.
+
+The dashboard has three sections: **Stock** for searching, filtering, sorting, bundle details and exporting the visible stock; **Shortlists** for the selected bundles, named lists, comparison, sharing and exports; **Data checks** for sync, history, health, audit and customer visibility information. Shortlists use the existing saved selections. Every row opens its existing gallery; **Bundle details** expands packing/media/source/visibility controls without opening the gallery. QR PDFs remain available in Stock and Shortlists.
