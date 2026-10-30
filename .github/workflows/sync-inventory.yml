@@ -42,11 +42,11 @@ jobs:
       - name: Install parser dependency
         run: python -m pip install -r requirements.txt
 
-      - name: Capture previous catalogue baseline
-        run: |
-          if git cat-file -e HEAD:data/inventory.json 2>/dev/null; then
-            git show HEAD:data/inventory.json > /tmp/lucra-previous-inventory.json
-          fi
+      - name: Check inventory parser and persistent date handling
+        run: python -m unittest test_sync_drive test_published_baseline
+
+      - name: Restore last published catalogue and arrival dates
+        run: python tools/restore_published_inventory.py
 
       - name: Sync public Drive folder
         id: sync

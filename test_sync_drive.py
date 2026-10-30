@@ -78,9 +78,11 @@ class MockedSyncTest(unittest.TestCase):
             ['A32380102', 'Bookmatched/Honed', 'Amazonite', 175, 297, 49, 251.88],
         ])
         with patch.object(sync_drive, 'download_file', return_value=source):
-            product = sync_drive.normalize_folder({'id': 'amazonite', 'name': 'Amazonite Honed A3238', '_items': [{'id': 'packing', 'name': 'Amazonite Honed A3238 PL.xlsx'}]})
+            product = sync_drive.normalize_folder({'id': 'amazonite', 'name': 'Amazonite Honed K6269 - A3238', '_items': [{'id': 'packing', 'name': 'Amazonite Honed A3238 PL.xlsx'}]})
         self.assertEqual(product['name'], 'Amazonite')
         self.assertEqual(product['code'], 'A3238')
+        self.assertEqual(product['sourceWarnings'][0]['folderCode'], 'K6269')
+        self.assertEqual(product['sourceWarnings'][0]['packingCodes'], ['A3238'])
         self.assertEqual(product['pcs'], 49)
         self.assertEqual(product['sqm'], 251.88)
         self.assertEqual(product['surfaceTypes'], ['Bookmatched · Honed'])
@@ -324,6 +326,16 @@ class MockedSyncTest(unittest.TestCase):
             self.assertEqual(payload["syncHistory"][0]["added"], 1)
             self.assertTrue(history_path.exists())
             self.assertTrue(status_path.exists())
+            ledger_path = output.with_name("first_seen.json")
+            dates = json.loads(ledger_path.read_text())["dates"]
+            self.assertEqual(dates["old"], old["addedAt"])
+            self.assertEqual(dates["new"], new["addedAt"])
+            # Simulate a stale checkout on the next runner. The durable ledger
+            # must preserve the new bundle's first date, including reappearance.
+            output.write_text(json.dumps(previous))
+            with patch.object(sync_drive, "OUTPUT", output), patch.object(sync_drive, "folder_items", fake_folder_items), patch.object(sync_drive, "download_file", return_value=packing_list_bytes()):
+                repeated = sync_drive.sync_inventory("root")
+            self.assertEqual(next(p for p in repeated["products"] if p["folderId"] == "new")["addedAt"], new["addedAt"])
             self.assertEqual(
                 json.loads(history_path.read_text(encoding="utf-8"))["runs"][0]["updated"],
                 payload["report"]["updated"],

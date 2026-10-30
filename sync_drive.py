@@ -17,6 +17,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from openpyxl import load_workbook
+from tools.restore_published_inventory import catalogue_dates, merge_dates
 
 ROOT_FOLDER_ID = "1eEHJTGshR3HcP8bbW21eMIVsdM1IDemp"
 LEGACY_ROOT_FOLDER_ID = "17u1Vo3es5lO07Z0__mfu5ugXCOaTkf4Z"
@@ -171,7 +172,9 @@ def source_codes(value: str | None) -> list[str]:
 
 def canonical_display_name(value: str | None) -> str:
     text = " ".join(str(value or "").split())
-    text = re.sub(r"\s+honed\s*$", "", text, flags=re.I).strip()
+    text = re.sub(r"\b[AKLM]\d+\b", "", text, flags=re.I).strip(" -_/ ")
+    text = re.sub(r"\s+honed\s*$", "", text, flags=re.I).strip(" -_/ ")
+    text = " ".join(text.split())
     return DISPLAY_NAME_ALIASES.get(text.casefold(), text)
 
 
@@ -1157,16 +1160,21 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
     def stable_id(product):
         return product.get("stableFolderId") or product.get("folderId")
     previous_by_id={stable_id(product):product for product in previous_payload.get("products",[]) if product.get("folderId")}
-    # Keep the first-seen date stable so the UI can identify recent additions
-    # without Drive credentials or a non-read-only metadata API. Existing
-    # catalogues from before this field was introduced simply receive no
-    # badge until they are replaced by a newly discovered bundle.
+    ledger_path = OUTPUT.with_name("first_seen.json")
+    try:
+        saved_dates = json.loads(ledger_path.read_text(encoding="utf-8"))["dates"]
+    except FileNotFoundError:
+        saved_dates = {}
+    dates = merge_dates(saved_dates, catalogue_dates(previous_payload), catalogue_dates({"products": products}))
+    # Unknown legacy dates stay unknown. Keep removed bundles in the ledger so
+    # a later reappearance does not turn them into a new arrival.
     for product in products:
-        previous = previous_by_id.get(stable_id(product))
-        if previous and previous.get("addedAt"):
-            product["addedAt"] = previous["addedAt"]
-        elif previous is None and not product.get("stableFolderId"):
+        key = stable_id(product)
+        if key in dates:
+            product["addedAt"] = dates[key]
+        elif key not in previous_by_id and not product.get("stableFolderId"):
             product["addedAt"] = sync_timestamp
+            dates[key] = sync_timestamp
     added=[product for product in products if stable_id(product) not in previous_by_id and not product.get("stableFolderId")]
     updated=[]
     unchanged=0
@@ -1245,6 +1253,7 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
     }
     payload["syncHistory"] = history
     payload["syncStatus"] = sync_state
+    payload["firstSeenVersion"] = 1
     temporary = OUTPUT.with_suffix(".json.tmp")
     temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     script_output = inventory_script_path()
@@ -1252,6 +1261,7 @@ def sync_inventory(root_folder_id: str = ROOT_FOLDER_ID) -> dict:
     script_temporary.write_text(inventory_script_contents(payload), encoding="utf-8")
     temporary.replace(OUTPUT)
     script_temporary.replace(script_output)
+    write_json_atomic(ledger_path, {"version": 1, "dates": dates})
     write_json_atomic(sync_history_path(), {"runs": history})
     write_json_atomic(sync_status_path(), sync_state)
     return payload

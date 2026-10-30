@@ -117,7 +117,7 @@
   originalSize.closest('label').after(group);
   const length = group.querySelector('#minSlabLength'), width = group.querySelector('#minSlabWidth');
   const storageKey = 'lucraSlabDimensions';
-  const save = () => { if (!sharedCollectionActive) try {localStorage.setItem(storageKey, JSON.stringify({length:length.value, width:width.value}));} catch {} };
+  const save = () => { if (!sharedCollectionActive && !document.body.classList.contains('sales-mode')) try {localStorage.setItem(storageKey, JSON.stringify({length:length.value, width:width.value}));} catch {} };
   if (!sharedCollectionActive) try {
     const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
     for (const [field, value] of [[length,saved.length],[width,saved.width]]) if (typeof value === 'string' && Number.isFinite(Number(value)) && Number(value) >= 0) field.value = value;
