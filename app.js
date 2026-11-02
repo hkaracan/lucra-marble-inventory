@@ -815,11 +815,27 @@ function customerShortlistSummary(){
   ].join('\n\n');
 }
 function renderShortlistQuoteItems(records=quoteRequestRecords){
-  shortlistQuoteItems.innerHTML=records.map(product=>{
+  shortlistQuoteItems.innerHTML=records.map((product,index)=>{
     const code=product.code&&product.code!=='—'?` · ${product.code}`:'';
-    return `<div class="quote-item"><div><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(`${productStock(product)}${code}`)}</small></div><label><span>${escapeHtml(t('quantity'))}</span><input type="number" min="1" step="1" value="1" inputmode="numeric" required data-quote-quantity="${escapeHtml(productKey(product))}" aria-label="${escapeHtml(`${t('quantity')} · ${product.name}`)}"></label></div>`;
+    return `<div class="quote-item"><div><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(`${productStock(product)}${code}`)}</small></div><label><span>${escapeHtml(t('quantity'))}</span><input type="number" min="1" step="1" value="1" inputmode="numeric" required data-quote-quantity="${escapeHtml(productKey(product))}" aria-describedby="quoteStockWarning-${index}" aria-label="${escapeHtml(`${t('quantity')} · ${product.name}`)}"></label><small id="quoteStockWarning-${index}" class="quote-stock-warning" role="status" aria-live="polite" hidden></small></div>`;
   }).join('');
+  updateQuoteStockWarnings();
 }
+function quoteStockWarning(quantity,stock){
+  if(stock==null||stock===''||!Number.isInteger(Number(stock))||Number(stock)<0||!Number.isInteger(Number(quantity))||Number(quantity)<=Number(stock))return '';
+  const count=new Intl.NumberFormat(language==='tr'?'tr-TR':'en-GB').format(Number(stock));
+  return language==='tr'?`Şu anda yalnızca ${count} plaka listeleniyor. Bu miktar için Lucra’dan teyit isteyin.`:`Only ${count} ${Number(stock)===1?'slab is':'slabs are'} currently listed. Ask Lucra to confirm this quantity.`;
+}
+function updateQuoteStockWarnings(){
+  for(const input of shortlistQuoteItems.querySelectorAll('[data-quote-quantity]')){
+    const product=quoteRequestRecords.find(product=>productKey(product)===input.dataset.quoteQuantity);
+    const note=document.getElementById(input.getAttribute('aria-describedby'));
+    const message=quoteStockWarning(input.value,product?.pcs);
+    if(note.textContent!==message)note.textContent=message;
+    note.hidden=!message;
+  }
+}
+shortlistQuoteItems.addEventListener('input',event=>{if(event.target.closest('[data-quote-quantity]'))updateQuoteStockWarnings()});
 function openShortlistQuoteDialog(records=selectedPresentationProducts()){
   const selected=records;
   if(!selected.length)return;
@@ -1113,10 +1129,10 @@ function render(){
   empty.hidden=visible.length>0;
   renderSalesDashboard(visible);
   renderActiveFilterChips();
-  grid.innerHTML=visible.map((p,index)=>{const selected=presentationSelection.has(productKey(p)),slabImages=catalogSlabImages(p),catalogIndex=catalogImageIndex(p,slabImages),preferredImage=productThumbnailImage(p),image=catalogImageIndexes.has(productKey(p))?(slabImages[catalogIndex]||preferredImage||p.images[0]):(preferredImage||slabImages[catalogIndex]||p.images[0]),cardSrc=image?.thumbSrc||image?.src,hasCatalogNav=slabImages.length>1,bundleLabel=p.code&&p.code!=='—'?` · ${t('bundle')} ${p.code}`:'';return `<article class="card" tabindex="0" aria-label="${escapeHtml(`${t('openGallery')}: ${p.name}${bundleLabel}`)}" aria-keyshortcuts="Enter Space" data-product-id="${escapeHtml(productKey(p))}">
+  grid.innerHTML=visible.map((p,index)=>{const selected=presentationSelection.has(productKey(p)),slabImages=catalogSlabImages(p),catalogIndex=catalogImageIndex(p,slabImages),preferredImage=productThumbnailImage(p),image=catalogImageIndexes.has(productKey(p))?(slabImages[catalogIndex]||preferredImage||p.images[0]):(preferredImage||slabImages[catalogIndex]||p.images[0]),cardSrc=image?.thumbSrc||image?.src,hasCatalogNav=slabImages.length>1,bundleLabel=p.code&&p.code!=='—'?` · ${t('bundle')} ${p.code}`:'';return `<article class="card" data-product-id="${escapeHtml(productKey(p))}">
     <div class="card-image ${image?.src?'is-loading':''}"><div class="stone-placeholder" style="--stone:${p.stone}"></div>${image?.src?`<span class="image-loading-badge">${escapeHtml(t('imageLoading'))}</span><img data-catalog-image="true" data-product-id="${escapeHtml(productKey(p))}" data-photo-file-id="${escapeHtml(image.fileId||'')}" src="${escapeHtml(cardSrc)}" ${image.thumbSrc?`srcset="${escapeHtml(image.thumbSrc)} 700w, ${escapeHtml(image.src)} 1400w" sizes="(max-width:580px) calc(100vw - 40px), (max-width:900px) calc(50vw - 26px), calc(50vw - 26px)"`:''} alt="${escapeHtml(p.name)} slab ${escapeHtml(image.label||catalogIndex+1)}" loading="${index<2?'eager':'lazy'}" fetchpriority="${index<2?'high':'low'}" decoding="async" onload="this.classList.add('loaded');const container=this.closest('.card-image');container.classList.remove('is-loading');const ratio=this.naturalWidth/this.naturalHeight;container.classList.toggle('image-contained',ratio<1.38||ratio>1.78)" onerror="this.classList.add('image-failed');const container=this.closest('.card-image');container.classList.remove('is-loading');container.classList.add('image-error')"><span class="image-error-badge">${escapeHtml(t('imageUnavailableShort'))}</span>`:''}${hasCatalogNav?`<button type="button" class="catalog-image-nav prev" data-catalog-direction="-1" aria-label="${escapeHtml(`${t('previousSlab')} · ${p.name}`)}">‹</button><span class="catalog-image-position" aria-live="polite">${escapeHtml(catalogImagePosition(image,catalogIndex,slabImages.length))}</span><button type="button" class="catalog-image-nav next" data-catalog-direction="1" aria-label="${escapeHtml(`${t('nextSlab')} · ${p.name}`)}">›</button>`:''}
       <span class="status-badge ${p.reserved?'reserved':''}">${escapeHtml(p.reserved?t('reserved'):t('available'))}</span>${freshnessBadgeMarkup(p)}${sharedCollectionActive?'':`<button type="button" class="card-collection-toggle ${selected?'selected':''}" data-product-id="${escapeHtml(productKey(p))}" aria-pressed="${selected}" aria-label="${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))} ${escapeHtml(p.name)}${escapeHtml(bundleLabel)}"><span aria-hidden="true">${selected?'✓':'+'}</span><span>${escapeHtml(t(selected?'removeFromCollection':'addToCollection'))}</span></button>`}</div>
-    <div class="card-info"><div><h3>${escapeHtml(p.name)}</h3><p class="card-meta">${escapeHtml(productStock(p))}</p>${p.media?`<p class="card-media-meta">${escapeHtml(p.media)}</p>`:''}</div><span class="card-code">${escapeHtml(p.code&&p.code!=='—'?`${t('bundle')} ${p.code}`:t('notProvided'))}</span></div>
+    <div class="card-info"><div><h3><a class="card-product-link" href="${escapeHtml(customerProductUrl(p))}" aria-label="${escapeHtml(`${t('openGallery')}: ${p.name}${bundleLabel}`)}">${escapeHtml(p.name)}</a></h3><p class="card-meta">${escapeHtml(productStock(p))}</p>${p.media?`<p class="card-media-meta">${escapeHtml(p.media)}</p>`:''}</div><span class="card-code">${escapeHtml(p.code&&p.code!=='—'?`${t('bundle')} ${p.code}`:t('notProvided'))}</span></div>
   </article>`}).join('');
   grid.querySelectorAll('img[data-photo-file-id]').forEach(image=>{
     image.addEventListener('load',()=>markPhotoVerified(image.dataset.productId,image.dataset.photoFileId));
@@ -1124,7 +1140,16 @@ function render(){
     if(image.complete){if(image.naturalWidth)markPhotoVerified(image.dataset.productId,image.dataset.photoFileId);else markPhotoBroken(image.dataset.productId,image.dataset.photoFileId)}
   });
   grid.querySelectorAll('.catalog-image-nav').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();const card=button.closest('.card'),product=products.find(item=>productKey(item)===card?.dataset.productId);if(product)updateCatalogCardImage(card,product,Number(button.dataset.catalogDirection))}));
-  grid.querySelectorAll('.card').forEach(card=>{const toggle=card.querySelector('.card-collection-toggle');toggle?.addEventListener('click',event=>{event.stopPropagation();togglePresentationSelection(card.dataset.productId,!presentationSelection.has(card.dataset.productId))});card.addEventListener('click',event=>{if(!event.target.closest('button'))openProduct(card.dataset.productId)});card.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('button')){e.preventDefault();openProduct(card.dataset.productId)}})});
+  grid.querySelectorAll('.card').forEach(card=>{
+    const toggle=card.querySelector('.card-collection-toggle');
+    toggle?.addEventListener('click',event=>{event.stopPropagation();togglePresentationSelection(card.dataset.productId,!presentationSelection.has(card.dataset.productId))});
+    card.addEventListener('click',event=>{
+      if(event.target.closest('button'))return;
+      // Keep normal browser link actions: new tab, middle click and copy address.
+      if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+      event.preventDefault();openProduct(card.dataset.productId);
+    });
+  });
 }
 
 document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{setCatalogStatusFilter(btn.dataset.filter);render()}));

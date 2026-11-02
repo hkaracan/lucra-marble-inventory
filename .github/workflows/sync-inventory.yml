@@ -45,6 +45,9 @@ jobs:
       - name: Check inventory parser and persistent date handling
         run: python -m unittest test_sync_drive test_published_baseline
 
+      - name: Validate material category configuration
+        run: python tools/build_material_categories.py --check
+
       - name: Restore last published catalogue and arrival dates
         run: python tools/restore_published_inventory.py
 

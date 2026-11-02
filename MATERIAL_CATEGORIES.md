@@ -18,3 +18,5 @@ Category selection combines with the existing availability, search, dimensions a
 The classic layout, inventory synchronization, quote/share/print actions and saved collection membership are unchanged. Revert the category feature's merge commit with `git revert -m 1 <merge-sha>` to undo the feature independently.
 
 Additional customer-confirmed assignments: Red Travertine → Travertine; Brown Terazzo, Calacatta wave and Diana Royal → Marble.
+
+Customer-confirmed November 2, 2026: Appennino River, Calacatta Vintage, Caretta Caretta, Euromosa Garden, Luce Marone, Moon Cream, Silver River and Silver Roots are Marble. Future unmapped names remain under All and are listed in Sales → Data checks.

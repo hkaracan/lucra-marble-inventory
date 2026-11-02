@@ -408,3 +408,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
 .bundle-qr-code span small{display:block;margin-top:3px;font-size:7px}
 .gallery-focus .bundle-qr-panel{display:none!important}
 @media(max-width:580px){.bundle-qr-panel{margin-top:14px;padding-left:0}.bundle-qr-code{width:72px}.bundle-qr-code img{width:58px;height:58px}}
+
+/* Real bundle links retain independent save/photo buttons over the card. */
+.card{position:relative}
+.card-product-link{color:inherit;text-decoration:none}
+.card-product-link::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit}
+.card-product-link:focus-visible{outline:none}
+.card-product-link:focus-visible::after{outline:2px solid #39434a;outline-offset:3px;border-radius:18px}
+.card-image :is(.card-collection-toggle,.catalog-image-nav,.preview-photo-retry){z-index:5}
+.quote-item{display:grid;grid-template-columns:minmax(0,1fr) 104px}
+.quote-item .quote-stock-warning{grid-column:1/-1;color:#825019;font-size:12px;line-height:1.5;margin:0}
+@media(max-width:580px){.quote-item{grid-template-columns:minmax(0,1fr) 92px}}
+.quote-stock-warning[hidden]{display:none}
