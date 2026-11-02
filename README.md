@@ -81,3 +81,16 @@ The direct export toolbar remains visible in Stock, Shortlists and Data checks. 
 Run `node tests/inventory-pdf.test.cjs` to check multi-page export, missing data, long names and customer-link validation.
 
 The redundant staff “WhatsApp customer” action was removed because it targeted Lucra’s own business number. Use **Share list link** to send a selection to a customer; customer enquiry buttons still open the correct Lucra contact.
+
+
+## List recovery and results totals
+
+Customer lists and named sales shortlists offer Undo after a bundle removal or clearing. Undo restores the previous order, keeps bundles added afterward, and restores only identities still present in the current catalogue. A sales action is scoped to its original named list; renaming/deleting a list invalidates that action. The latest removal remains recoverable until dismissed, replaced by a later removal, used, or the page is reloaded. Existing short-lived Undo for customer additions remains, with a single notice shown at a time.
+
+On phones, sales search and native sorting share a row. Bundle count, slab count and area totals are always shown above the results. Filtered totals are labelled; missing data is shown as unknown or as known totals. Shortlist result totals describe displayed rows; CSV/PDF still export the full saved selection. The optional Breakdown retains availability and packing KPIs.
+
+Data checks show source problems first, collapsed passed checks and separate photo diagnostics. Browser loading failures and normal photo/slab-count differences do not inflate source-data issue counts. Affected entries link to their real Drive folders.
+
+Amazonite's authoritative code is **K6269**, confirmed by Lucra on November 2, 2026. The identity-based override leaves its folder ID, stock rows, first-seen date and public QR/share links unchanged. The source workbook still uses A3238, so the mismatch remains flagged until that source is corrected. Rosso Levanto K6222 and Vanilla Ice K5372 have no packing lists in their public folders; those gaps are intentionally left unchanged at Lucra's request.
+
+Run `node --test ui/list-undo.test.cjs` for removal order, subsequent additions, duplicates and catalogue-removal cases.
