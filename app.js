@@ -166,7 +166,7 @@ const sortSelect=document.querySelector('#sortSelect'), syncButton=document.quer
 const minArea=document.querySelector('#minArea'), maxArea=document.querySelector('#maxArea'), minSlabs=document.querySelector('#minSlabs'), maxSlabs=document.querySelector('#maxSlabs'), dimensionFilter=document.querySelector('#dimensionFilter'), surfaceFilter=document.querySelector('#surfaceFilter'), packingFilter=document.querySelector('#packingFilter'), mediaFilter=document.querySelector('#mediaFilter'), clearFiltersButton=document.querySelector('#clearFilters');
 const advancedFiltersToggle=document.querySelector('#advancedFiltersToggle');
 const showMissingPacking=document.querySelector('#showMissingPacking');
-const shortlistCount=document.querySelector('#shortlistCount'), compareSelectedButton=document.querySelector('#compareSelected'), copyShortlistButton=document.querySelector('#copyShortlist'), shareCollectionButton=document.querySelector('#shareCollection'), whatsappShortlistButton=document.querySelector('#whatsappShortlist'), exportVisibleButton=document.querySelector('#exportVisible'), clearShortlistButton=document.querySelector('#clearShortlist');
+const shortlistCount=document.querySelector('#shortlistCount'), compareSelectedButton=document.querySelector('#compareSelected'), copyShortlistButton=document.querySelector('#copyShortlist'), shareCollectionButton=document.querySelector('#shareCollection'), exportVisibleButton=document.querySelector('#exportVisible'), clearShortlistButton=document.querySelector('#clearShortlist');
 const shortlistSelect=document.querySelector('#shortlistSelect'), newShortlistButton=document.querySelector('#newShortlist'), renameShortlistButton=document.querySelector('#renameShortlist'), deleteShortlistButton=document.querySelector('#deleteShortlist');
 const healthSummary=document.querySelector('#healthSummary'), healthDetails=document.querySelector('#healthDetails'), toggleHealthButton=document.querySelector('#toggleHealth');
 const auditSection=document.querySelector('.sync-audit'), auditPanel=document.querySelector('#auditPanel'), auditRows=document.querySelector('#auditRows'), auditEmpty=document.querySelector('#auditEmpty'), auditCount=document.querySelector('#auditCount'), auditFilterSelect=document.querySelector('#auditFilter'), toggleAuditButton=document.querySelector('#toggleAudit'), exportAuditButton=document.querySelector('#exportAudit');
@@ -609,7 +609,6 @@ function updateShortlistControls(){
   compareSelectedButton.disabled=selected.length<2;
   copyShortlistButton.disabled=selected.length===0;
   shareCollectionButton.disabled=selected.length===0;
-  whatsappShortlistButton.disabled=selected.length===0;
   
   clearShortlistButton.disabled=selected.length===0;
 }
@@ -1182,7 +1181,6 @@ document.querySelector('#cancelSalesAccess').addEventListener('click',()=>salesG
 signOutSalesButton.addEventListener('click',async()=>{if(supabaseClient)await supabaseClient.auth.signOut();salesUnlocked=false;setSalesMode(false)});
 compareSelectedButton.addEventListener('click',()=>{renderCompare();compareDialog.showModal()});
 copyShortlistButton.addEventListener('click',()=>copyText(shortlistSummary(),copyShortlistButton,'Copied'));
-whatsappShortlistButton.addEventListener('click',()=>openWhatsApp(customerShortlistSummary()));
 exportVisibleButton.addEventListener('click',downloadVisible);
 clearShortlistButton.addEventListener('click',()=>{shortlist.clear();saveShortlist();render()});
 shortlistQuoteForm.addEventListener('submit',submitShortlistQuoteRequest);
