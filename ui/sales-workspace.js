@@ -24,7 +24,7 @@
   const listTools=$('.sales-tools');panels.lists.append(listTools);
   const manager=$('.shortlist-manager'),manage=make('details','sales-list-management'),manageLabel=make('summary'),manageButtons=make('div');manage.append(manageLabel,manageButtons);for(const id of ['newShortlist','renameShortlist','deleteShortlist'])manageButtons.append($('#'+id));manager.append(manage);
   const actions=$('.shortlist-actions'),more=make('details','sales-list-more'),moreLabel=make('summary'),moreBody=make('div');more.append(moreLabel,moreBody);
-  for(const id of ['copyShortlist','whatsappShortlist','clearShortlist'])moreBody.append($('#'+id));actions.append(more);
+  for(const id of ['copyShortlist','clearShortlist'])moreBody.append($('#'+id));actions.append(more);
   // Export controls remain visible on every dashboard tab.
   const download=$('#downloadQrLabels'),exportBar=make('div','sales-export-bar'),exportHint=make('p','sales-export-hint'),exportStatus=make('p','sales-export-status');
   const pdfButton=make('button','secondary');pdfButton.type='button';pdfButton.id='exportInventoryPdf';

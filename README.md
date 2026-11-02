@@ -79,3 +79,5 @@ The dashboard reads the published Drive inventory. Sales notes, follow-up status
 The direct export toolbar remains visible in Stock, Shortlists and Data checks. **CSV Export** and **PDF Export** use the filtered stock in Stock, the complete saved selection in Shortlists (even if display filters hide some selected bundles), and all published stock in Data checks. The scope and bundle count appear below the buttons. **Download QR labels** keeps its existing all/selected/reserved choices. PDFs are generated locally with bundled jsPDF/Roboto assets, rounded weighted average dimensions, stock totals, reserved labels and clickable customer links. Unknown counts, areas and sizes are never presented as zero stock. PDF export is an inventory summary; it does not need a server or external PDF service.
 
 Run `node tests/inventory-pdf.test.cjs` to check multi-page export, missing data, long names and customer-link validation.
+
+The redundant staff “WhatsApp customer” action was removed because it targeted Lucra’s own business number. Use **Share list link** to send a selection to a customer; customer enquiry buttons still open the correct Lucra contact.
