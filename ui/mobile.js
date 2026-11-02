@@ -321,8 +321,8 @@
     const previous = browseReturn;
     browseReturn = null;
     requestAnimationFrame(() => {
-      const card = previous.card && [...gridNode.querySelectorAll('.card')].find(item => item.dataset.productId === previous.key);
-      const origin = previous.origin?.isConnected ? previous.origin : null;
+      const card = previous.card ? [...gridNode.querySelectorAll('.card')].find(item => item.dataset.productId === previous.key) : null;
+      const origin = previous.origin?.isConnected && previous.origin !== document.body && previous.origin !== document.documentElement ? previous.origin : null;
       const review = previous.reviewKey && [...document.querySelectorAll('[data-preview-review]')].find(row => row.dataset.previewReview === previous.reviewKey);
       const panelFallback = previous.panel?.open && previous.panel.querySelector('[data-preview-close], .dialog-close');
       const target = card?.querySelector('.card-product-link') || origin || review?.querySelector('.preview-review-photo') || panelFallback || $('#searchInput');
