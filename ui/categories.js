@@ -38,7 +38,7 @@
   availability.append(statuses);
   const review = document.createElement('p');
   review.className = 'sales-only preview-category-review';
-  bar.after(review);
+  document.querySelector('#healthSummary').before(review);
   const originalFilter = filteredProducts;
   filteredProducts = function() { return originalFilter().filter(window.lucraMatchesMaterialCategory); };
   const originalEntries = activeFilterEntries;
@@ -59,7 +59,7 @@
     bar.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.category === selected)));
     const unmatched = [...new Set(products.filter(product => !categoryOf(product)).map(product => product.name))];
     review.hidden = unmatched.length === 0;
-    review.textContent = unmatched.length ? `Material category needed: ${unmatched.join(', ')}. These bundles remain visible under All.` : '';
+    review.textContent = unmatched.length ? `${unmatched.length} material ${unmatched.length===1?'name needs':'names need'} a category: ${unmatched.join(', ')}. These bundles remain visible under All.` : '';
     return originalRender(...args);
   };
   if (products.length) render();

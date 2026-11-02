@@ -74,6 +74,7 @@
       const field = [...quote.querySelectorAll('[data-quote-quantity]')].find(field => field.dataset.quoteQuantity === entry.key);
       if (field) field.value = entry.value;
     }
+    updateQuoteStockWarnings();
   });
   const button = document.querySelector('#requestQuote');
   button.removeEventListener('click', requestProductQuote);

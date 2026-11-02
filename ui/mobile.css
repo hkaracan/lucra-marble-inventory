@@ -499,3 +499,6 @@ body.mobile-preview :is(.preview-list-primary,.preview-list-footer) .preview-sha
 #previewListDialog .preview-list-utilities .presentation-collection-actions{display:grid;grid-template-columns:1fr 1fr}
 body.mobile-preview #previewListDialog #presentationCollection{padding:0}
 body.mobile-preview #previewListDialog .preview-list-footer #requestPresentationQuote{background:var(--navy);border-color:var(--navy);color:white}
+
+/* Focus the full bundle link area once, without adding a second title outline. */
+body.mobile-preview .card-product-link:focus-visible{outline:none}

@@ -94,3 +94,15 @@ Data checks show source problems first, collapsed passed checks and separate pho
 Amazonite's authoritative code is **K6269**, confirmed by Lucra on November 2, 2026. The identity-based override leaves its folder ID, stock rows, first-seen date and public QR/share links unchanged. The source workbook still uses A3238, so the mismatch remains flagged until that source is corrected. Rosso Levanto K6222 and Vanilla Ice K5372 have no packing lists in their public folders; those gaps are intentionally left unchanged at Lucra's request.
 
 Run `node --test ui/list-undo.test.cjs` for removal order, subsequent additions, duplicates and catalogue-removal cases.
+
+## Customer interaction fixes (November 2, 2026)
+
+Filter controls transfer between Customer and Sales only when the view changes. Rendering a result count must not move a focused field out of an open phone/tablet filter sheet. The queued sheet-close handler also preserves Sales ownership.
+
+Product headings are real bundle links with a stretched card hit area. Plain click/Enter uses the existing gallery and browser history; modified click/middle-click and copy-link use the browser's native link behavior. Save, photo arrows and retry remain independent buttons. Closing a gallery restores focus to its bundle link.
+
+Quote quantity fields show an advisory, screen-reader-announced warning above known listed stock. Unknown stock is never treated as zero, enquiries remain possible, and the warning follows restored quote quantities after Back/Forward. Run `node --test tests/quote-stock.test.cjs` for boundary, unknown-stock and language checks.
+
+Eight newly confirmed material names are Marble; missing assignments now appear in Sales → Data checks. Publishing checks that the JSON taxonomy and generated browser mapping agree. Stock sync does not guess classifications.
+
+Manual browser regression: enter length and width character by character in one open filter sheet, change availability/sort/surface, apply/reset/reopen; repeat at phone/tablet widths; switch authenticated Sales/Customer repeatedly; open a card by image/title/Enter and in a new tab; close and verify focus; use hearts/Undo and photo arrows independently; enter an above-stock quote, reduce it and restore it via Back/Forward.

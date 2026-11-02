@@ -1,7 +1,7 @@
 // Generated from material-categories.json; independent of inventory sync.
 const lucraMaterialCategories = {
   "schemaVersion": 1,
-  "approvedOn": "2026-10-09",
+  "approvedOn": "2026-11-02",
   "categories": [
     {
       "id": "marble",
@@ -75,6 +75,14 @@ const lucraMaterialCategories = {
     "Brown Terazzo": "marble",
     "Calacatta wave": "marble",
     "Diana Royal": "marble",
-    "Amazonite": "marble"
+    "Amazonite": "marble",
+    "Appennino River": "marble",
+    "Calacatta Vintage": "marble",
+    "Caretta Caretta": "marble",
+    "Euromosa Garden": "marble",
+    "Luce Marone": "marble",
+    "Moon Cream": "marble",
+    "Silver River": "marble",
+    "Silver Roots": "marble"
   }
 };

@@ -118,8 +118,11 @@
     });
     sheet.addEventListener('close', () => {
       if (sheet === filterSheet) {
-        restore(statuses);
-        restore(filterPanel);
+        // A queued close event may run after staff view has taken ownership.
+        if (!document.body.classList.contains('sales-mode')) {
+          restore(statuses);
+          restore(filterPanel);
+        }
         document.body.classList.remove('filters-open');
         filterToggle.setAttribute('aria-expanded', 'false');
       }
@@ -322,7 +325,7 @@
       const origin = previous.origin?.isConnected ? previous.origin : null;
       const review = previous.reviewKey && [...document.querySelectorAll('[data-preview-review]')].find(row => row.dataset.previewReview === previous.reviewKey);
       const panelFallback = previous.panel?.open && previous.panel.querySelector('[data-preview-close], .dialog-close');
-      const target = card || origin || review?.querySelector('.preview-review-photo') || panelFallback || $('#searchInput');
+      const target = card?.querySelector('.card-product-link') || origin || review?.querySelector('.preview-review-photo') || panelFallback || $('#searchInput');
       target?.focus({preventScroll:true});
       // Anchor to the same card even when saving or resizing has changed the grid.
       const top = card ? window.scrollY + card.getBoundingClientRect().top - Math.min(previous.cardTop, window.innerHeight - 120) : previous.top;

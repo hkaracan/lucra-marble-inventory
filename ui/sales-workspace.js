@@ -61,12 +61,19 @@
   const salesButton=make('button'),customerButton=make('button');salesButton.type=customerButton.type='button';viewBar.append(salesButton,customerButton,$('#signOutSales'));$('.site-header').append(viewBar);
   salesButton.addEventListener('click',()=>{if(salesUnlocked)setSalesMode(true)});customerButton.addEventListener('click',()=>setSalesMode(false));
   $('#modeSwitch').addEventListener('click',()=>{if(!document.body.classList.contains('sales-mode'))write('lucraStaffView','sales')},true);
-  function moveFilters(sales){for(const node of filtersToMove){if(sales)filterBody.insertBefore(node,reset);else restore(node)}}
+  // The customer filter sheet temporarily owns these nodes. Only transfer
+  // ownership when changing views; a render must never detach a focused field.
+  let filtersInSales=false;
+  function moveFilters(sales){
+    if(sales===filtersInSales)return;
+    for(const node of filtersToMove){if(sales)filterBody.insertBefore(node,reset);else restore(node)}
+    filtersInSales=sales;
+  }
   function updateNavigation(){
     const sales=document.body.classList.contains('sales-mode');document.body.classList.toggle('staff-session',salesUnlocked);viewBar.hidden=!salesUnlocked;
     salesButton.textContent=w().sales;customerButton.textContent=w().customer;viewBar.setAttribute('aria-label',w().account);
     salesButton.setAttribute('aria-pressed',String(sales));customerButton.setAttribute('aria-pressed',String(!sales));
-    if(salesUnlocked)checksActions.append($('.header-actions'));
+    if(salesUnlocked&&$('.header-actions').parentElement!==checksActions)checksActions.append($('.header-actions'));
     moveFilters(sales);
     for(const [id,label] of [['previewExplore',sales?w().stock:'Inventory'],['previewList',sales?w().lists:'My list']]){
       const node=$('#'+id);for(const child of [...node.childNodes])if(child.nodeType===Node.TEXT_NODE)child.textContent=label;
