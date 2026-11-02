@@ -53,7 +53,7 @@ function previewSavedChanges(records, inventory) {
   let previousAlerts;
   function update() {
     if (!hasLoadedInventory) {desktopAlerts.hidden = listAlerts.hidden = true; return;}
-    const live = products.filter(isCustomerVisible);
+    const live = products;
     const byKey = new Map(live.map(product => [productKey(product), product]));
     for (const key of presentationSelection) {
       const product = byKey.get(key);

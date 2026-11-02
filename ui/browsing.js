@@ -63,7 +63,7 @@
   // Set insertion order now controls review, sharing, printing, and quoting.
   selectedPresentationProducts = () => {
     const byKey = new Map(products.map(product => [productKey(product), product]));
-    return [...presentationSelection].map(key => byKey.get(key)).filter(product => product && isCustomerVisible(product));
+    return [...presentationSelection].map(key => byKey.get(key)).filter(Boolean);
   };
   const originalFilteredProducts = filteredProducts;
   if (sharedCollectionActive) {
