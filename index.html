@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="ui/mobile.css?v=b201f64a2a17" />
 <script src="ui/layout-choice.js?v=6181a0ccec"></script>
   <link rel="stylesheet" href="ui/qr-labels.css?v=1">
-  <link rel="stylesheet" href="ui/sales-workspace.css?v=41b98a461994">
+  <link rel="stylesheet" href="ui/sales-workspace.css?v=0ae12e5f7a0d">
 </head>
 <body class="mobile-preview">
   <a class="skip-link" href="#catalog" data-i18n="skipToCatalogue">Skip to catalogue</a>
@@ -135,7 +135,6 @@
             <p class="eyebrow" data-i18n="salesWorkspace">SALES WORKSPACE</p>
             <h3 id="salesDashboardTitle" data-i18n="inventoryDashboard">Inventory dashboard</h3>
             <p class="sales-dashboard-hint" data-i18n="salesHint">Click a product row to open its full image gallery and packing-list details.</p>
-            <p class="customer-visibility-summary" id="customerVisibilitySummary" role="status" aria-live="polite"></p>
             <p class="catalogue-freshness-note sales-only" id="catalogueFreshness" role="status" aria-live="polite" hidden></p>
           </div>
           <label class="show-missing"><input id="showMissingPacking" type="checkbox" checked /> <span data-i18n="showMissingPacking">Include bundles without packing lists</span></label>
@@ -193,7 +192,6 @@
           <label class="sales-list-sort"><span data-i18n="salesSort">Sort list</span><select id="salesSortSelect"><option value="name" data-i18n="name">Name</option><option value="added" data-i18n="salesDateAdded">Date added — newest first</option><option value="slabs" data-i18n="mostSlabs">Most slabs</option><option value="area" data-i18n="largestArea">Largest area</option><option value="packing" data-i18n="packingList">Packing list</option><option value="status" data-i18n="status">Status</option></select></label>
         </div>
         <div class="sales-tools">
-          <div class="sales-view-filter"><label><span data-i18n="followupFilter">Follow-up</span><select id="followupFilter"><option value="all" data-i18n="allFollowups">All follow-up statuses</option><option value="new" data-i18n="new">New</option><option value="sent" data-i18n="sent">Sent to customer</option><option value="waiting" data-i18n="waiting">Waiting for reply</option><option value="quoted" data-i18n="quoted">Quoted</option><option value="closed" data-i18n="closed">Closed</option></select></label></div>
           <div class="shortlist-manager"><label><span data-i18n="shortlist">Shortlist</span><select id="shortlistSelect" aria-label="Select shortlist"></select></label><button id="newShortlist" class="quiet-button" type="button" data-i18n="newList">New list</button><button id="renameShortlist" class="quiet-button" type="button" data-i18n="rename">Rename</button><button id="deleteShortlist" class="quiet-button" type="button" data-i18n="delete">Delete</button></div>
           <span class="shortlist-count" id="shortlistCount">0 selected</span>
           <div class="shortlist-actions">
@@ -201,7 +199,6 @@
             <button id="copyShortlist" class="secondary" type="button" disabled data-i18n="copySummary">Copy summary</button>
             <button id="shareCollection" class="secondary" type="button" disabled data-i18n="shareSelection">Share list link</button>
             <button id="whatsappShortlist" class="secondary" type="button" disabled data-i18n="whatsappCustomer">WhatsApp customer</button>
-            <button id="exportShortlist" class="secondary" type="button" disabled data-i18n="exportCsv">Export CSV</button>
             <button id="exportVisible" class="secondary" type="button" disabled data-i18n="exportVisible">Export visible CSV</button>
             <button id="clearShortlist" class="quiet-button" type="button" disabled data-i18n="clear">Clear</button>
           </div>
@@ -215,8 +212,8 @@
             <span role="columnheader" data-i18n="sizes">Sizes</span>
             <span role="columnheader" data-i18n="packingList">Packing list</span>
             <span role="columnheader" data-i18n="media">Media</span>
-            <span role="columnheader" data-i18n="followUp">Follow-up</span>
-            <span role="columnheader" data-i18n="customerVisibility">Customer view</span>
+            
+            
             <span role="columnheader" data-i18n="source">Source</span>
           </div>
           <div id="salesRows"></div>
@@ -267,12 +264,6 @@
           <div><dt data-i18n="location">Location</dt><dd>Denizli, Türkiye</dd></div>
         </dl>
         <div class="bundle-lines sales-only" id="bundleLines"></div>
-        <section class="sales-followup sales-only" aria-labelledby="followupTitle">
-          <div class="followup-head"><h3 id="followupTitle" data-i18n="followUp">Follow-up</h3><span id="noteSaved" role="status"></span></div>
-          <label><span data-i18n="followUpStatus">Status</span><select id="followupStatus"><option value="new" data-i18n="new">New</option><option value="sent" data-i18n="sent">Sent to customer</option><option value="waiting" data-i18n="waiting">Waiting for reply</option><option value="quoted" data-i18n="quoted">Quoted</option><option value="closed" data-i18n="closed">Closed</option></select></label>
-          <label><span data-i18n="salesNote">Sales note</span><textarea id="salesNote" rows="3" data-i18n-placeholder="salesNotePlaceholder" placeholder="Add a private note for your team"></textarea></label>
-          <button id="saveSalesNote" class="secondary" type="button" data-i18n="saveNote">Save note</button>
-        </section>
         <p class="customer-cta" data-i18n="customerCta">Need current pricing or availability? Request a quote or ask Lucra on WhatsApp.</p>
         <div class="dialog-actions enquiry-actions">
           <button id="requestQuote" class="primary" type="button" data-i18n="requestQuote">Request a quote</button>
@@ -353,7 +344,7 @@
   <script src="data/inventory.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js?v=20260930-01"></script>
-  <script src="app.js?v=002eefff20f0"></script>
+  <script src="app.js?v=9914838871a3"></script>
   <nav class="preview-nav" aria-label="Mobile navigation">
     <button type="button" id="previewExplore" aria-current="page"><span aria-hidden="true">▦</span>Inventory</button>
     <button type="button" id="previewList"><span aria-hidden="true">♡<small id="previewListCount" hidden>0</small></span>My list</button>
@@ -381,6 +372,6 @@
 <script src="ui/analytics-policy.js?v=e893c749abb4"></script>
 <script src="ui/analytics.js?v=74a044adf743"></script>
   <script src="ui/qr-labels.js?v=1"></script>
-  <script src="ui/sales-workspace.js?v=432ed04c663f"></script>
+  <script src="ui/sales-workspace.js?v=45c456d6a518"></script>
 </body>
 </html>

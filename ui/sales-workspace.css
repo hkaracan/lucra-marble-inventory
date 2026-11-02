@@ -46,3 +46,12 @@ body.sales-mode #salesDashboard{scroll-margin-top:96px}
 @media(max-width:720px){.sales-row-main{padding:14px;gap:10px 14px}.sales-row-main>span::before{margin-bottom:3px!important}.sales-stock-export .sales-stock-actions button{width:auto;flex:1 1 150px}.sales-row-main .sales-followup-cell small[hidden]{display:none}}
 
 .sales-workspace-filter-body #clearFilters{display:none}
+
+/* Read-only stock dashboard with direct, responsive exports. */
+.sales-export-bar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 8px}
+#salesDashboard .sales-export-bar button{min-height:44px;padding:10px 16px;border-radius:10px;font-size:13px}
+.sales-export-hint,.sales-export-status,.sales-list-device-note{font-size:12px;line-height:1.5;color:var(--muted);margin:0 0 16px}
+.sales-export-status{color:var(--navy)}.sales-list-device-note{flex-basis:100%;margin:0}
+.sales-row-main{grid-template-columns:minmax(200px,1.6fr) .7fr 1fr 1fr}
+@media(max-width:1024px){.sales-row-main{grid-template-columns:minmax(200px,1.7fr) .8fr 1fr}}
+@media(max-width:720px){.sales-export-bar{display:grid;grid-template-columns:1fr 1fr}.sales-export-bar #downloadQrLabels{grid-column:1/-1}.sales-export-bar button{width:100%}.sales-row-main{grid-template-columns:1fr 1fr}.sales-row-main .sales-dimensions{grid-column:1/-1}}
