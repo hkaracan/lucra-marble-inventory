@@ -3,7 +3,7 @@
   const $=selector=>document.querySelector(selector), dashboard=$('#salesDashboard');
   const read=(key,fallback)=>{try{return localStorage.getItem(key)||fallback}catch{return fallback}};
   const write=(key,value)=>{try{localStorage.setItem(key,value)}catch{}};
-  const words={en:{sales:'Sales',customer:'Customer view',stock:'Stock',lists:'Shortlists',checks:'Data checks',title:'Sales dashboard',filters:'Filters',totals:'Stock totals',details:'Bundle details',sizes:'All sizes',average:'Average size',empty:'No bundles match these filters.',listEmpty:'Your shortlist is empty. Select bundles in Stock to add them.',listFiltered:'No saved bundles match these filters.',export:'Export',add:'Choose bundles',updated:'Updated',clear:'Clear filters',selected:'selected',actions:'More actions',manage:'Manage lists',account:'Staff views',view:'View bundle',loading:'Loading inventory…',loadError:'Inventory could not be loaded.',retry:'Retry loading inventory'},tr:{sales:'Satış',customer:'Müşteri görünümü',stock:'Stok',lists:'Seçimler',checks:'Veri kontrolleri',title:'Satış paneli',filters:'Filtreler',totals:'Stok toplamları',details:'Demet ayrıntıları',sizes:'Tüm ölçüler',average:'Ortalama ölçü',empty:'Bu filtrelere uygun demet yok.',listEmpty:'Seçiminiz boş. Stok bölümünden demet seçin.',listFiltered:'Bu filtrelere uygun kayıtlı demet yok.',export:'Dışa aktar',add:'Demet seç',updated:'Güncellendi',clear:'Filtreleri temizle',selected:'seçildi',actions:'Diğer işlemler',manage:'Listeleri yönet',account:'Personel görünümleri',view:'Demeti görüntüle',loading:'Stok yükleniyor…',loadError:'Stok yüklenemedi.',retry:'Stoku yeniden yükle'}};
+  const words={en:{sales:'Sales',customer:'Customer view',stock:'Stock',lists:'Shortlists',checks:'Data checks',title:'Sales dashboard',filters:'Filters',totals:'Breakdown',details:'Bundle details',sizes:'All sizes',average:'Average size',empty:'No bundles match these filters.',listEmpty:'Your shortlist is empty. Select bundles in Stock to add them.',listFiltered:'No saved bundles match these filters.',export:'Export',add:'Choose bundles',updated:'Updated',clear:'Clear filters',selected:'selected',actions:'More actions',manage:'Manage lists',account:'Staff views',view:'View bundle',loading:'Loading inventory…',loadError:'Inventory could not be loaded.',retry:'Retry loading inventory'},tr:{sales:'Satış',customer:'Müşteri görünümü',stock:'Stok',lists:'Seçimler',checks:'Veri kontrolleri',title:'Satış paneli',filters:'Filtreler',totals:'Ayrıntı',details:'Demet ayrıntıları',sizes:'Tüm ölçüler',average:'Ortalama ölçü',empty:'Bu filtrelere uygun demet yok.',listEmpty:'Seçiminiz boş. Stok bölümünden demet seçin.',listFiltered:'Bu filtrelere uygun kayıtlı demet yok.',export:'Dışa aktar',add:'Demet seç',updated:'Güncellendi',clear:'Filtreleri temizle',selected:'seçildi',actions:'Diğer işlemler',manage:'Listeleri yönet',account:'Personel görünümleri',view:'Demeti görüntüle',loading:'Stok yükleniyor…',loadError:'Stok yüklenemedi.',retry:'Stoku yeniden yükle'}};
   const w=()=>words[language==='tr'?'tr':'en'];
   let active=read('lucraSalesSection','stock');if(!['stock','lists','checks'].includes(active))active='stock';
   const expanded=new Set(), slots=new Map();
@@ -15,7 +15,7 @@
   const updated=make('p','sales-workspace-updated');
   $('.sales-dashboard-head').after(updated,tabs);
   const panels={};for(const id of ['stock','lists','checks']){const p=make('section','sales-workspace-panel');p.id='salesPanel-'+id;p.setAttribute('role','tabpanel');p.setAttribute('aria-labelledby','salesTab-'+id);panels[id]=p;dashboard.append(p);}
-  const totals=make('details','sales-stock-totals'),totalLabel=make('summary');totals.open=!matchMedia('(max-width:720px)').matches;totals.append(totalLabel,$('#salesKpis'));panels.stock.append(totals);
+  const totals=make('details','sales-stock-totals'),totalLabel=make('summary');totals.open=false;totals.append(totalLabel,$('#salesKpis'));panels.stock.append(totals);
   const filterDetails=make('details','sales-workspace-filters'),filterLabel=make('summary'),filterBody=make('div','sales-workspace-filter-body');filterDetails.append(filterLabel,filterBody);
   const filtersToMove=[$('.preview-material-categories'),$('#inventoryFilters'),$('#advancedFilters'),$('#collectionBanner')].filter(Boolean);filtersToMove.forEach(pin);
   filterBody.append($('.sales-quick-filters'),$('.show-missing'));
@@ -54,7 +54,7 @@
   });
   const checksActions=make('div','sales-check-actions');panels.checks.append(checksActions,$('#syncFeedback'),$('.latest-sync'),$('.inventory-health'),$('.sync-audit'),$('#catalogueFreshness'));
   const chips=make('div','sales-workspace-chips');chips.setAttribute('aria-label','Active sales filters');
-  const listHost=make('div','sales-workspace-results');listHost.append(chips);listHost.append($('#salesFilterNote'),$('.sales-list'));dashboard.append(searchControls,filterDetails,listHost);
+  const listHost=make('div','sales-workspace-results'),resultsHead=make('div','sales-results-head');resultsHead.append($('#salesFilterNote'),totals);listHost.append(chips,resultsHead,$('.sales-list'));dashboard.append(searchControls,filterDetails,listHost);
   $('.sales-list').setAttribute('role','list');$('.sales-list-head').hidden=true;
   const empty=make('div','sales-workspace-empty'),emptyText=make('p'),choose=make('button','secondary');choose.type='button';choose.addEventListener('click',()=>{if(!hasLoadedInventory)loadInventory();else if(active==='lists'&&selectedProducts().length)clearStaffFilters();else activate('stock')});empty.append(emptyText,choose);listHost.append(empty);
   const viewBar=make('nav','staff-viewbar');viewBar.setAttribute('aria-label','Staff views');viewBar.hidden=true;
@@ -92,7 +92,7 @@
     const currentRows=$('#salesRows').children.length;
     for(const b of tabs.children){const selected=b.dataset.section===active;b.textContent=text[b.dataset.section];b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;}
     for(const [id,p]of Object.entries(panels))p.hidden=id!==active;
-    const checks=active==='checks';searchControls.hidden=checks;filterDetails.hidden=checks;listHost.hidden=checks;
+    const checks=active==='checks';const searchLabel=active==='lists'?(language==='tr'?'Seçimde ara':'Search shortlist'):(language==='tr'?'Stokta ara':'Search stock');$('#salesSearchInput').placeholder=searchLabel;$('#salesSearchInput').setAttribute('aria-label',searchLabel);$('#salesSearchInput').removeAttribute('data-i18n-placeholder');searchControls.hidden=checks;filterDetails.hidden=checks;listHost.hidden=checks;
     const entries=staffFilterEntries(),count=entries.length;renderStaffChips(entries);filterLabel.textContent=text.filters+(count?` (${count})`:'');reset.textContent=text.clear;totalLabel.textContent=text.totals;manageLabel.textContent=text.manage;moreLabel.textContent=text.actions;
     const records=exportRecords();$('#exportVisible').textContent=language==='tr'?'CSV dışa aktar':'CSV Export';$('#exportVisible').removeAttribute('data-i18n');$('#exportVisible').disabled=!records.length;
     pdfButton.textContent=pdfBusy?(language==='tr'?'PDF hazırlanıyor…':'Creating PDF…'):(language==='tr'?'PDF dışa aktar':'PDF Export');pdfButton.disabled=pdfBusy||!records.length;
@@ -100,7 +100,13 @@
     exportHint.textContent=language==='tr'?`CSV / PDF: ${records.length} demet · ${scope}.`:`CSV / PDF: ${records.length} ${records.length===1?'bundle':'bundles'} · ${scope}.`;
     deviceNote.textContent=language==='tr'?'Seçimler bu cihazda saklanır. Başkalarına göndermek için liste bağlantısını paylaşın.':'Shortlists are saved on this device. Share a list link to send it to someone else.';
     const savedCount=selectedProducts().length,filteredList=active==='lists'&&savedCount>0;
-    if(active==='lists')$('#salesFilterNote').textContent=language==='tr'?`${savedCount} kayıtlı demetten ${currentRows} gösteriliyor`:`Showing ${currentRows} of ${savedCount} saved bundles`;
+    const shown=window.LucraSizing.totals(salesVisibleProducts(filteredProducts()));
+    const number=value=>new Intl.NumberFormat(language==='tr'?'tr-TR':'en-GB',{maximumFractionDigits:2}).format(value);
+    const slabText=shown.missingSlabs===shown.bundles&&shown.bundles?(language==='tr'?'Plaka adedi belirtilmemiş':'Slab count not listed'):`${number(shown.slabs)} ${shown.missingSlabs?(language==='tr'?'bilinen plaka':'known slabs'):t('slabs')}`;
+    const areaNumber=value=>new Intl.NumberFormat(language==='tr'?'tr-TR':'en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}).format(value);
+    const areaText=shown.missingArea===shown.bundles&&shown.bundles?(language==='tr'?'Alan belirtilmemiş':'Area not listed'):`${shown.missingArea?(language==='tr'?'Bilinen alan: ':'Known area: '):''}${areaNumber(shown.area)} m²`;
+    const scopeLabel=active==='lists'?(language==='tr'?`${currentRows} / ${savedCount} kayıtlı demet`:`${currentRows} of ${savedCount} saved bundles`):`${staffFilterEntries().length?(language==='tr'?'Filtrelenmiş sonuçlar':'Filtered results'):(language==='tr'?'Stok':'Stock')}: ${shown.bundles} ${shown.bundles===1?t('bundleSingular'):t('bundles')}`;
+    $('#salesFilterNote').textContent=[scopeLabel,slabText,areaText].join(' · ');totals.hidden=active!=='stock';
     empty.hidden=hasLoadedInventory&&(currentRows>0||checks);
     emptyText.textContent=!hasLoadedInventory?(inventoryLoadState==='error'?text.loadError:text.loading):active==='lists'?(filteredList?text.listFiltered:text.listEmpty):text.empty;
     choose.textContent=!hasLoadedInventory?text.retry:filteredList?text.clear:text.add;

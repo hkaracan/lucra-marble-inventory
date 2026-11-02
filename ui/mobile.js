@@ -369,7 +369,9 @@
     const changed = presentationSelection.has(key) !== selected;
     const restoreFocus = document.activeElement?.closest('.card-collection-toggle')?.dataset.productId === key;
     originalToggleSelection(key, selected);
-    if (changed) notifySelection(key);
+    // Shared list Undo handles removals/clearing; retain the existing add notification.
+    if (changed && selected && !window.LucraListUndoHasPending?.()) notifySelection(key);
+    else if (changed) {clearTimeout(toastTimer);if(toast.matches(':popover-open'))toast.hidePopover();undoSelection=null;}
     if (restoreFocus) requestAnimationFrame(() => {
       [...gridNode.querySelectorAll('.card-collection-toggle')].find(button => button.dataset.productId === key)?.focus({preventScroll:true});
     });

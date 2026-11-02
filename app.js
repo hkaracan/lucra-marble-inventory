@@ -391,14 +391,21 @@ function renderInventoryHealth(){
     {label:t('photoCheck'),value:photoIssues.length,detail:t('photoCheckDetail'),className:photoIssues.length?'warning':'healthy',filter:'photo-check'},
     {label:t('photoCoverage'),value:imageChecks.length,detail:t('photoCoverageDetail'),className:imageChecks.length?'info':'healthy',filter:'image-check'},
     {label:t('sourceIssues'),value:sourceIssues.length,detail:t('sourceMismatchDetail'),className:sourceIssues.length?'warning':'healthy',filter:'source'},
-    {label:t('syncIssues'),value:syncErrors.length+skippedFolders.length,detail:t('syncErrorDetail'),className:syncErrors.length||skippedFolders.length?'warning':'healthy',filter:'warnings'},
+    {label:t('syncIssues'),value:syncErrors.length,detail:t('syncErrorDetail'),className:syncErrors.length?'warning':'healthy',filter:'warnings'},
   ];
-  healthSummary.innerHTML=checks.map(check=>`<button type="button" class="health-card ${check.className}" data-audit-filter="${escapeHtml(check.filter)}" aria-label="${escapeHtml(`${check.label}: ${check.value}. ${t('viewRows')}`)}"><strong>${escapeHtml(check.value)}</strong><span>${escapeHtml(check.label)}</span><small>${escapeHtml(check.value===0?t('noIssues'):check.detail)}</small></button>`).join('');
-  const issueList=(title,items,detail)=>items.length?`<section><h5>${escapeHtml(title)} <span>${items.length}</span></h5><p>${items.slice(0,8).map(product=>`<span>${escapeHtml(`${product.name}${product.code&&product.code!=='—'?` · ${product.code}`:''}`)}</span>`).join('')}${items.length>8?`<small>+ ${items.length-8} more</small>`:''}</p></section>`:`<section class="health-clear"><h5>${escapeHtml(title)}</h5><p>${escapeHtml(t('noIssues'))}</p></section>`;
-  const reportLine=inventoryReport.added||inventoryReport.updated||inventoryReport.unchanged?`<section class="health-report"><h5>${escapeHtml(t('lastSync'))}</h5><p>${escapeHtml(`${t('added')}: ${inventoryReport.added||0} · ${t('updated')}: ${inventoryReport.updated||0} · ${t('unchanged')}: ${inventoryReport.unchanged||0}`)}</p></section>`:'';
+  const sourceChecks=checks.filter(check=>!['photo-check','image-check'].includes(check.filter));
+  sourceChecks.push({label:t('photos'),value:missingImages.length,detail:t('missingImageDetail'),className:missingImages.length?'warning':'healthy',filter:'images'});
+  const tiles=items=>items.map(check=>`<button type="button" class="health-card ${check.className}" data-audit-filter="${escapeHtml(check.filter)}" aria-label="${escapeHtml(`${check.label}: ${check.value}. ${t('viewRows')}`)}"><strong>${escapeHtml(check.value)}</strong><span>${escapeHtml(check.label)}</span><small>${escapeHtml(check.value===0?t('noIssues'):check.detail)}</small></button>`).join('');
+  const healthy=sourceChecks.filter(check=>!check.value),issues=sourceChecks.filter(check=>check.value);
+  const passedOpen=healthSummary.querySelector('.health-passed')?.open,photoOpen=healthSummary.querySelector('.health-photo-diagnostics')?.open;
+  const sourceBundles=new Set([...missingPacking,...unreadablePacking,...incompleteSizes,...sourceIssues,...syncErrors,...missingImages].map(productKey));
+  const heading=language==='tr'?`${sourceBundles.size} demet kaynak verisi kontrolü gerektiriyor.`:`${sourceBundles.size} ${sourceBundles.size===1?'bundle needs':'bundles need'} source-data review.`;
+  const issueList=(title,items)=>items.length?`<section><h5>${escapeHtml(title)} <span>${items.length}</span></h5><p>${items.map(product=>`<a href="${escapeHtml(productDriveUrl(product))}" target="_blank" rel="noreferrer">${escapeHtml(`${product.name}${product.code&&product.code!=='—'?` · ${product.code}`:''}`)} ↗</a>`).join('')}</p></section>`:'';
   const verificationSummary=photoVerification.checked?`${photoVerification.checked} checked${photoVerification.failed?` · ${photoVerification.failed} failed`:''} · ${syncDateLabel(photoVerification.lastCheckedAt)}`:t('photoVerificationNotStarted');
-  const verificationLine=`<section class="health-report"><h5>${escapeHtml(t('photoVerification'))}</h5><p>${escapeHtml(verificationSummary)}</p><small>${escapeHtml(t('photoVerificationDetail'))}</small></section>`;
-  healthDetails.innerHTML=`${reportLine}${verificationLine}${issueList(t('packingList'),missingPacking,t('missing'))}${issueList(t('packingRows'),unreadablePacking,t('missing'))}${issueList(t('sizeData'),incompleteSizes,t('missing'))}${issueList(t('photoCheck'),photoIssues,t('missing'))}${issueList(t('photos'),missingImages,t('missing'))}${issueList(t('photoCoverage'),imageChecks,t('missing'))}${issueList(t('skippedFolders'),skippedFolders,t('missing'))}${issueList(t('sourceIssues'),sourceIssues,t('missing'))}${issueList(t('syncIssues'),syncErrors,t('missing'))}`;
+  const photoMarkup=`<details class="health-photo-diagnostics" ${photoOpen?'open':''}><summary>${language==='tr'?'Fotoğraf tanılama':'Photo diagnostics'}</summary><p>${language==='tr'?'Bu tarayıcıdaki yükleme hataları bağlantıdan kaynaklanabilir. Fotoğraf sayısı farkları üretim kaybını yansıtabilir.':'Loading failures in this browser can be caused by the connection. Photo-count differences can reflect production loss.'}</p><p>${escapeHtml(verificationSummary)}</p><div class="health-summary">${tiles(checks.filter(check=>['photo-check','image-check'].includes(check.filter)))}</div>${issueList(t('photoCheck'),photoIssues)}${issueList(t('photoCoverage'),imageChecks)}${issueList(t('skippedFolders'),skippedFolders)}</details>`;
+  healthSummary.innerHTML=`<p class="health-issue-heading">${heading}</p>${issues.length?tiles(issues):`<p>${t('noIssues')}</p>`}<details class="health-passed" ${passedOpen?'open':''}><summary>${language==='tr'?'Geçen kontroller':'Passed checks'} (${healthy.length})</summary><div class="health-summary">${tiles(healthy)}</div></details>${photoMarkup}`;
+  const reportLine=inventoryReport.added||inventoryReport.updated||inventoryReport.unchanged?`<section class="health-report"><h5>${escapeHtml(t('lastSync'))}</h5><p>${escapeHtml(`${t('added')}: ${inventoryReport.added||0} · ${t('updated')}: ${inventoryReport.updated||0} · ${t('unchanged')}: ${inventoryReport.unchanged||0}`)}</p></section>`:'';
+  healthDetails.innerHTML=`<p>${language==='tr'?'Kaynak klasörünü açın, paket listesini veya klasör adını düzeltin ve envanteri senkronize edin.':'Open the source folder, update the packing list or folder name, then sync inventory.'}</p>${issueList(t('packingList'),missingPacking)}${issueList(t('packingRows'),unreadablePacking)}${issueList(t('sizeData'),incompleteSizes)}${issueList(t('sourceIssues'),sourceIssues)}${issueList(t('skippedFolders'),skippedFolders)}${issueList(t('syncIssues'),syncErrors)}${reportLine}`;
 }
 
 function auditInfo(product){
@@ -602,6 +609,8 @@ function pruneShortlist(){
   shortlist.forEach(key=>{if(!valid.has(key)){shortlist.delete(key);changed=true}});
   if(changed)saveShortlist();
 }
+function clearPresentationList(){presentationSelection.clear();savePresentationSelection();render()}
+function clearSalesShortlist(){shortlist.clear();saveShortlist();render()}
 function toggleShortlist(id,selected){if(selected)shortlist.add(id);else shortlist.delete(id);saveShortlist();render()}
 function updateShortlistControls(){
   const selected=selectedProducts();
@@ -1132,14 +1141,14 @@ sharePresentationCollectionButton.addEventListener('click',async()=>{const selec
 copyPresentationCollectionSummaryButton.addEventListener('click',()=>{const selected=selectedPresentationProducts();if(selected.length)copyText(customerCollectionSummary(selected,commitCustomerCollectionTitle()),copyPresentationCollectionSummaryButton,t('collectionSummaryCopied'))});
 printPresentationCollectionButton.addEventListener('click',printPresentationCollection);
 whatsappPresentationCollectionButton.addEventListener('click',()=>{const selected=selectedPresentationProducts();if(selected.length)openWhatsApp(customerCollectionSummary(selected,commitCustomerCollectionTitle()))});
-clearPresentationCollectionButton.addEventListener('click',()=>{presentationSelection.clear();savePresentationSelection();render()});
+clearPresentationCollectionButton.addEventListener('click',()=>clearPresentationList());
 advancedFiltersToggle.addEventListener('click',()=>{const open=document.body.classList.toggle('filters-open');advancedFiltersToggle.setAttribute('aria-expanded',String(open));advancedFiltersToggle.querySelector('[data-i18n]').textContent=t(open?'hideFilters':'moreFilters');advancedFiltersToggle.lastElementChild.textContent=open?'⌃':'⌄'});
 showMissingPacking.addEventListener('change',event=>{showMissingPackingValue=event.currentTarget.checked;try{localStorage.setItem('lucraShowMissingPacking',showMissingPackingValue?'1':'0')}catch(error){}render()});
 document.querySelectorAll('.sales-quick-filter').forEach(button=>button.addEventListener('click',()=>{salesQuickFilter=button.dataset.auditFilter||'all';render()}));
 salesSearchInput.addEventListener('input',event=>{salesSearch=event.currentTarget.value;render()});
 salesSortSelect.addEventListener('change',event=>{salesSort=event.currentTarget.value;render()});
 shortlistSelect.addEventListener('change',event=>switchShortlist(event.currentTarget.value));
-newShortlistButton.addEventListener('click',createShortlist);renameShortlistButton.addEventListener('click',renameShortlist);deleteShortlistButton.addEventListener('click',deleteShortlist);
+newShortlistButton.addEventListener('click',createShortlist);renameShortlistButton.addEventListener('click',()=>renameShortlist());deleteShortlistButton.addEventListener('click',()=>deleteShortlist());
 toggleHealthButton.addEventListener('click',()=>{const expanded=!healthDetails.hidden;healthDetails.hidden=expanded;toggleHealthButton.setAttribute('aria-expanded',String(!expanded));toggleHealthButton.textContent=!expanded?t('hideDetails'):t('showDetails')});
 healthSummary.addEventListener('click',event=>{const card=event.target.closest('[data-audit-filter]');if(card)setAuditFilter(card.dataset.auditFilter)});
 toggleAuditButton.addEventListener('click',()=>setAuditOpen(auditPanel.hidden));
@@ -1182,7 +1191,7 @@ signOutSalesButton.addEventListener('click',async()=>{if(supabaseClient)await su
 compareSelectedButton.addEventListener('click',()=>{renderCompare();compareDialog.showModal()});
 copyShortlistButton.addEventListener('click',()=>copyText(shortlistSummary(),copyShortlistButton,'Copied'));
 exportVisibleButton.addEventListener('click',downloadVisible);
-clearShortlistButton.addEventListener('click',()=>{shortlist.clear();saveShortlist();render()});
+clearShortlistButton.addEventListener('click',()=>clearSalesShortlist());
 shortlistQuoteForm.addEventListener('submit',submitShortlistQuoteRequest);
 whatsappShortlistQuoteButton.addEventListener('click',sendShortlistQuoteViaWhatsApp);
 closeShortlistQuoteButton.addEventListener('click',()=>shortlistQuoteDialog.close());
