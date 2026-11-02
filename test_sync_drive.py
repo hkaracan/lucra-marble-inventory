@@ -88,6 +88,22 @@ class MockedSyncTest(unittest.TestCase):
         self.assertEqual(product['surfaceTypes'], ['Bookmatched · Honed'])
         self.assertTrue(sync_drive.is_bundle_folder('Amazonite Honed A3238'))
 
+    def test_confirmed_amazonite_code_preserves_identity_stock_and_source_warning(self):
+        source = workbook_bytes([
+            ['Block Number', 'Finish', 'Material', 'Width', 'Height', 'Pcs', 'Sqm'],
+            ['A32380102', 'Bookmatched/Honed', 'Amazonite', 175, 297, 49, 251.88],
+        ])
+        identity = '1ymEytWFHs-eql33_EzeWOV80PuuOJc9V'
+        with patch.object(sync_drive, 'download_file', return_value=source):
+            product = sync_drive.normalize_folder({'id': identity, 'name': 'Amazonite Honed K6269 - A3238', '_items': [{'id':'packing','name':'Amazonite Honed A3238 PL.xlsx'}]})
+        self.assertEqual(product['folderId'], identity)
+        self.assertEqual(product['code'], 'K6269')
+        self.assertEqual(product['name'], 'Amazonite')
+        self.assertEqual(product['pcs'], 49)
+        self.assertEqual(product['sqm'], 251.88)
+        self.assertEqual(product['sourceWarnings'][0]['packingCodes'], ['A3238'])
+        self.assertEqual(product['surfaceTypes'], ['Bookmatched · Honed'])
+
     def test_unreadable_first_excel_does_not_hide_valid_second_excel(self):
         with patch.object(sync_drive, 'download_file', side_effect=[b'not a workbook', packing_list_bytes()]):
             _, _, _, packing, name, file_id, _ = sync_drive.collect_media([

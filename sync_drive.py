@@ -41,6 +41,8 @@ CAMERA_IMAGE_PATTERN = re.compile(r"^(?:IMG|DSC|PXL)[ _-]?\d+\.(?:jpe?g|png|webp
 THUMBNAIL_STEM_PATTERN = re.compile(r"^(?:kapak|cover|thumbnail)$", re.I)
 PACKING_LIST_PATTERN = re.compile(r"\bpacking\s+list\b", re.I)
 BUNDLE_CODE_PATTERN = re.compile(r"(?:^|\s)([AKLM]\d+)_?\s*$", re.I)
+# Bundle identities confirmed by Lucra; retain source warnings for stale workbook names.
+BUNDLE_CODE_OVERRIDES = {"1ymEytWFHs-eql33_EzeWOV80PuuOJc9V": "K6269"}  # confirmed 2026-11-02
 SOURCE_CODE_PATTERN = re.compile(r"\b([AKLM]\d+)\b", re.I)
 MYSTIC_GREY_PATTERN = re.compile(r"\bmystic\s+grey\b", re.I)
 DISPLAY_NAME_ALIASES = {
@@ -904,7 +906,7 @@ def normalize_folder(folder: dict[str, str]) -> dict:
     reserved = bool(RESERVED_PREFIX_PATTERN.match(folder_name))
     clean_name = RESERVED_PREFIX_PATTERN.sub("", folder_name).strip()
     code_match = BUNDLE_CODE_PATTERN.search(clean_name)
-    code = code_match.group(1).upper() if code_match else "—"
+    code = BUNDLE_CODE_OVERRIDES.get(folder["id"], code_match.group(1).upper() if code_match else "—")
     display_name = canonical_display_name(clean_name[: code_match.start()].strip() if code_match else clean_name)
     if "_items" in folder:
         items = folder["_items"]
