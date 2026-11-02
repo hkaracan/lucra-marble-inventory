@@ -52,7 +52,7 @@ The production data adapter will enumerate the configured Drive root folder, par
 
 ## QR label downloads
 
-Open the sales dashboard from the footer after staff sign-in, then open **Export → Download QR labels** in Stock (or **Download QR labels** in Shortlists). Select all bundles or the bundles selected in the dashboard's active shortlist. Reserved bundles are included unless unchecked. The panel shows the loaded inventory's last update date, label/page counts, and missing or incomplete size warnings.
+Open the sales dashboard from the footer after staff sign-in, then choose **Download QR labels** below the tabs. Select all bundles or the bundles selected in the dashboard's active shortlist. Reserved bundles are included unless unchecked. The panel shows the loaded inventory's last update date, label/page counts, and missing or incomplete size warnings.
 
 The PDF is generated locally in the browser using the published inventory, shared `LucraSizing.averageSize` calculation, and stable customer bundle links. Six labels per A4 page preserve the approved October 5 template's Roboto fonts, QR size, logo, cut lines and text positions. Print at Actual size / 100%. English label text matches the approved physical labels; the panel supports English and Turkish. All libraries/fonts are hosted with the site and loaded only when needed; no QR service is used for this export.
 
@@ -62,12 +62,20 @@ Run `node tests/qr-labels.test.cjs` from the repository root to check selection,
 
 After staff sign-in, the header keeps **Sales** and **Customer view** in the same place. Switching to Customer view previews the public inventory without signing out; **Sign out** ends staff access. The chosen view and dashboard section are remembered on this device. Direct bundle and shared-list links open in customer view. Staff authentication is still required before restoring Sales.
 
-The dashboard has three sections: **Stock** for searching, filtering, sorting, bundle details and exporting the visible stock; **Shortlists** for the selected bundles, named lists, comparison, sharing and exports; **Data checks** for sync, history, health, audit and customer visibility information. Shortlists use the existing saved selections. Every row opens its existing gallery; **Bundle details** expands packing/media/source/visibility controls without opening the gallery. QR PDFs remain available in Stock and Shortlists.
+The dashboard has three sections: **Stock** for searching, filtering, sorting, bundle details and exporting the visible stock; **Shortlists** for the selected bundles, named lists, comparison, sharing and exports; **Data checks** for sync, history, health, audit information. Shortlists use the existing saved selections. Every row opens its existing gallery; **Bundle details** expands packing/media/source details without opening the gallery. QR label downloads, CSV Export and PDF Export remain directly visible on every dashboard tab.
 
-Customer and Sales filters (search, category, availability, minimum size, surface and numeric limits) are remembered independently on the same device. Sales also remembers its own dashboard search, follow-up filter, packing-list inclusion and sort. Active Sales filters remain visible as removable chips when the filter panel is closed. Shortlists report how many saved bundles match; clearing filters never removes the saved selection. Stock exports are grouped under **Export**.
+Customer and Sales filters (search, category, availability, minimum size, surface and numeric limits) are remembered independently on the same device. Sales also remembers its own dashboard search, packing-list inclusion and sort. Active Sales filters remain visible as removable chips when the filter panel is closed. Shortlists report how many saved bundles match; clearing filters never removes the saved selection. Stock exports are always visible below the tabs.
 
 ## Persistent inventory arrival dates
 
 Each Actions run restores the last successfully published catalogue and `data/first_seen.json` before reading Drive. The first-seen ledger is keyed by stable bundle identity and is published with the catalogue, so stateless runners and temporarily absent bundles retain their earliest recorded date. A missing or invalid published catalogue fails the run without replacing the live site. Only the ledger's first-deployment 404 is allowed. Checked-in recovery seeds come from saved real catalogue `addedAt` values and verified source-migration records; unknown dates on legacy bundles remain unknown. This records when a bundle was first seen by the inventory, not a Drive creation or modification date.
 
 Display names remove embedded bundle codes and trailing Honed finish text; those values remain in the code and surface fields. Conflicting source codes remain flagged for review and are not guessed or changed by name cleanup.
+
+## Read-only sales tools
+
+The dashboard reads the published Drive inventory. Sales notes, follow-up statuses/filters and customer visibility switches have been removed because their browser-only state never updated the shared inventory. Legacy saved notes and visibility preferences are ignored; every published bundle remains available to customers, including reserved bundles with their proper status. Shortlists, comparisons, sharing, search/filters, stock checks and QR labels remain functional. Shortlists are explicitly labelled as saved on this device. Drive updates are handled by the existing GitHub Actions workflow.
+
+The direct export toolbar remains visible in Stock, Shortlists and Data checks. **CSV Export** and **PDF Export** use the filtered stock in Stock, the complete saved selection in Shortlists (even if display filters hide some selected bundles), and all published stock in Data checks. The scope and bundle count appear below the buttons. **Download QR labels** keeps its existing all/selected/reserved choices. PDFs are generated locally with bundled jsPDF/Roboto assets, rounded weighted average dimensions, stock totals, reserved labels and clickable customer links. Unknown counts, areas and sizes are never presented as zero stock. PDF export is an inventory summary; it does not need a server or external PDF service.
+
+Run `node tests/inventory-pdf.test.cjs` to check multi-page export, missing data, long names and customer-link validation.

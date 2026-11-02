@@ -18,16 +18,41 @@
   const totals=make('details','sales-stock-totals'),totalLabel=make('summary');totals.open=!matchMedia('(max-width:720px)').matches;totals.append(totalLabel,$('#salesKpis'));panels.stock.append(totals);
   const filterDetails=make('details','sales-workspace-filters'),filterLabel=make('summary'),filterBody=make('div','sales-workspace-filter-body');filterDetails.append(filterLabel,filterBody);
   const filtersToMove=[$('.preview-material-categories'),$('#inventoryFilters'),$('#advancedFilters'),$('#collectionBanner')].filter(Boolean);filtersToMove.forEach(pin);
-  filterBody.append($('.sales-quick-filters'),$('.show-missing'),$('.sales-view-filter'));
+  filterBody.append($('.sales-quick-filters'),$('.show-missing'));
   const reset=make('button','secondary');reset.type='button';reset.addEventListener('click',clearStaffFilters);filterBody.append(reset);
   const searchControls=$('.sales-list-controls');searchControls.after(filterDetails);
   const listTools=$('.sales-tools');panels.lists.append(listTools);
   const manager=$('.shortlist-manager'),manage=make('details','sales-list-management'),manageLabel=make('summary'),manageButtons=make('div');manage.append(manageLabel,manageButtons);for(const id of ['newShortlist','renameShortlist','deleteShortlist'])manageButtons.append($('#'+id));manager.append(manage);
   const actions=$('.shortlist-actions'),more=make('details','sales-list-more'),moreLabel=make('summary'),moreBody=make('div');more.append(moreLabel,moreBody);
-  for(const id of ['copyShortlist','whatsappShortlist','exportShortlist','exportVisible','clearShortlist'])moreBody.append($('#'+id));actions.append(more);
-  // Keep PDF export available from Stock and Shortlists, including an empty list.
-  const download=$('#downloadQrLabels'),exportMenu=make('details','sales-stock-export'),exportLabel=make('summary'),downloadHome=make('div','sales-stock-actions');exportMenu.append(exportLabel,downloadHome);if(download)downloadHome.append(download);panels.stock.append(exportMenu);
-  const checksActions=make('div','sales-check-actions');panels.checks.append(checksActions,$('#syncFeedback'),$('.latest-sync'),$('.inventory-health'),$('.sync-audit'),$('#customerVisibilitySummary'),$('#catalogueFreshness'));
+  for(const id of ['copyShortlist','whatsappShortlist','clearShortlist'])moreBody.append($('#'+id));actions.append(more);
+  // Export controls remain visible on every dashboard tab.
+  const download=$('#downloadQrLabels'),exportBar=make('div','sales-export-bar'),exportHint=make('p','sales-export-hint'),exportStatus=make('p','sales-export-status');
+  const pdfButton=make('button','secondary');pdfButton.type='button';pdfButton.id='exportInventoryPdf';
+  exportStatus.setAttribute('role','status');exportStatus.setAttribute('aria-live','polite');exportStatus.hidden=true;
+  exportBar.append(download,$('#exportVisible'),pdfButton);tabs.after(exportBar,exportHint,exportStatus);
+  const deviceNote=make('p','sales-list-device-note');deviceNote.textContent='Shortlists are saved on this device. Share a list link to send it to someone else.';listTools.append(deviceNote);
+  const exportRecords=()=>!hasLoadedInventory?[]:active==='lists'?selectedProducts():active==='checks'?[...products]:salesVisibleProducts(filteredProducts());
+  window.LucraSalesExportRecords=exportRecords;
+  let pdfBusy=false;
+  const pdfScripts=new Map();
+  function loadPdfScript(src){if(!pdfScripts.has(src))pdfScripts.set(src,new Promise((resolve,reject)=>{const el=make('script');el.src=src;el.onload=resolve;el.onerror=()=>{el.remove();pdfScripts.delete(src);reject(Error('PDF assets unavailable'))};document.head.append(el)}));return pdfScripts.get(src);}
+  pdfButton.addEventListener('click',async()=>{
+    if(pdfBusy||!salesUnlocked)return;const records=exportRecords();if(!records.length)return;
+    // Freeze the export scope before asynchronous font/library loading.
+    const rows=records.map(product=>({name:product.name,code:product.code,reserved:!!product.reserved,pcs:product.pcs,sqm:product.sqm,average:window.LucraSizing.averageSize(product),surface:productSurfaceLabel(product),url:publicCustomerProductUrl(product)}));
+    const updated=syncedAt,title=active==='lists'?activeShortlistName:'Stock inventory';
+    pdfBusy=true;exportStatus.hidden=false;exportStatus.textContent=language==='tr'?'PDF hazırlanıyor…':'Creating PDF…';update();
+    try{
+      await Promise.all([window.jspdf?Promise.resolve():loadPdfScript('ui/vendor/jspdf.umd.min.js'),window.LucraQRLabelAssets?Promise.resolve():loadPdfScript('ui/qr-label-assets.js?v=1'),loadPdfScript('ui/inventory-pdf.js?v=1')]);
+      if(!salesUnlocked||!document.body.classList.contains('sales-mode'))throw Error('Staff session ended');
+      const doc=await window.LucraInventoryPDF.create(rows,window.LucraQRLabelAssets,window.jspdf.jsPDF,{title,updated});
+      if(!salesUnlocked||!document.body.classList.contains('sales-mode'))throw Error('Staff session ended');
+      const date=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Istanbul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());doc.save(`lucra_inventory_${date}.pdf`);
+      exportStatus.textContent=language==='tr'?'PDF hazır. İndirilenleri kontrol edin.':'PDF ready. Check your downloads.';const message=exportStatus.textContent;setTimeout(()=>{if(!pdfBusy&&exportStatus.textContent===message)exportStatus.hidden=true;},8000);
+    }catch{exportStatus.textContent=language==='tr'?'PDF oluşturulamadı. Lütfen tekrar deneyin.':'PDF could not be created. Please try again.';}
+    finally{pdfBusy=false;update();}
+  });
+  const checksActions=make('div','sales-check-actions');panels.checks.append(checksActions,$('#syncFeedback'),$('.latest-sync'),$('.inventory-health'),$('.sync-audit'),$('#catalogueFreshness'));
   const chips=make('div','sales-workspace-chips');chips.setAttribute('aria-label','Active sales filters');
   const listHost=make('div','sales-workspace-results');listHost.append(chips);listHost.append($('#salesFilterNote'),$('.sales-list'));dashboard.append(searchControls,filterDetails,listHost);
   $('.sales-list').setAttribute('role','list');$('.sales-list-head').hidden=true;
@@ -56,8 +81,7 @@
       const cells=[...row.children];cells.forEach(cell=>cell.removeAttribute('role'));
       const size=cells[3],allSizes=make('div','sales-all-sizes');allSizes.dataset.label=w().sizes;allSizes.textContent=size.textContent;
       const product=products.find(p=>productKey(p)===row.dataset.productId),avg=product&&window.LucraSizing.averageSize(product);size.textContent=avg?`${Math.round(avg.width)} × ${Math.round(avg.height)} cm`:t('sizeNotProvided');size.dataset.label=w().average;if(avg?.partial){const note=make('small');note.textContent=t('sizeSample').replace('{count}',String(avg.slabs));size.append(note);}
-      if(product&&!followupFor(product).note)cells[6].querySelector('small').hidden=true;
-      main.append(cells[0],cells[1],cells[2],size,cells[6]);const pick=main.querySelector('.shortlist-toggle');if(pick){const touch=make('label','sales-pick');pick.before(touch);touch.append(pick);}grid.append(allSizes,cells[4],cells[5],cells[7],cells[8]);summary.textContent=w().details;detail.append(summary,grid);detail.open=expanded.has(row.dataset.productId);
+      main.append(cells[0],cells[1],cells[2],size);const pick=main.querySelector('.shortlist-toggle');if(pick){const touch=make('label','sales-pick');pick.before(touch);touch.append(pick);}grid.append(allSizes,cells[4],cells[5],cells[6]);summary.textContent=w().details;detail.append(summary,grid);detail.open=expanded.has(row.dataset.productId);
       detail.addEventListener('toggle',()=>{if(!detail.isConnected)return;if(detail.open)expanded.add(row.dataset.productId);else expanded.delete(row.dataset.productId)});
       row.append(main,detail);
     }
@@ -69,9 +93,12 @@
     for(const b of tabs.children){const selected=b.dataset.section===active;b.textContent=text[b.dataset.section];b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;}
     for(const [id,p]of Object.entries(panels))p.hidden=id!==active;
     const checks=active==='checks';searchControls.hidden=checks;filterDetails.hidden=checks;listHost.hidden=checks;
-    const entries=staffFilterEntries(),count=entries.length;renderStaffChips(entries);exportLabel.textContent=text.export;filterLabel.textContent=text.filters+(count?` (${count})`:'');reset.textContent=text.clear;totalLabel.textContent=text.totals;manageLabel.textContent=text.manage;moreLabel.textContent=text.actions;
-    if(download){(active==='lists'?actions:downloadHome).prepend(download);}
-    (active==='lists'?moreBody:downloadHome).append($('#exportVisible'));
+    const entries=staffFilterEntries(),count=entries.length;renderStaffChips(entries);filterLabel.textContent=text.filters+(count?` (${count})`:'');reset.textContent=text.clear;totalLabel.textContent=text.totals;manageLabel.textContent=text.manage;moreLabel.textContent=text.actions;
+    const records=exportRecords();$('#exportVisible').textContent=language==='tr'?'CSV dışa aktar':'CSV Export';$('#exportVisible').removeAttribute('data-i18n');$('#exportVisible').disabled=!records.length;
+    pdfButton.textContent=pdfBusy?(language==='tr'?'PDF hazırlanıyor…':'Creating PDF…'):(language==='tr'?'PDF dışa aktar':'PDF Export');pdfButton.disabled=pdfBusy||!records.length;
+    const scope=active==='lists'?(language==='tr'?'kayıtlı seçim':'saved shortlist'):active==='checks'?(language==='tr'?'tüm stok':'all stock'):(language==='tr'?'filtrelenmiş stok':'filtered stock');
+    exportHint.textContent=language==='tr'?`CSV / PDF: ${records.length} demet · ${scope}.`:`CSV / PDF: ${records.length} ${records.length===1?'bundle':'bundles'} · ${scope}.`;
+    deviceNote.textContent=language==='tr'?'Seçimler bu cihazda saklanır. Başkalarına göndermek için liste bağlantısını paylaşın.':'Shortlists are saved on this device. Share a list link to send it to someone else.';
     const savedCount=selectedProducts().length,filteredList=active==='lists'&&savedCount>0;
     if(active==='lists')$('#salesFilterNote').textContent=language==='tr'?`${savedCount} kayıtlı demetten ${currentRows} gösteriliyor`:`Showing ${currentRows} of ${savedCount} saved bundles`;
     empty.hidden=hasLoadedInventory&&(currentRows>0||checks);
@@ -88,7 +115,7 @@
   const originalDashboard=renderSalesDashboard;renderSalesDashboard=function(...args){const result=originalDashboard(...args);update();return result;};
   // Shared filter controls retain independent state for each staff view.
   const filterIds=['searchInput','sortSelect','minArea','maxArea','minSlabs','maxSlabs','dimensionFilter','surfaceFilter','packingFilter','mediaFilter','minSlabLength','minSlabWidth'];
-  const snapshot=()=>({fields:Object.fromEntries(filterIds.map(id=>[id,$('#'+id).value])),status:currentFilter,category:window.LucraMaterialCategory.get(),salesSearch,salesSort,salesQuickFilter,salesFollowupFilter,showMissingPackingValue});
+  const snapshot=()=>({fields:Object.fromEntries(filterIds.map(id=>[id,$('#'+id).value])),status:currentFilter,category:window.LucraMaterialCategory.get(),salesSearch,salesSort,salesQuickFilter,showMissingPackingValue});
   const parseFilters=key=>{try{const value=JSON.parse(read(key,'null'));return value&&typeof value==='object'&&!Array.isArray(value)?value:null}catch{return null}};
   const defaults=snapshot();defaults.fields=Object.fromEntries(filterIds.map(id=>[id,id==='sortSelect'?'name':['surfaceFilter','packingFilter','mediaFilter'].includes(id)?'all':'']));defaults.status=defaults.category='all';
   const states={customer:parseFilters('lucraCustomerFilters')||snapshot(),sales:parseFilters('lucraSalesFilters')||defaults};
@@ -100,17 +127,16 @@
     window.LucraMaterialCategory.set(state.category);
     salesSearch=typeof state.salesSearch==='string'?state.salesSearch:'';
     const selectValue=(selector,value,fallback)=>[...$(selector).options].some(option=>option.value===value)?value:fallback;
-    salesSort=selectValue('#salesSortSelect',state.salesSort,'name');salesFollowupFilter=selectValue('#followupFilter',state.salesFollowupFilter,'all');
+    salesSort=selectValue('#salesSortSelect',state.salesSort,'name');
     salesQuickFilter=[...document.querySelectorAll('.sales-quick-filter')].some(button=>button.dataset.auditFilter===state.salesQuickFilter)?state.salesQuickFilter:'all';
     showMissingPackingValue=state.showMissingPackingValue!==false;$('#showMissingPacking').checked=showMissingPackingValue;
   }
   function rememberFilters(){const key=document.body.classList.contains('sales-mode')?'sales':'customer';states[key]=snapshot();write(key==='sales'?'lucraSalesFilters':'lucraCustomerFilters',JSON.stringify(states[key]));}
-  function clearStaffFilters(){salesQuickFilter='all';salesFollowupFilter='all';salesSearch='';showMissingPackingValue=true;$('#showMissingPacking').checked=true;if(sharedCollectionActive)clearSharedCollection();resetAllFilters();}
+  function clearStaffFilters(){salesQuickFilter='all';salesSearch='';showMissingPackingValue=true;$('#showMissingPacking').checked=true;if(sharedCollectionActive)clearSharedCollection();resetAllFilters();}
   function staffFilterEntries(){
     const entries=activeFilterEntries();
     if(salesSearch.trim())entries.push({key:'staff-search',label:`Search: ${salesSearch.trim()}`});
     if(salesQuickFilter!=='all')entries.push({key:'staff-quick',label:document.querySelector(`.sales-quick-filter[data-audit-filter="${salesQuickFilter}"]`)?.firstChild.textContent.trim()||salesQuickFilter});
-    if(salesFollowupFilter!=='all')entries.push({key:'staff-followup',label:$('#followupFilter').selectedOptions[0]?.textContent||salesFollowupFilter});
     if(!showMissingPackingValue)entries.push({key:'staff-packing',label:language==='tr'?'Yalnızca paket listeli':'With packing list only'});
     if(sharedCollectionActive)entries.push({key:'staff-collection',label:sharedCollectionTitle||'Shared list'});
     return entries;
@@ -118,7 +144,7 @@
   function renderStaffChips(entries){
     chips.replaceChildren();chips.hidden=!entries.length;
     for(const entry of entries){const button=make('button','filter-chip');button.type='button';button.textContent=entry.label+' ×';button.setAttribute('aria-label',`${t('removeFilter')}: ${entry.label}`);button.addEventListener('click',()=>{
-      if(entry.key==='staff-search')salesSearch='';else if(entry.key==='staff-quick')salesQuickFilter='all';else if(entry.key==='staff-followup')salesFollowupFilter='all';else if(entry.key==='staff-packing'){showMissingPackingValue=true;$('#showMissingPacking').checked=true;}else if(entry.key==='staff-collection'){clearSharedCollection();return;}else{clearSingleFilter(entry.key);return;}render();
+      if(entry.key==='staff-search')salesSearch='';else if(entry.key==='staff-quick')salesQuickFilter='all';else if(entry.key==='staff-packing'){showMissingPackingValue=true;$('#showMissingPacking').checked=true;}else if(entry.key==='staff-collection'){clearSharedCollection();return;}else{clearSingleFilter(entry.key);return;}render();
     });chips.append(button);}
     if(entries.length){const clear=make('button','quiet-button');clear.type='button';clear.textContent=w().clear;clear.addEventListener('click',clearStaffFilters);chips.append(clear);}
   }
