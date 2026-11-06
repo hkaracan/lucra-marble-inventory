@@ -85,63 +85,76 @@
   list.setAttribute('aria-label', 'Material and bundle suggestions');
   list.hidden = true;
   host.append(list);
-  input.setAttribute('role', 'combobox');
-  input.setAttribute('aria-autocomplete', 'list');
-  input.setAttribute('aria-controls', list.id);
-  input.setAttribute('aria-expanded', 'false');
-  const mobileLayout = matchMedia('(max-width: 1024px), (pointer: coarse)');
-  const touchInput = matchMedia('(pointer: coarse)');
+  const mobileSearch = matchMedia('(max-width: 1024px), (pointer: coarse)');
   const viewport = window.visualViewport;
-  let positionFrame = 0;
+  let focusHeight = window.innerHeight;
+  let focusWidth = window.innerWidth;
   let choices = [], selected = -1;
 
-  function fitSuggestions() {
-    if (list.hidden) return;
-    if (!mobileLayout.matches) {
-      list.style.removeProperty('--search-suggestion-room');
-      delete list.dataset.above;
-      return;
-    }
+  function updateKeyboardLayout() {
+    const body = document.body;
+    const wasCompact = body.classList.contains('search-keyboard-open');
+    const layoutHeight = focusWidth === window.innerWidth
+      ? Math.max(focusHeight, window.innerHeight)
+      : window.innerHeight;
+    const keyboardOpen = viewport && viewport.scale === 1 &&
+      layoutHeight - viewport.height > 100;
+    const compact = mobileSearch.matches && keyboardOpen &&
+      (document.activeElement === input || wasCompact) &&
+      !body.classList.contains('sales-mode');
 
-    const field = host.getBoundingClientRect();
-    const top = viewport?.offsetTop ?? 0;
-    let bottom = top + (viewport?.height ?? window.innerHeight);
-    const navigation = document.querySelector('.preview-nav')?.getBoundingClientRect();
-    if (navigation?.height && navigation.top > field.bottom) {
-      bottom = Math.min(bottom, navigation.top);
+    body.classList.toggle('search-keyboard-open', Boolean(compact));
+    if (compact) {
+      body.style.setProperty('--search-visible-height', `${Math.floor(viewport.height)}px`);
+      if (!wasCompact) {
+        const fieldTop = host.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({top: Math.max(0, fieldTop - 8), behavior: 'instant'});
+      }
+    } else if (wasCompact) {
+      body.style.removeProperty('--search-visible-height');
     }
-
-    const gap = 14; // Dropdown gap plus a margin from the visible edge.
-    const below = Math.max(0, bottom - field.bottom - gap);
-    const above = Math.max(0, field.top - top - gap);
-    const placeAbove = below < 112 && above > below;
-    list.toggleAttribute('data-above', placeAbove);
-    list.style.setProperty('--search-suggestion-room', `${Math.floor(placeAbove ? above : below)}px`);
   }
 
-  function queueSuggestionFit() {
-    if (list.hidden || positionFrame) return;
-    positionFrame = requestAnimationFrame(() => {
-      positionFrame = 0;
-      fitSuggestions();
-    });
-  }
-
-  window.addEventListener('resize', queueSuggestionFit);
-  window.addEventListener('scroll', queueSuggestionFit, {passive: true});
-  viewport?.addEventListener('resize', queueSuggestionFit);
-  viewport?.addEventListener('scroll', queueSuggestionFit);
-
-  function finishSearch() {
+  function configureSearch() {
     close();
-    const keyboardReducedViewport = viewport && viewport.scale === 1 &&
-      window.innerHeight - viewport.height > 100;
-    if (touchInput.matches || keyboardReducedViewport) input.blur();
+    if (mobileSearch.matches) {
+      for (const name of ['role', 'aria-autocomplete', 'aria-expanded']) {
+        input.removeAttribute(name);
+      }
+      input.setAttribute('aria-controls', 'productGrid');
+    } else {
+      input.setAttribute('role', 'combobox');
+      input.setAttribute('aria-autocomplete', 'list');
+      input.setAttribute('aria-controls', list.id);
+      input.setAttribute('aria-expanded', 'false');
+      suggest();
+    }
+    updateKeyboardLayout();
   }
+
+  mobileSearch.addEventListener('change', configureSearch);
+  viewport?.addEventListener('resize', updateKeyboardLayout);
+  window.addEventListener('resize', updateKeyboardLayout);
+
+  const grid = document.querySelector('#productGrid');
+  grid.addEventListener('pointerdown', event => {
+    if (event.isPrimary && event.button === 0 && event.target.closest('a, button') &&
+        document.body.classList.contains('search-keyboard-open')) {
+      // Let the card receive its click before focus loss can move the grid.
+      event.preventDefault();
+    }
+  });
+  grid.addEventListener('click', event => {
+    const link = event.target.closest('.card-product-link');
+    if (link && document.body.classList.contains('search-keyboard-open')) {
+      // The gallery can then return focus to the result that opened it.
+      link.focus({preventScroll: true});
+    }
+  }, true);
 
   function close() {
     list.hidden = true;
-    input.setAttribute('aria-expanded', 'false');
+    if (!mobileSearch.matches) input.setAttribute('aria-expanded', 'false');
     input.removeAttribute('aria-activedescendant');
     selected = -1;
   }
@@ -162,9 +175,10 @@
     if (!choice) return;
     input.value = choice.value;
     input.dispatchEvent(new Event('input', {bubbles: true}));
-    finishSearch();
+    close();
   }
   function suggest() {
+    if (mobileSearch.matches) return;
     const query = input.value.trim().toLocaleLowerCase();
     if (!query || document.activeElement !== input) return close();
     const eligible = products.filter(product =>
@@ -206,13 +220,28 @@
     input.removeAttribute('aria-activedescendant');
     list.hidden = !choices.length;
     input.setAttribute('aria-expanded', String(!!choices.length));
-    if (choices.length) fitSuggestions();
   }
   input.addEventListener('input', suggest);
-  input.addEventListener('focus', suggest);
-  input.addEventListener('blur', close);
+  input.addEventListener('focus', () => {
+    focusHeight = window.innerHeight;
+    focusWidth = window.innerWidth;
+    updateKeyboardLayout();
+    suggest();
+  });
+  input.addEventListener('blur', () => {
+    close();
+    // Keep the cards in place until the keyboard finishes closing.
+    updateKeyboardLayout();
+  });
   input.addEventListener('keydown', event => {
     if (event.isComposing) return;
+    if (mobileSearch.matches) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        input.blur();
+      }
+      return;
+    }
     if (event.key === 'Escape') { close(); return; }
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
@@ -225,7 +254,8 @@
       choose(selected);
     } else if (event.key === 'Enter') {
       event.preventDefault();
-      finishSearch();
+      close();
     }
   });
+  configureSearch();
 })();
