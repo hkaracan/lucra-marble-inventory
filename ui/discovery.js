@@ -89,7 +89,56 @@
   input.setAttribute('aria-autocomplete', 'list');
   input.setAttribute('aria-controls', list.id);
   input.setAttribute('aria-expanded', 'false');
+  const mobileLayout = matchMedia('(max-width: 1024px), (pointer: coarse)');
+  const touchInput = matchMedia('(pointer: coarse)');
+  const viewport = window.visualViewport;
+  let positionFrame = 0;
   let choices = [], selected = -1;
+
+  function fitSuggestions() {
+    if (list.hidden) return;
+    if (!mobileLayout.matches) {
+      list.style.removeProperty('--search-suggestion-room');
+      delete list.dataset.above;
+      return;
+    }
+
+    const field = host.getBoundingClientRect();
+    const top = viewport?.offsetTop ?? 0;
+    let bottom = top + (viewport?.height ?? window.innerHeight);
+    const navigation = document.querySelector('.preview-nav')?.getBoundingClientRect();
+    if (navigation?.height && navigation.top > field.bottom) {
+      bottom = Math.min(bottom, navigation.top);
+    }
+
+    const gap = 14; // Dropdown gap plus a margin from the visible edge.
+    const below = Math.max(0, bottom - field.bottom - gap);
+    const above = Math.max(0, field.top - top - gap);
+    const placeAbove = below < 112 && above > below;
+    list.toggleAttribute('data-above', placeAbove);
+    list.style.setProperty('--search-suggestion-room', `${Math.floor(placeAbove ? above : below)}px`);
+  }
+
+  function queueSuggestionFit() {
+    if (list.hidden || positionFrame) return;
+    positionFrame = requestAnimationFrame(() => {
+      positionFrame = 0;
+      fitSuggestions();
+    });
+  }
+
+  window.addEventListener('resize', queueSuggestionFit);
+  window.addEventListener('scroll', queueSuggestionFit, {passive: true});
+  viewport?.addEventListener('resize', queueSuggestionFit);
+  viewport?.addEventListener('scroll', queueSuggestionFit);
+
+  function finishSearch() {
+    close();
+    const keyboardReducedViewport = viewport && viewport.scale === 1 &&
+      window.innerHeight - viewport.height > 100;
+    if (touchInput.matches || keyboardReducedViewport) input.blur();
+  }
+
   function close() {
     list.hidden = true;
     input.setAttribute('aria-expanded', 'false');
@@ -101,7 +150,11 @@
     [...list.children].forEach((option, i) => option.setAttribute('aria-selected', String(i === index)));
     if (index >= 0) {
       input.setAttribute('aria-activedescendant', list.children[index].id);
-      list.children[index].scrollIntoView({block: 'nearest'});
+      const option = list.children[index];
+      const item = option.getBoundingClientRect();
+      const bounds = list.getBoundingClientRect();
+      if (item.top < bounds.top) list.scrollTop += item.top - bounds.top;
+      else if (item.bottom > bounds.bottom) list.scrollTop += item.bottom - bounds.bottom;
     } else input.removeAttribute('aria-activedescendant');
   }
   function choose(index) {
@@ -109,8 +162,7 @@
     if (!choice) return;
     input.value = choice.value;
     input.dispatchEvent(new Event('input', {bubbles: true}));
-    close();
-    input.focus({preventScroll: true});
+    finishSearch();
   }
   function suggest() {
     const query = input.value.trim().toLocaleLowerCase();
@@ -143,18 +195,24 @@
       detail.textContent = choice.detail;
       option.append(name, detail);
       option.addEventListener('pointerdown', event => event.preventDefault());
-      option.addEventListener('click', () => choose(index));
+      option.addEventListener('click', event => {
+        // The surrounding label would otherwise focus the search field again.
+        event.preventDefault();
+        choose(index);
+      });
       list.append(option);
     });
     selected = -1;
     input.removeAttribute('aria-activedescendant');
     list.hidden = !choices.length;
     input.setAttribute('aria-expanded', String(!!choices.length));
+    if (choices.length) fitSuggestions();
   }
   input.addEventListener('input', suggest);
   input.addEventListener('focus', suggest);
   input.addEventListener('blur', close);
   input.addEventListener('keydown', event => {
+    if (event.isComposing) return;
     if (event.key === 'Escape') { close(); return; }
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
@@ -165,6 +223,9 @@
     } else if (event.key === 'Enter' && !list.hidden && selected >= 0) {
       event.preventDefault();
       choose(selected);
-    } else if (event.key === 'Enter') close();
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      finishSearch();
+    }
   });
 })();
