@@ -523,7 +523,7 @@ body.mobile-preview.search-keyboard-open {
 
 /* iPhone browser chrome can overlap the page even when the top inset is zero. */
 @supports (-webkit-touch-callout: none) {
-  body.mobile-preview.search-keyboard-open { --search-top-clearance: 44px; }
+  body.mobile-preview.search-keyboard-open { --search-top-clearance: 60px; }
 }
 
 body.mobile-preview.search-keyboard-open .catalog { padding-top: var(--search-top-space); }

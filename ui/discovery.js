@@ -97,21 +97,24 @@
     const layoutHeight = focusWidth === window.innerWidth
       ? Math.max(focusHeight, window.innerHeight)
       : window.innerHeight;
-    const keyboardOpen = viewport && viewport.scale === 1 &&
-      layoutHeight - viewport.height > 100;
+    const keyboardOpen = Boolean(viewport && viewport.scale === 1 &&
+      layoutHeight - viewport.height > (wasCompact ? 80 : 100));
     const compact = mobileSearch.matches && keyboardOpen &&
       (document.activeElement === input || wasCompact) &&
       !body.classList.contains('sales-mode');
 
-    body.classList.toggle('search-keyboard-open', Boolean(compact));
+    if (compact === wasCompact) return;
+
+    // Freeze spacing for this keyboard session. Safari can report a new
+    // viewport offset or height during a swipe, even with the keyboard open.
     if (compact) {
       body.style.setProperty('--search-visible-height', `${Math.floor(viewport.height)}px`);
       body.style.setProperty('--search-viewport-top', `${Math.max(0, Math.ceil(viewport.offsetTop))}px`);
-      if (!wasCompact) window.scrollTo({top: 0, behavior: 'instant'});
-    } else if (wasCompact) {
+    } else {
       body.style.removeProperty('--search-visible-height');
       body.style.removeProperty('--search-viewport-top');
     }
+    body.classList.toggle('search-keyboard-open', compact);
   }
 
   function configureSearch() {
@@ -133,7 +136,6 @@
 
   mobileSearch.addEventListener('change', configureSearch);
   viewport?.addEventListener('resize', updateKeyboardLayout);
-  viewport?.addEventListener('scroll', updateKeyboardLayout);
   window.addEventListener('resize', updateKeyboardLayout);
 
   const grid = document.querySelector('#productGrid');
