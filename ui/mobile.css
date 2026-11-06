@@ -512,10 +512,23 @@ body.mobile-preview.search-keyboard-open :is(
   #publicCatalogueFreshness, #activeFilterChips
 ) { display: none !important; }
 
-body.mobile-preview.search-keyboard-open { overflow-anchor: none; }
-body.mobile-preview.search-keyboard-open .catalog { padding-top: 8px; }
+body.mobile-preview.search-keyboard-open {
+  overflow-anchor: none;
+  --search-top-space: max(
+    var(--search-top-clearance, 8px),
+    calc(env(safe-area-inset-top, 0px) + 8px),
+    calc(var(--search-viewport-top, 0px) + 8px)
+  );
+}
+
+/* iPhone browser chrome can overlap the page even when the top inset is zero. */
+@supports (-webkit-touch-callout: none) {
+  body.mobile-preview.search-keyboard-open { --search-top-clearance: 44px; }
+}
+
+body.mobile-preview.search-keyboard-open .catalog { padding-top: var(--search-top-space); }
 body.mobile-preview.search-keyboard-open .controls { display: block; padding: 0 0 8px; border: 0; }
 body.mobile-preview.search-keyboard-open .search { min-height: 48px; padding-top: 8px; padding-bottom: 8px; }
-body.mobile-preview.search-keyboard-open .card-image {
+body.mobile-preview.search-keyboard-open:not([data-preview-columns="1"]) .card-image {
   max-height: clamp(80px, calc(var(--search-visible-height, 300px) - 142px), 200px);
 }
