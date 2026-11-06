@@ -106,12 +106,11 @@
     body.classList.toggle('search-keyboard-open', Boolean(compact));
     if (compact) {
       body.style.setProperty('--search-visible-height', `${Math.floor(viewport.height)}px`);
-      if (!wasCompact) {
-        const fieldTop = host.getBoundingClientRect().top + window.scrollY;
-        window.scrollTo({top: Math.max(0, fieldTop - 8), behavior: 'instant'});
-      }
+      body.style.setProperty('--search-viewport-top', `${Math.max(0, Math.ceil(viewport.offsetTop))}px`);
+      if (!wasCompact) window.scrollTo({top: 0, behavior: 'instant'});
     } else if (wasCompact) {
       body.style.removeProperty('--search-visible-height');
+      body.style.removeProperty('--search-viewport-top');
     }
   }
 
@@ -134,6 +133,7 @@
 
   mobileSearch.addEventListener('change', configureSearch);
   viewport?.addEventListener('resize', updateKeyboardLayout);
+  viewport?.addEventListener('scroll', updateKeyboardLayout);
   window.addEventListener('resize', updateKeyboardLayout);
 
   const grid = document.querySelector('#productGrid');
