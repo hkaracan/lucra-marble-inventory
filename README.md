@@ -48,6 +48,8 @@ Safety controls include read-only requests, three-request concurrency, spacing b
 
 ## Inventory freshness and publishing checks
 
+Saved Drive overflow IDs are used only when the live folder listing reaches Google's 50-entry limit. Shorter live listings are authoritative, so deleted photos or workbooks are not restored from an older saved listing. Alexander Black K4987's overflow cache was refreshed from its current Drive folder on November 24, 2026; its remaining slab photos retain their real numbers 44–75.
+
 The separate **Inventory health** workflow is scheduled at minute 43 of every hour and can also be run manually from Actions. It reads the public catalogue without changing Drive or stock. It fails if the catalogue cannot be read after three attempts, is empty or malformed, contains duplicate bundle identities, has an invalid/future timestamp, or has not successfully refreshed within 24 hours. The workflow summary shows the last published refresh time and how to investigate. The age measures a successful inventory refresh, even when the stock has not changed. GitHub can delay scheduled runs, so this is an hourly target rather than a guaranteed response time; it cannot monitor a complete GitHub Actions outage.
 
 **Sync inventory** also verifies that the public catalogue's timestamp has reached the newly generated snapshot after every deployment. It retries for up to one minute to allow Pages caches to refresh. A green upload/deployment step alone is therefore no longer enough for a successful sync run. These checks do not modify arrival dates, customer lists or source workbooks.

@@ -435,7 +435,8 @@ def folder_items(folder_id: str, timeout: int = 35, attempts: int = 3) -> list[d
     # The regular public listing stops at 50 entries. The embedded public
     # view is a second independent discovery source; request it for full
     # listings or media folders where no packing file was visible.
-    needs_expanded_listing = len(found) >= 50 or (
+    listing_may_be_truncated = len(found) >= 50
+    needs_expanded_listing = listing_may_be_truncated or (
         not any(is_packing_list_item(item) for item in found)
         and any(item["kind"] in {"image", "video"} or IMAGE_PATTERN.search(item["name"]) or VIDEO_PATTERN.search(item["name"]) for item in found)
     )
@@ -460,8 +461,11 @@ def folder_items(folder_id: str, timeout: int = 35, attempts: int = 3) -> list[d
             # Keep available photos and the audited fallback IDs, but make
             # discovery failures visible instead of claiming no Excel exists.
             found[0]["discoveryWarning"] = "Expanded folder discovery failed: " + describe_error(exc)
-    # Retain the audited public IDs as a final fallback for Drive omissions.
-    for item in OVERFLOW_MANIFEST.get(folder_id, {}).get("items", []):
+    # Only a listing at Drive's 50-entry limit needs saved overflow IDs.
+    # A shorter live listing is authoritative: adding old cached entries
+    # would resurrect removed photos or packing lists (Alexander Black).
+    overflow_items = OVERFLOW_MANIFEST.get(folder_id, {}).get("items", []) if listing_may_be_truncated else []
+    for item in overflow_items:
         if item["id"] in seen:
             continue
         found.append({"id": item["id"], "name": item["name"], "kind": item.get("kind", "unknown")})
