@@ -46,6 +46,18 @@ Sales Mode uses Supabase Auth magic-link login for the authorized Lucra account.
 
 Safety controls include read-only requests, three-request concurrency, spacing between requests, bounded retries with backoff, time-limited optional nested-photo lookups, optional photo-folder isolation, a one-minute manual-sync cooldown, single-sync locking, local image caching, catalogue validation, and atomic inventory replacement. The required L1014 fallback applies only to the old root folder. A bundle discovery error fails the sync before publication, preserving the previous successful catalogue; optional photo-folder skips and packing-list warnings remain visible in the Sales Mode sync feedback.
 
+## Inventory freshness and publishing checks
+
+The separate **Inventory health** workflow is scheduled at minute 43 of every hour and can also be run manually from Actions. It reads the public catalogue without changing Drive or stock. It fails if the catalogue cannot be read after three attempts, is empty or malformed, contains duplicate bundle identities, has an invalid/future timestamp, or has not successfully refreshed within 24 hours. The workflow summary shows the last published refresh time and how to investigate. The age measures a successful inventory refresh, even when the stock has not changed. GitHub can delay scheduled runs, so this is an hourly target rather than a guaranteed response time; it cannot monitor a complete GitHub Actions outage.
+
+**Sync inventory** also verifies that the public catalogue's timestamp has reached the newly generated snapshot after every deployment. It retries for up to one minute to allow Pages caches to refresh. A green upload/deployment step alone is therefore no longer enough for a successful sync run. These checks do not modify arrival dates, customer lists or source workbooks.
+
+Failed checks appear in the repository's [Actions tab](https://github.com/hkaracan/lucra-marble-inventory/actions). Email delivery depends on your personal [GitHub Actions notification settings](https://github.com/settings/notifications): under System → Actions, choose Email and Only notify for failed workflows. Repository code does not enable or change those personal settings. GitHub's [notification documentation](https://docs.github.com/en/actions/concepts/workflows-and-actions/notifications-for-workflow-runs) explains who receives scheduled-run notifications.
+
+Dependabot checks GitHub Actions versions weekly on Monday at 09:00 Europe/Istanbul and groups proposed updates into reviewable pull requests. Updates are not automatically merged. Pull requests touching workflows run the health-check tests without deploying or reading production stock.
+
+Run `python -m unittest test_inventory_freshness` to test stale data, failed reads, malformed/empty data, delayed publication and summary reporting. Run `python tools/check_inventory_freshness.py` to check production directly.
+
 ## Live integration
 
 The production data adapter will enumerate the configured Drive root folder, parse each packing-list workbook layout it encounters, identify numbered slab photographs and supplementary bookmatch/zoom/backlit/video media, and cache normalized bundle records. Sales Mode marks each bundle as connected, file found, or missing so a salesperson can see which records need attention.

@@ -44,7 +44,7 @@ jobs:
         run: python -m pip install -r requirements.txt
 
       - name: Check inventory parser and persistent date handling
-        run: python -m unittest test_sync_drive test_published_baseline
+        run: python -m unittest test_sync_drive test_published_baseline test_inventory_freshness
 
       - name: Validate material category configuration
         run: python tools/build_material_categories.py --check
@@ -132,12 +132,19 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v5.0.1
 
+      - name: Verify the new catalogue is live
+        run: >-
+          python tools/check_inventory_freshness.py
+          --expected-inventory data/inventory.json
+          --attempts 7 --retry-delay 10
+
       - name: Explain failed inventory update
         if: failure()
         run: |
           {
             echo "## Inventory update failed"
-            echo "The previous catalogue remains deployed. No repository files were overwritten."
+            echo "If sync or validation failed, the previous catalogue remains deployed."
+            echo "For a failure after deployment, review the live inventory verification above."
             if [ -s /tmp/lucra-sync.log ]; then
               echo ""
               echo "### Sync diagnostic"

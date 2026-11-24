@@ -1,0 +1,44 @@
+name: Inventory health
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/inventory-health.yml'
+      - '.github/workflows/sync-inventory.yml'
+      - 'tools/check_inventory_freshness.py'
+      - 'test_inventory_freshness.py'
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - 'tools/check_inventory_freshness.py'
+      - 'test_inventory_freshness.py'
+  workflow_dispatch:
+  schedule:
+    - cron: '43 * * * *'
+      timezone: 'Europe/Istanbul'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inventory-health-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  freshness:
+    name: Check published inventory freshness
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out catalogue
+        uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Test inventory health checks
+        run: python -m unittest test_inventory_freshness
+      - name: Check the live catalogue is readable and less than 24 hours old
+        if: github.event_name != 'pull_request'
+        run: python tools/check_inventory_freshness.py --max-age-hours 24
