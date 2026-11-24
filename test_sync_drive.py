@@ -72,6 +72,38 @@ class MockedSyncTest(unittest.TestCase):
         self.assertIn('Expanded folder discovery failed', items[0]['discoveryWarning'])
         sync_drive.folder_items.cache_clear()
 
+    def test_short_live_listing_does_not_resurrect_deleted_cached_files(self):
+        primary = (
+            '<tr data-id="current-photo"><title>image</title><strong>44.jpg</strong></tr>'
+            '<tr data-id="packing"><title>Microsoft Excel</title><strong>K4987 Packing List.xlsx</strong></tr>'
+        ).encode()
+        manifest = {"alexander": {"items": [
+            {"id": "deleted-photo", "name": "25.jpg", "kind": "image"},
+            {"id": "deleted-packing", "name": "Old PL.xlsx", "kind": "spreadsheet"},
+            {"id": "current-photo", "name": "Old name.jpg", "kind": "image"},
+        ]}}
+        sync_drive.folder_items.cache_clear()
+        try:
+            with patch.object(sync_drive, "fetch", return_value=primary) as fetch, \
+                    patch.object(sync_drive, "OVERFLOW_MANIFEST", manifest):
+                items = sync_drive.folder_items("alexander")
+            self.assertEqual([item["id"] for item in items], ["current-photo", "packing"])
+            self.assertEqual(items[0]["name"], "44.jpg")
+            fetch.assert_called_once()
+        finally:
+            sync_drive.folder_items.cache_clear()
+
+    def test_empty_live_listing_does_not_restore_removed_cache(self):
+        sync_drive.folder_items.cache_clear()
+        try:
+            with patch.object(sync_drive, "fetch", return_value=b"<html></html>"), \
+                    patch.object(sync_drive, "OVERFLOW_MANIFEST", {
+                        "empty": {"items": [{"id": "removed", "name": "5.jpg", "kind": "image"}]}
+                    }):
+                self.assertEqual(sync_drive.folder_items("empty"), [])
+        finally:
+            sync_drive.folder_items.cache_clear()
+
     def test_amazonite_code_and_finish_are_separate_from_name(self):
         source = workbook_bytes([
             ['Block Number', 'Finish', 'Material', 'Width', 'Height', 'Pcs', 'Sqm'],
