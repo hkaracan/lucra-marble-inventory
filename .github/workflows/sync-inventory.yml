@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 
@@ -96,11 +97,46 @@ jobs:
               summary.write("\n".join(lines) + "\n")
           PY
 
-      - name: Explain failed sync
+      - name: Upload Pages artifact
+        if: success()
+        id: upload
+        uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: .
+
+      - name: Wait for Pages artifact to become available
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_ARTIFACT_ID: ${{ steps.upload.outputs.artifact_id }}
+        run: |
+          # Upload can finish before the artifact appears in the run's listing.
+          for attempt in {1..12}; do
+            if count=$(gh api --method GET "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" \
+              -f name=github-pages \
+              --jq '[.artifacts[] | select((.id | tostring) == env.PAGES_ARTIFACT_ID and .expired == false)] | length'); then
+              if [ "$count" = "1" ]; then
+                echo "Pages artifact $PAGES_ARTIFACT_ID is ready."
+                exit 0
+              fi
+            fi
+            if [ "$attempt" -lt 12 ]; then
+              echo "Waiting for Pages artifact visibility (attempt $attempt/12)."
+              sleep 5
+            fi
+          done
+          echo "::error::Uploaded Pages artifact $PAGES_ARTIFACT_ID did not become available."
+          exit 1
+
+      - name: Deploy to GitHub Pages
+        if: success()
+        id: deployment
+        uses: actions/deploy-pages@v5.0.1
+
+      - name: Explain failed inventory update
         if: failure()
         run: |
           {
-            echo "## Inventory sync failed"
+            echo "## Inventory update failed"
             echo "The previous catalogue remains deployed. No repository files were overwritten."
             if [ -s /tmp/lucra-sync.log ]; then
               echo ""
@@ -111,13 +147,3 @@ jobs:
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload Pages artifact
-        if: success()
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: .
-
-      - name: Deploy to GitHub Pages
-        if: success()
-        id: deployment
-        uses: actions/deploy-pages@v4
